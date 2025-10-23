@@ -1,94 +1,141 @@
-# 10x Astro Starter
+## AI Weekly Picks
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+![Node](https://img.shields.io/badge/node-22.14.0-339933?logo=node.js)
+![Astro](https://img.shields.io/badge/Astro-5-FF5D01?logo=astro)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)
+![License](https://img.shields.io/badge/License-TBD-lightgrey)
 
-## Tech Stack
+### Table of Contents
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+- [Project description](#project-description)
+- [Tech stack](#tech-stack)
+- [Getting started locally](#getting-started-locally)
+- [Available scripts](#available-scripts)
+- [Project scope](#project-scope)
+- [Project status](#project-status)
+- [License](#license)
 
-## Prerequisites
+### Project description
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+AI Weekly Picks is a lightweight web app that publishes 1–5 AI-selected U.S. stock ideas each week for intermediate retail investors. An admin uploads a versioned JSON file, data are stored in Supabase Postgres, and users can browse:
 
-## Getting Started
+- A blog-style list of weekly reports with summaries
+- A historical picks table with simple sorting
 
-1. Clone the repository:
+For the MVP, all content is publicly visible; authentication exists to enable account creation and an admin-only import workflow. See the detailed Product Requirements Document for full scope and acceptance criteria: `.ai/prd.md`.
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+### Tech stack
+
+- Frontend
+  - Astro 5 (server output, Node adapter)
+  - React 19 (islands for interactivity)
+  - TypeScript 5
+  - Tailwind CSS 4
+  - shadcn/ui + Radix Primitives (e.g., `@radix-ui/react-slot`)
+
+- Backend / Platform
+  - Supabase (Postgres, Auth; Storage optional)
+  - OpenRouter.ai for AI model access (cost controls)
+  - CI/CD: GitHub Actions (planned)
+  - Hosting: DigitalOcean App Platform via Docker (planned)
+
+- Tooling
+  - ESLint 9, Prettier, prettier-plugin-astro
+  - Husky + lint-staged (pre-commit formatting/linting)
+
+References: `.ai/tech-stack.md`
+
+Key runtime/dependency highlights (see `package.json`): `astro@^5`, `@astrojs/react`, `@astrojs/node`, `@tailwindcss/vite`, `react@^19`, `react-dom@^19`, `tailwindcss@^4`, `lucide-react`, `class-variance-authority`, `clsx`.
+
+### Getting started locally
+
+Prerequisites
+
+- Node.js 22.14.0 (matches `.nvmrc`)
+- npm (repo includes `package-lock.json`)
+
+Setup
+
+1. Install dependencies
+
 ```
-
-2. Install dependencies:
-
-```bash
 npm install
 ```
 
-3. Run the development server:
+2. Start the dev server (Astro on port 3000 per config)
 
-```bash
+```
 npm run dev
 ```
 
-4. Build for production:
+3. Open the app
 
-```bash
+```
+http://localhost:3000
+```
+
+Build and preview
+
+```
 npm run build
+npm run preview
 ```
 
-## Available Scripts
+Code quality
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
-
-## Project Structure
-
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
+```
+npm run lint       # Lint all files
+npm run lint:fix   # Auto-fix where possible
+npm run format     # Prettier format
 ```
 
-## AI Development Support
+Environment configuration (planned)
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+- Supabase and OpenRouter credentials will be added as `.env` variables once backend wiring is introduced. Refer to `.ai/prd.md` for schema and auth requirements.
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+### Available scripts
 
-### Cursor IDE
+These are defined in `package.json`:
 
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
+- `dev`: Run the Astro dev server
+- `build`: Production build
+- `preview`: Preview the production build locally
+- `astro`: Run Astro CLI directly
+- `lint`: Run ESLint
+- `lint:fix`: Run ESLint with `--fix`
+- `format`: Run Prettier on the repo
 
-### GitHub Copilot
+### Project scope
 
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
+In scope (MVP)
 
-### Windsurf
+- Public blog list of weekly reports and report detail pages
+- Historical picks table with simple sorting (default sort: date desc)
+- Supabase Postgres storage; admin-only JSON import with atomic transaction + audit
+- Supabase Auth (email/password), email verification, password reset
+- Legal pages (ToS, Privacy) in PL and EN; disclaimers on every report/pick
+- ISO date formatting, UTC publish time with local tooltip; USD display
+- Minimal event logging (registration, login, report view with ≥10s dwell, table view)
 
-The `.windsurfrules` file contains AI configuration for Windsurf.
+Out of scope (MVP)
 
-## Contributing
+- AI engine development/hosting; advanced table features; payments/paywalls
+- Rich profiles, notifications, performance analytics/visualizations
+- Third-party analytics tooling
 
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+For details: `.ai/prd.md` (sections: Functional Requirements, Boundaries, User Stories, Metrics).
 
-## License
+### Project status
 
-MIT
+- Version: 0.0.1
+- Status: MVP scaffolding in progress
+  - Astro app boots with a stylized welcome page
+  - Backend integration (Supabase, auth, import UI) is pending per PRD
+
+### License
+
+No license file is present yet. Until a license is added, the project should be treated as “All rights reserved.” If you intend to open source, add a `LICENSE` file (e.g., MIT) and update the badge above.
+
+

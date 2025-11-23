@@ -16,6 +16,7 @@ A public, server-rendered table at `/picks` listing all historical stock picks. 
   - `SEOHead`
   - `PicksTable` (SSR)
     - `SortableTableHeader` (React island)
+  - `DisclaimerBlock` (SSR)
   - `PaginationControls` (SSR)
   - `EmptyState` (SSR)
   - `ErrorBanner` (SSR)
@@ -92,6 +93,16 @@ A public, server-rendered table at `/picks` listing all historical stock picks. 
   - `code?: 'bad_request' | 'server_error' | string`
   - `message: string`
   - `resetHref: string`
+
+### DisclaimerBlock (SSR)
+
+- Component description: Legal notices required by the PRD; appears on the picks page to reinforce “Not investment advice” and corporate actions caveat.
+- Main elements: `<aside>` with small text content including both disclaimers.
+- Handled interactions: None.
+- Handled validation:
+  - Always rendered on the page regardless of data/error state.
+- Types: none (static content).
+- Props: none (or optional `variant?: "compact"|"default"` if reused across pages).
 
 ### TableViewEventClient (React island)
 
@@ -196,7 +207,7 @@ A public, server-rendered table at `/picks` listing all historical stock picks. 
    - `useEffect` on mount; POST `/api/events` with `{ event_type: 'table_view' }`.
    - Guard double-sends with a ref; ignore failures.
 7. Wire layout:
-   - Ensure `Header` and `Footer` are included; add disclaimers in `Footer` per PRD.
+  - Ensure `Header`, `DisclaimerBlock`, and `Footer` are included; `DisclaimerBlock` satisfies PRD FR-060.
 8. A11y & UX polish:
    - `aria-sort` reflects state; focus styles visible; add `aria-live` announcements.
    - Horizontal scroll wrapper on small viewports.

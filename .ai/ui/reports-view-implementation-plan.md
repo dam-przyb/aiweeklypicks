@@ -16,6 +16,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
   - `SortControls` (React island)
   - `ReportList` (astro/SSR)
     - repeated `ReportCard` (astro/SSR)
+    - `PrefetchLink` (React island, optional; wraps report links for hover prefetch)
   - `PaginationControls` (astro/SSR)
   - `EmptyState` (astro/SSR, conditional)
   - `Footer` (astro/SSR)
@@ -79,11 +80,26 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 
 ### ReportCard
 - Purpose: Display a single report summary and navigate to detail.
-- Main elements: Card with `title` (link to `/reports/[slug]`), `report_week`, `published_at` (ISO string, UTC), `version`, `summary`.
+- Main elements: Card with `title` (link to `/reports/[slug]`, optionally wrapped with `PrefetchLink`), `report_week`, `published_at` (ISO string, UTC), `version`, `summary`.
 - Interactions: Click title or CTA navigates to detail.
 - Validation: Ensure required fields exist; fallback copy for missing summary.
 - Types: `ReportListItemViewModel`.
 - Props: `{ item: ReportListItemViewModel }`.
+
+### PrefetchLink (React island, optional)
+- Purpose: Prefetch report detail data on hover/focus to improve perceived navigation speed from the list.
+- Main elements: Headless component that attaches mouseenter/focus listeners to trigger a low-priority prefetch of `/reports/[slug]` (route assets) and/or `/api/reports/{slug}`.
+- Interactions:
+  - On desktop hover/focus: initiate prefetch once per link; avoid duplicate requests.
+  - On mobile/touch: disabled by default to avoid unnecessary bandwidth (configurable).
+- Validation:
+  - Debounce prefetch to avoid thrash when moving the cursor rapidly.
+  - Guard with `AbortController` to cancel if the link is not interacted with soon.
+- Types: `{ href: string; strategy?: 'api'|'route'; disabledOnTouch?: boolean }`.
+- Props:
+  - `href`: target href for the detail page.
+  - `strategy`: `'route'` (prefetch route assets) or `'api'` (prefetch JSON); default `'route'`.
+  - `disabledOnTouch`: default `true`.
 
 ### PaginationControls
 - Purpose: Navigate across pages, preserving other query params.
@@ -179,11 +195,12 @@ Mapping: Convert `ReportListItemDTO` into `ReportListItemViewModel` by formattin
    - Props: `initialSort`, `initialOrder`, `otherParams`.
    - On change: update URL params, reset `page=1`, navigate.
 5. Implement `ReportList` (astro/SSR) in `src/components/ReportList.astro` that repeats `ReportCard` for items.
-6. Implement `ReportCard` (astro/SSR) in `src/components/ReportCard.astro` with Tailwind layout and link to `/reports/[slug]`.
+6. Implement `ReportCard` (astro/SSR) in `src/components/ReportCard.astro` with Tailwind layout and link to `/reports/[slug]`. Optionally wrap the anchor with `PrefetchLink` for hover prefetch on desktop.
 7. Implement `PaginationControls` (astro/SSR) in `src/components/PaginationControls.astro` that renders Prev/Next and page indicators; preserve query params.
 8. Implement `EmptyState` (astro/SSR) with reset link to `/`.
 9. Create types for view models under `src/types.ts` extensions or local `src/components/types.ts` (keep view-only types local to the view): `ReportListItemViewModel`, `SortStateViewModel`, `URLSearchParamsLike`.
 10. Map DTO to VM in `index.astro` after fetch: format `published_at` to ISO `YYYY-MM-DD` and build `publishedAtLocalTooltip`.
-11. Styling: Apply Tailwind 4 classes; use Shadcn/ui primitives only in the React island.
-12. Accessibility: Ensure focus outlines, labels, and `aria-*` attributes on controls; keyboard operation ok.
-13. Manual QA: Verify defaults (`published_at desc`), sorting changes, pagination, empty state, and error states for malformed URLs.
+11. Implement `PrefetchLink` island in `src/components/islands/PrefetchLink.tsx`; choose `'route'` prefetch by default; disable on touch devices.
+12. Styling: Apply Tailwind 4 classes; use Shadcn/ui primitives only in the React island.
+13. Accessibility: Ensure focus outlines, labels, and `aria-*` attributes on controls; keyboard operation ok.
+14. Manual QA: Verify defaults (`published_at desc`), sorting changes, pagination, empty state, error states for malformed URLs, and non-intrusive prefetch behavior (desktop only).

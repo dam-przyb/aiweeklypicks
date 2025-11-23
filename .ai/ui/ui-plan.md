@@ -283,3 +283,15 @@
 - **Admin list refresh**: Decide on polling interval (e.g., 30s) or manual refresh.
 
 
+
+### Implementation Plans Index
+
+- Reports List (`/`): `.ai/ui/reports-view-implementation-plan.md`
+- Report Detail (`/reports/[slug]`): `.ai/ui/report-slug-view-implementation-plan.md`
+- Historical Picks (`/picks`): `.ai/ui/historical-picks-view-implementation-plan.md`
+- Auth Login (`/auth/login`): `.ai/ui/auth-login-view-implementation-plan.md`
+- Auth Register (`/auth/register`): `.ai/ui/auth-register-view-implementation-plan.md`
+- Admin Imports List & Upload (`/admin/imports`): `.ai/ui/admin-imports-view-implementation-plan.md`
+- Admin Import Detail (`/admin/imports/[import_id]`): `.ai/ui/admin-import-detail-view-implementation-plan.md`
+- Legal Pages (`/legal/*`): `.ai/ui/legal-pages-implementation-plan.md`
+- Error & Utility Views (401/403/404/500): `.ai/ui/error-views-implementation-plan.md`

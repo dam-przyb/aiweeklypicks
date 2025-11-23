@@ -1,0 +1,26 @@
+{
+  "report_id": "a5b6c7d8-aaaa-41aa-bf7e-0a3119292929",
+  "published_at": "2025-11-03T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-11-03",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Early November market activity highlighted continued rotation into AI-related capex names and selective defensive plays.",
+  "picks": [
+    {
+      "pick_id": "a111b222-1212-4a22-bf1f-000000000031",
+      "ticker": "SMCI",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 30.0,
+      "rationale": "AI infrastructure demand supports outsized revenue growth."
+    },
+    {
+      "pick_id": "b222c333-2323-4a33-bf1f-000000000031",
+      "ticker": "CRWD",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 20.0,
+      "rationale": "Enterprise security spending remains durable."
+    }
+  ]
+}

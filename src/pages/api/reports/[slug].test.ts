@@ -90,9 +90,7 @@ describe("GET /api/reports/[slug]", () => {
 
     // Check headers
     expect(response.headers.get("content-type")).toBe("application/json; charset=utf-8");
-    expect(response.headers.get("cache-control")).toBe(
-      "public, max-age=60, s-maxage=60, stale-while-revalidate=120"
-    );
+    expect(response.headers.get("cache-control")).toBe("public, max-age=60, s-maxage=60, stale-while-revalidate=120");
     expect(response.headers.get("etag")).toBe('W/"mockhash123"');
   });
 
@@ -122,9 +120,7 @@ describe("GET /api/reports/[slug]", () => {
 
     expect(response.status).toBe(304);
     expect(response.headers.get("etag")).toBe('W/"mockhash123"');
-    expect(response.headers.get("cache-control")).toBe(
-      "public, max-age=60, s-maxage=60, stale-while-revalidate=120"
-    );
+    expect(response.headers.get("cache-control")).toBe("public, max-age=60, s-maxage=60, stale-while-revalidate=120");
 
     // Body should be empty for 304
     const text = await response.text();
@@ -242,4 +238,3 @@ describe("GET /api/reports/[slug]", () => {
     expect(body.picks[2].ticker).toBe("TSLA");
   });
 });
-

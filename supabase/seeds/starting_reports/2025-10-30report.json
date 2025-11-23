@@ -1,0 +1,26 @@
+{
+  "report_id": "a4b5c6d7-9999-4a0a-bf7e-0a3018282828",
+  "published_at": "2025-10-30T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-30",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Late-October positioning ahead of macro prints led to cautious but selective buying in growth names.",
+  "picks": [
+    {
+      "pick_id": "a999b000-9090-4a00-bf1f-000000000030",
+      "ticker": "RIVN",
+      "exchange": "NASDAQ",
+      "side": "short",
+      "target_change_pct": -40.0,
+      "rationale": "Execution risk and capital intensity weigh on near-term performance."
+    },
+    {
+      "pick_id": "b000c111-0101-4a11-bf1f-000000000030",
+      "ticker": "NVDA",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 18.0,
+      "rationale": "Continued dominance in AI acceleration and strong demand signals."
+    }
+  ]
+}

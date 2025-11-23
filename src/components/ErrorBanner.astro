@@ -1,0 +1,53 @@
+---
+interface Props {
+  errorCode?: string;
+  errorMessage?: string;
+}
+
+const { errorCode, errorMessage } = Astro.props;
+
+// Don't render if no error
+if (!errorCode && !errorMessage) {
+  return null;
+}
+
+// User-friendly messages based on error code
+const getDisplayMessage = () => {
+  if (errorMessage) return errorMessage;
+
+  switch (errorCode) {
+    case "bad_request":
+      return "Invalid request parameters. Please check your filters and try again.";
+    case "server_error":
+      return "An unexpected error occurred. Please try again later.";
+    default:
+      return "An error occurred while loading reports.";
+  }
+};
+
+const displayMessage = getDisplayMessage();
+---
+
+<div role="alert" class="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 mb-6 shadow-sm">
+  <div class="flex items-start gap-3">
+    <div class="flex-shrink-0">
+      <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <path
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+          clip-rule="evenodd"></path>
+      </svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-sm font-semibold text-red-900 mb-1">Error</h3>
+      <p class="text-sm text-red-800 leading-relaxed">{displayMessage}</p>
+    </div>
+    <a
+      href="/"
+      class="flex-shrink-0 text-sm font-medium text-red-700 hover:text-red-900 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 rounded transition-colors"
+      aria-label="Reset all filters and return to home"
+    >
+      Reset
+    </a>
+  </div>
+</div>

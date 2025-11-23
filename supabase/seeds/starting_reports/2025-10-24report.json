@@ -1,0 +1,26 @@
+{
+  "report_id": "f1e2d3c4-6666-4d7a-bf7e-0a2414242424",
+  "published_at": "2025-10-24T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-24",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Investor sentiment improved in parts of the market as select growth names reported encouraging results.",
+  "picks": [
+    {
+      "pick_id": "f333a444-3434-4a44-bf1f-000000000024",
+      "ticker": "UPST",
+      "exchange": "NASDAQ",
+      "side": "short",
+      "target_change_pct": -25.0,
+      "rationale": "Credit performance concerns and valuation mismatch create downside risk."
+    },
+    {
+      "pick_id": "a444b555-4545-4b55-bf1f-000000000024",
+      "ticker": "KMX",
+      "exchange": "NASDAQ",
+      "side": "short",
+      "target_change_pct": -18.0,
+      "rationale": "Fundamental pressures in used car market reduce near-term outlook."
+    }
+  ]
+}

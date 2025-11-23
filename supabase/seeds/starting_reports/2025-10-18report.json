@@ -1,0 +1,26 @@
+{
+  "report_id": "d4e5f6a7-2222-4e3a-bf7e-0a1818181818",
+  "published_at": "2025-10-18T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-18",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Investor focus rotated to earnings and guidance, highlighting dispersion across sectors.",
+  "picks": [
+    {
+      "pick_id": "d333e444-5555-4e66-bf1f-000000000018",
+      "ticker": "PLTR",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 22.5,
+      "rationale": "Commercial traction and platform expansion underpin upside case."
+    },
+    {
+      "pick_id": "e444f555-6666-4f77-bf1f-000000000018",
+      "ticker": "BMRN",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 60.0,
+      "rationale": "Pipeline catalysts and favorable clinical updates support valuation rerating."
+    }
+  ]
+}

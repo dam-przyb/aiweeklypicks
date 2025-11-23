@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Validates filename format: YYYY-MM-DDreport.json
@@ -6,10 +6,7 @@ import { z } from 'zod';
  */
 export const filenameSchema = z
   .string()
-  .regex(
-    /^\d{4}-\d{2}-\d{2}report\.json$/,
-    'Filename must match format: YYYY-MM-DDreport.json'
-  );
+  .regex(/^\d{4}-\d{2}-\d{2}report\.json$/, "Filename must match format: YYYY-MM-DDreport.json");
 
 /**
  * Schema for JSON variant upload (application/json content-type)
@@ -40,6 +37,5 @@ export function isPayloadSizeValid(sizeInBytes: number): boolean {
  * @returns Size in bytes
  */
 export function calculatePayloadSize(payload: unknown): number {
-  return Buffer.byteLength(JSON.stringify(payload), 'utf8');
+  return Buffer.byteLength(JSON.stringify(payload), "utf8");
 }
-

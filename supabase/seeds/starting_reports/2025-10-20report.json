@@ -1,0 +1,26 @@
+{
+  "report_id": "f7a8b9c0-3333-4f4a-bf7e-0a2010202020",
+  "published_at": "2025-10-20T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-20",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Volatility rose as investors digested economic prints and company guidance; select names remain attractive.",
+  "picks": [
+    {
+      "pick_id": "f555a666-7777-4a88-bf1f-000000000020",
+      "ticker": "PANW",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 18.0,
+      "rationale": "Strong security demand and product differentiation drive growth."
+    },
+    {
+      "pick_id": "a666b777-8888-4b99-bf1f-000000000020",
+      "ticker": "CRWD",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 24.0,
+      "rationale": "Subscription growth and enterprise adoption support multiple expansion."
+    }
+  ]
+}

@@ -243,7 +243,7 @@ export const GET: APIRoute = async (context) => {
     // Step 3: Get authenticated user for rate limiting
     const { data: userRes, error: userErr } = await supabase.auth.getUser();
     if (userErr || !userRes?.user) {
-      throw new UnauthorizedError('Failed to verify user identity');
+      throw new UnauthorizedError("Failed to verify user identity");
     }
 
     // Step 4: Apply rate limiting (30 requests per minute per admin)
@@ -255,7 +255,7 @@ export const GET: APIRoute = async (context) => {
     });
 
     if (!isAllowed) {
-      throw new RateLimitError('Rate limit exceeded. Maximum 30 requests per minute.');
+      throw new RateLimitError("Rate limit exceeded. Maximum 30 requests per minute.");
     }
 
     // Step 5: Query imports with filters
@@ -268,7 +268,7 @@ export const GET: APIRoute = async (context) => {
     if (err instanceof ValidationError) {
       return jsonResponse(
         {
-          code: 'bad_request',
+          code: "bad_request",
           message: err.message,
         },
         400
@@ -279,7 +279,7 @@ export const GET: APIRoute = async (context) => {
     if (err instanceof UnauthorizedError) {
       return jsonResponse(
         {
-          code: 'unauthorized',
+          code: "unauthorized",
           message: err.message,
         },
         401
@@ -290,7 +290,7 @@ export const GET: APIRoute = async (context) => {
     if (err instanceof ForbiddenError) {
       return jsonResponse(
         {
-          code: 'forbidden',
+          code: "forbidden",
           message: err.message,
         },
         403
@@ -301,7 +301,7 @@ export const GET: APIRoute = async (context) => {
     if (err instanceof RateLimitError) {
       return jsonResponse(
         {
-          code: 'rate_limited',
+          code: "rate_limited",
           message: err.message,
         },
         429
@@ -311,27 +311,27 @@ export const GET: APIRoute = async (context) => {
     // Handle database errors
     if (err instanceof DatabaseError) {
       // Log database errors for debugging (in production, use proper logging service)
-      console.error('Database error in GET /api/admin/imports:', {
+      console.error("Database error in GET /api/admin/imports:", {
         message: err.message,
         cause: err.cause,
       });
 
       return jsonResponse(
         {
-          code: 'server_error',
-          message: 'Failed to retrieve imports',
+          code: "server_error",
+          message: "Failed to retrieve imports",
         },
         500
       );
     }
 
     // Handle any unexpected errors
-    console.error('Unexpected error in GET /api/admin/imports:', err);
+    console.error("Unexpected error in GET /api/admin/imports:", err);
 
     return jsonResponse(
       {
-        code: 'server_error',
-        message: 'An unexpected error occurred',
+        code: "server_error",
+        message: "An unexpected error occurred",
       },
       500
     );

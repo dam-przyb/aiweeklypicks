@@ -1,8 +1,157 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+export const prerender = false;
+
+import ErrorBanner from "@/components/ErrorBanner.astro";
+import EmptyState from "@/components/EmptyState.astro";
+import ReportList from "@/components/ReportList.astro";
+import PaginationControls from "@/components/PaginationControls.astro";
+import { SortControls } from "@/components/SortControls";
+import { normalizeReportsListQuery, mapReportDtoToViewModel, buildQueryString } from "@/lib/view-helpers";
+import type { ReportsListResponseDTO, ReportListItemViewModel } from "@/types";
+
+// Normalize and validate query parameters
+const normalizedQuery = normalizeReportsListQuery(Astro.url.searchParams);
+
+// Build the internal API URL
+const apiUrl = new URL("/api/reports", Astro.url.origin);
+apiUrl.search = buildQueryString(normalizedQuery);
+
+// Fetch data from internal API
+let error: { code?: string; message?: string } | null = null;
+let reports: ReportListItemViewModel[] = [];
+let pagination = {
+  page: 1,
+  page_size: 20,
+  total_items: 0,
+  total_pages: 0,
+};
+
+try {
+  const response = await fetch(apiUrl.toString(), {
+    headers: {
+      // Forward any auth cookies if present
+      cookie: Astro.request.headers.get("cookie") || "",
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    error = {
+      code: errorData.code || "server_error",
+      message: errorData.message || "An unexpected error occurred while loading reports.",
+    };
+  } else {
+    const data: ReportsListResponseDTO = await response.json();
+    reports = data.items.map(mapReportDtoToViewModel);
+    pagination = {
+      page: data.page,
+      page_size: data.page_size,
+      total_items: data.total_items,
+      total_pages: data.total_pages,
+    };
+  }
+} catch (err) {
+  console.error("[Index Page] Failed to fetch reports:", err);
+  error = {
+    code: "server_error",
+    message: "Failed to connect to the server. Please try again later.",
+  };
+}
+
+// SEO metadata
+const pageTitle = "AI Weekly Picks - Weekly Reports";
+const pageDescription = "Browse our weekly reports with analysis and AI supported stock picks.";
 ---
 
-<Layout>
-  <Welcome />
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- Structured Data for SEO -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: pageTitle,
+        description: pageDescription,
+        url: Astro.url.href,
+      })}
+    />
+  </head>
+  <body class="min-h-screen bg-gray-50">
+    <!-- Skip to main content link for keyboard navigation -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+    >
+      Skip to main content
+    </a>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">AI Weekly Picks</h1>
+        <p class="text-lg text-gray-600">Browse our weekly reports with analysis and AI supported stock picks</p>
+      </header>
+
+      <!-- Error Banner (conditional) -->
+      {error && <ErrorBanner errorCode={error.code} errorMessage={error.message} />}
+
+      <!-- Main Content Area -->
+      <main id="main-content" tabindex="-1" class="focus:outline-none">
+        {!error && reports.length === 0 && <EmptyState />}
+
+        {
+          !error && reports.length > 0 && (
+            <div class="space-y-6">
+              <div class="bg-white rounded-lg shadow p-4">
+                <SortControls
+                  client:load
+                  initialSort={normalizedQuery.sort || "published_at"}
+                  initialOrder={normalizedQuery.order || "desc"}
+                  otherParams={{
+                    ...(normalizedQuery.week && { week: normalizedQuery.week }),
+                    ...(normalizedQuery.version && { version: normalizedQuery.version }),
+                    ...(normalizedQuery.published_before && { published_before: normalizedQuery.published_before }),
+                    ...(normalizedQuery.published_after && { published_after: normalizedQuery.published_after }),
+                  }}
+                />
+              </div>
+
+              <ReportList reports={reports} />
+
+              <PaginationControls
+                page={pagination.page}
+                pageSize={pagination.page_size}
+                totalPages={pagination.total_pages}
+                totalItems={pagination.total_items}
+                currentQuery={normalizedQuery}
+              />
+            </div>
+          )
+        }
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-12 pt-8 border-t border-gray-200">
+        <p class="text-center text-sm text-gray-500">© 2025 AI Weekly Picks. All rights reserved.</p>
+      </footer>
+    </div>
+  </body>
+</html>

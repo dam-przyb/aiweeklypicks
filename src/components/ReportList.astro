@@ -1,0 +1,19 @@
+---
+import type { ReportListItemViewModel } from "@/types";
+import ReportCard from "./ReportCard.astro";
+
+interface Props {
+  reports: ReportListItemViewModel[];
+}
+
+const { reports } = Astro.props;
+
+// Don't render if no reports
+if (!reports || reports.length === 0) {
+  return null;
+}
+---
+
+<section aria-label="Reports list" class="space-y-4">
+  {reports.map((report) => <ReportCard report={report} />)}
+</section>

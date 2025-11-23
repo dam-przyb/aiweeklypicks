@@ -1,15 +1,10 @@
-import { z } from 'zod';
-import type { AdminEventsListQuery } from '../../types';
+import { z } from "zod";
+import type { AdminEventsListQuery } from "../../types";
 
 /**
  * Allowed event types for filtering
  */
-const eventTypeEnum = z.enum([
-  'registration_complete',
-  'login',
-  'report_view',
-  'table_view',
-]);
+const eventTypeEnum = z.enum(["registration_complete", "login", "report_view", "table_view"]);
 
 /**
  * UUID validation helper
@@ -40,8 +35,8 @@ export const adminEventsQuerySchema = z
       if (new Date(val.occurred_after) > new Date(val.occurred_before)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'occurred_after must be <= occurred_before',
-          path: ['occurred_after'],
+          message: "occurred_after must be <= occurred_before",
+          path: ["occurred_after"],
         });
       }
     }
@@ -51,11 +46,11 @@ export const adminEventsQuerySchema = z
  * Error class for validation failures
  */
 export class ValidationError extends Error {
-  code = 'bad_request' as const;
+  code = "bad_request" as const;
 
   constructor(message: string) {
     super(message);
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
@@ -63,27 +58,25 @@ export class ValidationError extends Error {
  * Parses and validates admin events query parameters from URL
  * Handles both repeated query params (?event_type=a&event_type=b) and
  * comma-separated values (?event_type=a,b)
- * 
+ *
  * @param url - Request URL with query parameters
  * @returns Validated query object with normalized event_type as array
  * @throws {ValidationError} When validation fails
  */
-export function parseAdminEventsQuery(
-  url: URL
-): AdminEventsListQuery & { event_type?: string[] } {
+export function parseAdminEventsQuery(url: URL): AdminEventsListQuery & { event_type?: string[] } {
   const sp = url.searchParams;
 
   // Handle event_type as repeated params or comma-separated
-  const repeated = sp.getAll('event_type');
+  const repeated = sp.getAll("event_type");
   const splitComma = repeated
-    .flatMap((v) => v.split(','))
+    .flatMap((v) => v.split(","))
     .map((v) => v.trim())
     .filter(Boolean);
 
   // Build object from search params
   const obj: Record<string, unknown> = {};
   for (const [key, value] of sp.entries()) {
-    if (key !== 'event_type') {
+    if (key !== "event_type") {
       obj[key] = value;
     }
   }
@@ -97,17 +90,16 @@ export function parseAdminEventsQuery(
   // Validate with Zod schema
   const parsed = adminEventsQuerySchema.safeParse(obj);
   if (!parsed.success) {
-    const message = parsed.error.issues.map((i) => i.message).join('; ');
+    const message = parsed.error.issues.map((i) => i.message).join("; ");
     throw new ValidationError(message);
   }
 
   const data = parsed.data as any;
 
   // Normalize single string to array for consistent handling
-  if (typeof data.event_type === 'string') {
+  if (typeof data.event_type === "string") {
     data.event_type = [data.event_type];
   }
 
   return data;
 }
-

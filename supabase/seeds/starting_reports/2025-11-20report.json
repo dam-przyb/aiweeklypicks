@@ -1,0 +1,26 @@
+{
+  "report_id": "a9b0c1d2-eeee-45ee-bf7e-0a2016161616",
+  "published_at": "2025-11-20T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-11-20",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Late-November volatility as the market digested forward guidance; defensive and AI-related names were key focus areas.",
+  "picks": [
+    {
+      "pick_id": "a111b222-9191-4a22-bf1f-000000000039",
+      "ticker": "CRWD",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 19.0,
+      "rationale": "Durable revenue streams from security product suite."
+    },
+    {
+      "pick_id": "b222c333-9292-4a33-bf1f-000000000039",
+      "ticker": "BMRN",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 55.0,
+      "rationale": "Strong late-stage pipeline and favorable clinical developments."
+    }
+  ]
+}

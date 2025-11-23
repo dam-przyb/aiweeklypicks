@@ -1,0 +1,26 @@
+{
+  "report_id": "a2b3c4d5-7777-4e8a-bf7e-0a2515252525",
+  "published_at": "2025-10-25T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-25",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Earnings and guidance shaped market action; selected cyclicals and software names presented opportunities.",
+  "picks": [
+    {
+      "pick_id": "a555b666-5656-4a66-bf1f-000000000025",
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 10.0,
+      "rationale": "Continued product strength and services revenue growth."
+    },
+    {
+      "pick_id": "b666c777-6767-4a77-bf1f-000000000025",
+      "ticker": "OKLO",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 45.0,
+      "rationale": "Early-stage nuclear tech with material upside on commercial progress."
+    }
+  ]
+}

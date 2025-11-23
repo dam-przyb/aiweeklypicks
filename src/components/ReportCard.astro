@@ -1,0 +1,76 @@
+---
+import type { ReportListItemViewModel } from "@/types";
+import { PrefetchLink } from "./PrefetchLink";
+
+interface Props {
+  report: ReportListItemViewModel;
+}
+
+const { report } = Astro.props;
+---
+
+<article class="bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 p-6">
+  <h2 class="text-xl font-semibold text-gray-900 mb-2">
+    <PrefetchLink
+      client:idle
+      href={`/reports/${report.slug}`}
+      strategy="route"
+      className="hover:text-blue-600 focus:outline-none focus:underline focus:text-blue-600 transition-colors"
+    >
+      {report.title}
+    </PrefetchLink>
+  </h2>
+
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 mb-3">
+    <span class="flex items-center gap-1.5" title={report.publishedAtLocalTooltip}>
+      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <time datetime={report.publishedAtIso}>
+        {report.publishedAtIso}
+      </time>
+    </span>
+
+    <span class="flex items-center gap-1.5">
+      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+        ></path>
+      </svg>
+      <span>Week {report.reportWeek}</span>
+    </span>
+
+    <span class="flex items-center gap-1.5">
+      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+        ></path>
+      </svg>
+      <span>v{report.version}</span>
+    </span>
+  </div>
+
+  <p class="text-gray-700 leading-relaxed mb-4">
+    {report.summary}
+  </p>
+
+  <a
+    href={`/reports/${report.slug}`}
+    class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 focus:outline-none focus:underline transition-colors"
+  >
+    Read full report
+    <svg class="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+  </a>
+</article>

@@ -1,0 +1,34 @@
+{
+  "report_id": "e3b0c442-1156-4d2a-bf7e-0a1a11111115",
+  "published_at": "2025-10-15T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-15",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. The U.S. stock market in mid-October 2025 presents a mixed but cautiously optimistic picture, influenced by positive corporate fundamentals and persistent macroeconomic uncertainties.",
+  "picks": [
+    {
+      "pick_id": "1f8d4b56-3a65-4c41-bf1f-000000000015",
+      "ticker": "BMRN",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 77.8,
+      "rationale": "BioMarin shows strong fundamentals and upside potential driven by its rare disease pipeline and positive clinical data."
+    },
+    {
+      "pick_id": "2a9f4b56-3a65-4c41-bf1f-000000000015",
+      "ticker": "PLTR",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": -21.4,
+      "rationale": "Palantir continues to expand U.S. commercial revenue and AI platform adoption; included here as a high-conviction long in the original report."
+    },
+    {
+      "pick_id": "3baf4b56-3a65-4c41-bf1f-000000000015",
+      "ticker": "Z",
+      "exchange": "NASDAQ",
+      "side": "short",
+      "target_change_pct": -14.2,
+      "rationale": "Zillow faces regulatory and valuation headwinds creating a short opportunity in the near term."
+    }
+  ]
+}

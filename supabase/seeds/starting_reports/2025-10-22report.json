@@ -1,0 +1,26 @@
+{
+  "report_id": "c0d1e2f3-5555-4c6a-bf7e-0a2213222323",
+  "published_at": "2025-10-22T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-22",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Macro headlines tempered risk appetite; selective long ideas in software and semiconductors remain attractive.",
+  "picks": [
+    {
+      "pick_id": "d111e222-1212-4e22-bf1f-000000000022",
+      "ticker": "DDOG",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 20.0,
+      "rationale": "Strength in observability demand and expansion into new use cases."
+    },
+    {
+      "pick_id": "e222f333-2323-4f33-bf1f-000000000022",
+      "ticker": "SMCI",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 33.0,
+      "rationale": "Server and AI infrastructure demand drives revenue momentum."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "report_id": "b8c9d0e1-4444-4b5a-bf7e-0a2111212121",
+  "published_at": "2025-10-21T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-21",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Earnings season continued to drive stock-specific moves with notable activity in tech and health care.",
+  "picks": [
+    {
+      "pick_id": "b777c888-9999-4c00-bf1f-000000000021",
+      "ticker": "PTON",
+      "exchange": "NASDAQ",
+      "side": "short",
+      "target_change_pct": -30.0,
+      "rationale": "Demand softness and competitive pressures create downside risk."
+    },
+    {
+      "pick_id": "c888d999-0000-4d11-bf1f-000000000021",
+      "ticker": "ROKU",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 28.0,
+      "rationale": "Advertising recovery and platform monetization support earnings upside."
+    }
+  ]
+}

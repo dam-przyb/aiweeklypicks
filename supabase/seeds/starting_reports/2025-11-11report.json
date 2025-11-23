@@ -1,0 +1,26 @@
+{
+  "report_id": "a7b8c9d0-cccc-43cc-bf7e-0a1111313131",
+  "published_at": "2025-11-11T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-11-11",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Mid-November market tone was cautious ahead of central bank commentary; select software names remained attractive.",
+  "picks": [
+    {
+      "pick_id": "a555b666-5656-4a66-bf1f-000000000035",
+      "ticker": "DDOG",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 18.0,
+      "rationale": "Strong product adoption and recurring revenue model."
+    },
+    {
+      "pick_id": "b666c777-6767-4a77-bf1f-000000000035",
+      "ticker": "PLTR",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 16.0,
+      "rationale": "Momentum in AI deployments and expanding use cases."
+    }
+  ]
+}

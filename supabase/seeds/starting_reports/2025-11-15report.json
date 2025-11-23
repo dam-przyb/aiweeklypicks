@@ -1,0 +1,26 @@
+{
+  "report_id": "a8b9c0d1-dddd-44dd-bf7e-0a1514151515",
+  "published_at": "2025-11-15T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-11-15",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Markets were reassessing positioning with earnings and macro releases driving headline moves.",
+  "picks": [
+    {
+      "pick_id": "a777b888-7878-4a88-bf1f-000000000037",
+      "ticker": "NVDA",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 12.5,
+      "rationale": "AI cyclical demand continues to support earnings upgrades."
+    },
+    {
+      "pick_id": "b888c999-8989-4a99-bf1f-000000000037",
+      "ticker": "ROKU",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 21.0,
+      "rationale": "Improving ad monetization and engagement trends."
+    }
+  ]
+}

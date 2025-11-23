@@ -1,0 +1,26 @@
+{
+  "report_id": "a1d2c3e4-1111-4a2a-bf7e-0a1717171717",
+  "published_at": "2025-10-17T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-17",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Markets showed selective strength with pockets of AI and biotech leadership amid mixed macro signals.",
+  "picks": [
+    {
+      "pick_id": "b111c222-3333-4c44-bf1f-000000000017",
+      "ticker": "NVDA",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 15.2,
+      "rationale": "Market leadership in AI-related GPUs supports further upside."
+    },
+    {
+      "pick_id": "c222d333-4444-4d55-bf1f-000000000017",
+      "ticker": "AMD",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 12.0,
+      "rationale": "Improving server shipment trends and competitive product roadmap."
+    }
+  ]
+}

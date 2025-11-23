@@ -1,0 +1,26 @@
+{
+  "report_id": "a6b7c8d9-bbbb-42bb-bf7e-0a0510303030",
+  "published_at": "2025-11-05T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-11-05",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Markets reacted to mixed economic data with sector-specific moves; semiconductor and software names stood out.",
+  "picks": [
+    {
+      "pick_id": "a333b444-3434-4a44-bf1f-000000000033",
+      "ticker": "AMD",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 14.0,
+      "rationale": "Server and client demand stabilization supports growth outlook."
+    },
+    {
+      "pick_id": "b444c555-4545-4a55-bf1f-000000000033",
+      "ticker": "PLTR",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 20.0,
+      "rationale": "Ongoing commercial wins and expansion of AI offerings."
+    }
+  ]
+}

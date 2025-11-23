@@ -1,0 +1,26 @@
+{
+  "report_id": "a3b4c5d6-8888-4f9a-bf7e-0a2717262727",
+  "published_at": "2025-10-27T00:00:00Z",
+  "version": "v1",
+  "source_checksum": null,
+  "title": "U.S. Market Report — 2025-10-27",
+  "summary": "INITIAL LOAD - MAY CONTAIN ERRORS. Market breadth narrowed as rotational flows favored defensive and high-quality growth names.",
+  "picks": [
+    {
+      "pick_id": "a777b888-7878-4a88-bf1f-000000000027",
+      "ticker": "KVUE",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 27.0,
+      "rationale": "Strong subscription growth in a defensible niche."
+    },
+    {
+      "pick_id": "b888c999-8989-4a99-bf1f-000000000027",
+      "ticker": "BMRN",
+      "exchange": "NASDAQ",
+      "side": "long",
+      "target_change_pct": 50.0,
+      "rationale": "Reiteration of pipeline strength and positive catalyst timing."
+    }
+  ]
+}

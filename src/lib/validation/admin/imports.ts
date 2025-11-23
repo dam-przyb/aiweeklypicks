@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import type { AdminImportsListQuery } from '../../types';
+import { z } from "zod";
+import type { AdminImportsListQuery } from "../../types";
 
 /**
  * Import status enum for validation
  */
-const importStatusEnum = z.enum(['success', 'failed']);
+const importStatusEnum = z.enum(["success", "failed"]);
 
 /**
  * UUID validation helper
@@ -34,8 +34,8 @@ export const adminImportsQuerySchema = z
       if (new Date(val.started_after) > new Date(val.started_before)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'started_after must be <= started_before',
-          path: ['started_after'],
+          message: "started_after must be <= started_before",
+          path: ["started_after"],
         });
       }
     }
@@ -45,21 +45,21 @@ export const adminImportsQuerySchema = z
  * Error class for validation failures
  */
 export class ValidationError extends Error {
-  code = 'bad_request' as const;
+  code = "bad_request" as const;
 
   constructor(message: string) {
     super(message);
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
 /**
  * Parses and validates admin imports query parameters from URL
- * 
+ *
  * @param url - Request URL with query parameters
  * @returns Validated query object
  * @throws {ValidationError} When validation fails
- * 
+ *
  * @example
  * ```ts
  * const query = parseAdminImportsQuery(new URL(request.url));
@@ -78,10 +78,9 @@ export function parseAdminImportsQuery(url: URL): AdminImportsListQuery {
   // Validate with Zod schema
   const parsed = adminImportsQuerySchema.safeParse(obj);
   if (!parsed.success) {
-    const message = parsed.error.issues.map((i) => i.message).join('; ');
+    const message = parsed.error.issues.map((i) => i.message).join("; ");
     throw new ValidationError(message);
   }
 
   return parsed.data;
 }
-

@@ -1,0 +1,43 @@
+---
+import type { ReportMetaVM } from "@/types";
+
+interface Props {
+  report: ReportMetaVM;
+}
+
+const { report } = Astro.props;
+---
+
+<header class="mb-8">
+  <div class="mb-4">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+      {report.title}
+    </h1>
+    {report.summary && <p class="text-lg text-gray-700 leading-relaxed">{report.summary}</p>}
+  </div>
+
+  <dl class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600">
+    <div class="flex items-center gap-2">
+      <dt class="font-semibold">Week:</dt>
+      <dd>{report.reportWeek}</dd>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <dt class="font-semibold">Published:</dt>
+      <dd>
+        <time
+          datetime={report.publishedAtUtc}
+          title={report.publishedAtLocalTooltip}
+          class="cursor-help border-b border-dotted border-gray-400"
+        >
+          {report.publishedDateDisplay}
+        </time>
+      </dd>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <dt class="font-semibold">Version:</dt>
+      <dd>{report.version}</dd>
+    </div>
+  </dl>
+</header>

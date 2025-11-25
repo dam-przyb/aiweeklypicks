@@ -44,11 +44,11 @@ export function SortControls({ initialSort, initialOrder, otherParams = {} }: So
       params.delete("order");
     }
 
-		// Navigate to the new URL (full page reload for SSR)
-		const queryString = params.toString();
-		const newUrl = queryString ? `/?${queryString}` : "/";
-		// eslint-disable-next-line react-compiler/react-compiler
-		window.location.href = newUrl;
+    // Navigate to the new URL (full page reload for SSR)
+    const queryString = params.toString();
+    const newUrl = queryString ? `/?${queryString}` : "/";
+    // eslint-disable-next-line react-compiler/react-compiler
+    window.location.href = newUrl;
   };
 
   // Map sort values to display labels

@@ -1,0 +1,299 @@
+---
+import type { AdminImportsListResponseDTO, AdminImportsListQuery } from "@/types";
+
+interface Props {
+  data: AdminImportsListResponseDTO;
+  query: AdminImportsListQuery;
+}
+
+const { data, query } = Astro.props;
+
+// Helper to format dates
+function formatDateTime(dateString: string | null): string {
+  if (!dateString) return "N/A";
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// Helper to calculate duration
+function formatDuration(startedAt: string | null, finishedAt: string | null): string {
+  if (!startedAt || !finishedAt) return "N/A";
+  
+  const start = new Date(startedAt);
+  const finish = new Date(finishedAt);
+  const durationMs = finish.getTime() - start.getTime();
+  
+  if (durationMs < 1000) {
+    return `${durationMs}ms`;
+  }
+  
+  const durationSec = Math.floor(durationMs / 1000);
+  if (durationSec < 60) {
+    return `${durationSec}s`;
+  }
+  
+  const minutes = Math.floor(durationSec / 60);
+  const seconds = durationSec % 60;
+  return `${minutes}m ${seconds}s`;
+}
+---
+
+<div class="overflow-x-auto">
+  {
+    data.items.length === 0 ? (
+      <div class="text-center py-12">
+        <svg
+          class="mx-auto h-12 w-12 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No imports yet</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by uploading a report file above.</p>
+      </div>
+    ) : (
+      <table
+        class="min-w-full divide-y divide-gray-200"
+        role="table"
+        aria-label="Recent imports"
+      >
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Filename
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Status
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Started At
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Duration
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Error Details
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {data.items.map((item) => (
+            <tr class="hover:bg-gray-50 transition-colors duration-150">
+              {/* Filename */}
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <svg
+                    class="w-5 h-5 text-gray-400 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span class="text-sm font-medium text-gray-900">{item.filename}</span>
+                </div>
+              </td>
+
+              {/* Status */}
+              <td class="px-6 py-4 whitespace-nowrap">
+                {item.status === "success" ? (
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <svg
+                      class="w-4 h-4 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    Success
+                  </span>
+                ) : (
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    <svg
+                      class="w-4 h-4 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    Failed
+                  </span>
+                )}
+              </td>
+
+              {/* Started At */}
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                {formatDateTime(item.started_at)}
+              </td>
+
+              {/* Duration */}
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                {formatDuration(item.started_at, item.finished_at)}
+              </td>
+
+              {/* Error Details */}
+              <td class="px-6 py-4">
+                {item.status === "failed" && item.error_message ? (
+                  <div class="text-sm text-red-700 max-w-md">
+                    <details class="cursor-pointer">
+                      <summary class="font-medium hover:text-red-800">View Error</summary>
+                      <p class="mt-1 text-xs">{item.error_message}</p>
+                    </details>
+                  </div>
+                ) : item.status === "success" ? (
+                  <span class="text-sm text-gray-500">—</span>
+                ) : (
+                  <span class="text-sm text-gray-400">N/A</span>
+                )}
+              </td>
+
+              {/* Actions */}
+              <td class="px-6 py-4 text-right whitespace-nowrap">
+                <a
+                  href={`/admin/imports/${item.import_id}`}
+                  class="text-sm font-medium text-blue-600 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded transition-colors"
+                  aria-label={`View details for ${item.filename}`}
+                >
+                  View Details
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+</div>
+
+{
+  data.total_pages > 1 && (
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+          Showing{" "}
+          <span class="font-medium">
+            {(data.page - 1) * data.page_size + 1}
+          </span>
+          {" - "}
+          <span class="font-medium">
+            {Math.min(data.page * data.page_size, data.total_items)}
+          </span>
+          {" of "}
+          <span class="font-medium">{data.total_items}</span>
+          {" imports"}
+        </div>
+        <nav class="flex items-center gap-2" aria-label="Pagination">
+          {/* Previous Button */}
+          {data.page > 1 ? (
+            <a
+              href={`?page=${data.page - 1}${query.status ? `&status=${query.status}` : ""}`}
+              class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+              aria-label="Previous page"
+            >
+              Previous
+            </a>
+          ) : (
+            <span class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-400 bg-gray-100 cursor-not-allowed">
+              Previous
+            </span>
+          )}
+
+          {/* Page Numbers */}
+          <div class="flex items-center gap-1">
+            {Array.from({ length: Math.min(5, data.total_pages) }, (_, i) => {
+              let pageNum: number;
+              if (data.total_pages <= 5) {
+                pageNum = i + 1;
+              } else if (data.page <= 3) {
+                pageNum = i + 1;
+              } else if (data.page >= data.total_pages - 2) {
+                pageNum = data.total_pages - 4 + i;
+              } else {
+                pageNum = data.page - 2 + i;
+              }
+
+              return pageNum === data.page ? (
+                <span class="px-3 py-2 border border-blue-600 rounded-md text-sm font-medium text-blue-600 bg-blue-50">
+                  {pageNum}
+                </span>
+              ) : (
+                <a
+                  href={`?page=${pageNum}${query.status ? `&status=${query.status}` : ""}`}
+                  class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+                  aria-label={`Go to page ${pageNum}`}
+                >
+                  {pageNum}
+                </a>
+              );
+            })}
+          </div>
+
+          {/* Next Button */}
+          {data.page < data.total_pages ? (
+            <a
+              href={`?page=${data.page + 1}${query.status ? `&status=${query.status}` : ""}`}
+              class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+              aria-label="Next page"
+            >
+              Next
+            </a>
+          ) : (
+            <span class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-400 bg-gray-100 cursor-not-allowed">
+              Next
+            </span>
+          )}
+        </nav>
+      </div>
+    </div>
+  )
+}
+

@@ -1,0 +1,25 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import LegalContent from "../../components/legal/LegalContent.astro";
+
+const currentPath = "/legal/tos-en";
+---
+
+<Layout title="Terms of Service - AI Weekly Picks">
+  <Fragment slot="head">
+    <meta name="description" content="Terms of Service for AI Weekly Picks - Read our terms and conditions for using the service." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={`${Astro.site}legal/tos-en`} />
+  </Fragment>
+
+  <Header currentPath={currentPath} />
+
+  <main class="min-h-screen bg-gray-50">
+    <LegalContent variant="tos" lang="en" />
+  </main>
+
+  <Footer />
+</Layout>
+

@@ -1,0 +1,119 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ReportHeader from "@/components/report/ReportHeader.astro";
+import PicksList from "@/components/report/PicksList.astro";
+import DisclaimerBlock from "@/components/common/DisclaimerBlock.astro";
+import ErrorBanner from "@/components/ErrorBanner.astro";
+import DwellTimer from "@/components/islands/DwellTimer";
+import { mapReportWithPicksDtoToViewModel } from "@/lib/view-helpers";
+import type { ReportWithPicksDTO } from "@/types";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// Validate slug parameter
+if (!slug) {
+  return Astro.redirect("/", 404);
+}
+
+let reportData: ReportWithPicksDTO | null = null;
+let errorCode: string | undefined;
+let errorMessage: string | undefined;
+
+try {
+  // Fetch report data from API using SSR
+  const apiUrl = new URL(`/api/reports/${slug}`, Astro.url.origin);
+  const response = await fetch(apiUrl.toString());
+
+  if (response.status === 404) {
+    // Report not found - we'll show a 404 page
+    Astro.response.status = 404;
+    errorCode = "not_found";
+    errorMessage = "Report not found. The report you're looking for doesn't exist or has been removed.";
+  } else if (!response.ok) {
+    // Other error responses
+    Astro.response.status = response.status;
+    errorCode = "server_error";
+    errorMessage = "An error occurred while loading the report. Please try again later.";
+  } else {
+    reportData = (await response.json()) as ReportWithPicksDTO;
+  }
+} catch (err) {
+  // Network or parsing errors
+  console.error("Error fetching report:", err);
+  Astro.response.status = 500;
+  errorCode = "server_error";
+  errorMessage = "Failed to load report data. Please try again later.";
+}
+
+// If we have report data, map it to view model
+const viewModel = reportData ? mapReportWithPicksDtoToViewModel(reportData) : null;
+
+// Build page title and description for SEO
+const pageTitle = viewModel ? `${viewModel.report.title} - ${viewModel.report.reportWeek}` : "Report Not Found";
+const pageDescription = viewModel?.report.summary || "Weekly stock picks and analysis.";
+const canonicalPath = `/reports/${slug}`;
+---
+
+<Layout title={pageTitle}>
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {
+        errorCode || errorMessage ? (
+          <div class="py-16">
+            <ErrorBanner errorCode={errorCode} errorMessage={errorMessage} />
+            {errorCode === "not_found" && (
+              <div class="text-center mt-8">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">404 - Report Not Found</h1>
+                <p class="text-lg text-gray-600 mb-6">
+                  The report you're looking for doesn't exist or has been removed.
+                </p>
+                <a
+                  href="/"
+                  class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+                >
+                  View All Reports
+                </a>
+              </div>
+            )}
+          </div>
+        ) : viewModel ? (
+          <>
+            <ReportHeader report={viewModel.report} />
+            <PicksList picks={viewModel.picks} />
+            <DisclaimerBlock />
+
+            {/* DwellTimer island - tracks active viewing time and posts report_view event after 10s */}
+            <DwellTimer client:only="react" reportId={viewModel.report.reportId} />
+          </>
+        ) : null
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- SEO meta tags -->
+  <Fragment slot="head">
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={new URL(canonicalPath, Astro.url.origin).toString()} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={new URL(canonicalPath, Astro.url.origin).toString()} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+  </Fragment>
+</Layout>

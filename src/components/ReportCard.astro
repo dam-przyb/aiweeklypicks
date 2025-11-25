@@ -7,70 +7,116 @@ interface Props {
 }
 
 const { report } = Astro.props;
+
+// Calculate relative time (e.g., "2 hours ago")
+const getRelativeTime = (isoDate: string) => {
+  const date = new Date(isoDate);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return "just now";
+  if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+  }
+  if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  }
+  const days = Math.floor(diffInSeconds / 86400);
+  if (days < 7) return `${days} ${days === 1 ? "day" : "days"} ago`;
+  if (days < 30) {
+    const weeks = Math.floor(days / 7);
+    return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
+  }
+  return report.publishedAtIso; // Fall back to date
+};
+
+const relativeTime = getRelativeTime(report.publishedAtIso);
+
+// Generate deterministic icon based on report ID
+const getIconIndex = (id: string) => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return Math.abs(hash) % 6; // 6 different icons
+};
+
+const iconIndex = getIconIndex(report.reportId);
+
+// Stock-related icons
+const stockIcons = [
+  // Trending Up Chart
+  `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+  </svg>`,
+  // Bar Chart
+  `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  </svg>`,
+  // Dollar Sign
+  `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>`,
+  // Target/Bullseye
+  `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>`,
+  // Lightning Bolt (Quick Insights)
+  `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>`,
+  // Presentation Chart
+  `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+  </svg>`
+];
+
+const iconSvg = stockIcons[iconIndex];
 ---
 
-<article class="bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 p-6">
-  <h2 class="text-xl font-semibold text-gray-900 mb-2">
-    <PrefetchLink
-      client:idle
-      href={`/reports/${report.slug}`}
-      strategy="route"
-      className="hover:text-blue-600 focus:outline-none focus:underline focus:text-blue-600 transition-colors"
-    >
-      {report.title}
-    </PrefetchLink>
-  </h2>
+<article class="group py-6 hover:bg-gray-50 transition-colors duration-150 -mx-6 px-6">
+  <div class="flex gap-4">
+    <!-- Thumbnail/Avatar -->
+    <div class="flex-shrink-0">
+      <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center text-white">
+        <Fragment set:html={iconSvg} />
+      </div>
+    </div>
 
-  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 mb-3">
-    <span class="flex items-center gap-1.5" title={report.publishedAtLocalTooltip}>
-      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-      </svg>
-      <time datetime={report.publishedAtIso}>
-        {report.publishedAtIso}
-      </time>
-    </span>
+    <!-- Content -->
+    <div class="flex-1 min-w-0">
+      <!-- Title -->
+      <h2 class="text-lg font-semibold text-gray-900 mb-2 leading-tight">
+        <PrefetchLink
+          client:idle
+          href={`/reports/${report.slug}`}
+          strategy="route"
+          className="hover:text-blue-600 focus:outline-none focus:text-blue-600 transition-colors"
+        >
+          {report.title}
+        </PrefetchLink>
+      </h2>
 
-    <span class="flex items-center gap-1.5">
-      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-        ></path>
-      </svg>
-      <span>Week {report.reportWeek}</span>
-    </span>
+      <!-- Summary -->
+      <p class="text-sm text-gray-600 leading-relaxed mb-3 line-clamp-2">
+        {report.summary}
+      </p>
 
-    <span class="flex items-center gap-1.5">
-      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-        ></path>
-      </svg>
-      <span>v{report.version}</span>
-    </span>
+      <!-- Metadata -->
+      <div class="flex items-center gap-2 text-xs text-gray-500">
+        <span class="font-medium text-gray-700">AI Weekly Picks</span>
+        <span>•</span>
+        <time datetime={report.publishedAtIso} title={report.publishedAtLocalTooltip}>
+          {relativeTime}
+        </time>
+        <span>•</span>
+        <span>{report.reportWeek}</span>
+        <span>•</span>
+        <span class="text-gray-400">{report.version}</span>
+      </div>
+    </div>
   </div>
-
-  <p class="text-gray-700 leading-relaxed mb-4">
-    {report.summary}
-  </p>
-
-  <a
-    href={`/reports/${report.slug}`}
-    class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 focus:outline-none focus:underline transition-colors"
-  >
-    Read full report
-    <svg class="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-  </a>
 </article>

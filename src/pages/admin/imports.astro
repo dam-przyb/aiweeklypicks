@@ -1,0 +1,165 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import FileUploadForm from "@/components/admin/FileUploadForm";
+import ImportsFilters from "@/components/admin/ImportsFilters";
+import ImportsAutoRefresh from "@/components/admin/ImportsAutoRefresh";
+import ImportsTable from "@/components/admin/ImportsTable.astro";
+import type { AdminImportsListQuery } from "@/types";
+import { listAdminImports } from "@/lib/services/admin/imports";
+
+// Middleware already checks admin access for /admin routes
+// If we're here, user is authenticated and is admin
+
+const supabase = Astro.locals.supabase;
+
+// Parse query parameters for imports list
+const query: AdminImportsListQuery = {
+  page: parseInt(Astro.url.searchParams.get("page") || "1", 10),
+  page_size: parseInt(Astro.url.searchParams.get("page_size") || "20", 10),
+};
+
+// Optional filters
+const statusParam = Astro.url.searchParams.get("status");
+if (statusParam === "success" || statusParam === "failed") {
+  query.status = statusParam;
+}
+
+const startedAfter = Astro.url.searchParams.get("started_after");
+if (startedAfter) {
+  query.started_after = startedAfter;
+}
+
+const startedBefore = Astro.url.searchParams.get("started_before");
+if (startedBefore) {
+  query.started_before = startedBefore;
+}
+
+const uploader = Astro.url.searchParams.get("uploader");
+if (uploader) {
+  query.uploader = uploader;
+}
+
+// Fetch imports list
+let importsData;
+let fetchError: string | null = null;
+
+try {
+  importsData = await listAdminImports(supabase, query);
+} catch (error) {
+  console.error("Failed to fetch imports:", error);
+  fetchError = "Failed to load imports. Please try again.";
+  // Provide empty data structure for graceful degradation
+  importsData = {
+    items: [],
+    page: query.page || 1,
+    page_size: query.page_size || 20,
+    total_items: 0,
+    total_pages: 0,
+  };
+}
+
+// SEO metadata
+const pageTitle = "Admin: Imports | AI Weekly Picks";
+const pageDescription = "Upload and manage weekly report imports";
+---
+
+<Layout title={pageTitle}>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+  >
+    Skip to main content
+  </a>
+
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen bg-gray-50 py-8" tabindex="-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Import Management</h1>
+        <p class="text-gray-600">
+          Upload weekly report JSON files and monitor import status
+        </p>
+      </div>
+
+      <!-- Upload Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Upload Report</h2>
+        <FileUploadForm client:load />
+      </div>
+
+      <!-- Auto-refresh Control -->
+      <ImportsAutoRefresh client:load refreshIntervalSeconds={30} />
+
+      <!-- Filters -->
+      <ImportsFilters
+        client:load
+        currentStatus={query.status}
+        currentStartedAfter={query.started_after}
+        currentStartedBefore={query.started_before}
+      />
+
+      <!-- Error Display (if list fetch failed) -->
+      {
+        fetchError && (
+          <div
+            role="alert"
+            class="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 mb-6 shadow-sm"
+          >
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0">
+                <svg
+                  class="w-6 h-6 text-red-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-semibold text-red-900 mb-1">Error Loading Imports</h3>
+                <p class="text-sm text-red-800">{fetchError}</p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Recent Imports Table -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">Recent Imports</h2>
+        </div>
+        <ImportsTable data={importsData} query={query} />
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- SEO Meta Tags -->
+  <Fragment slot="head">
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+  </Fragment>
+</Layout>
+

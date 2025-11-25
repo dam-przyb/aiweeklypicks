@@ -1,0 +1,75 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ErrorBanner from "@/components/ErrorBanner.astro";
+
+// SEO metadata
+const pageTitle = "403 - Access Forbidden | AI Weekly Picks";
+const pageDescription = "You don't have permission to access this area.";
+---
+
+<Layout title={pageTitle}>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+  >
+    Skip to main content
+  </a>
+
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen bg-gray-50 py-8" tabindex="-1">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-16">
+        <!-- Error Banner -->
+        <ErrorBanner
+          code="403"
+          message="You don't have permission to access this admin area. This section is restricted to administrators only."
+          actionHref="/"
+          actionLabel="Go to home"
+        />
+
+        <!-- Error Content -->
+        <div class="text-center mt-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-4">403 - Access Forbidden</h1>
+          <p class="text-lg text-gray-600 mb-6">
+            This area is restricted to administrators only. If you believe you should have access, please contact your system administrator.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/"
+              class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+            >
+              Go to Home
+            </a>
+            <a
+              href="/auth/login"
+              class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+            >
+              Login as Admin
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- SEO Meta Tags -->
+  <Fragment slot="head">
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="noindex, nofollow" />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+  </Fragment>
+</Layout>
+

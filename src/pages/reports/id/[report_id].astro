@@ -1,0 +1,35 @@
+---
+export const prerender = false;
+
+import { getReportSlugById } from "@/lib/services/reports";
+
+const { report_id } = Astro.params;
+
+// Validate report_id parameter
+if (!report_id) {
+  return Astro.redirect("/", 404);
+}
+
+// Basic UUID format validation (loose check)
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+if (!uuidPattern.test(report_id)) {
+  return Astro.redirect("/", 404);
+}
+
+try {
+  // Look up the slug for this report_id
+  const slug = await getReportSlugById(Astro.locals.supabase, report_id);
+
+  if (!slug) {
+    // Report not found - redirect to home with 404
+    return Astro.redirect("/", 404);
+  }
+
+  // Redirect to the canonical slug-based URL (permanent redirect)
+  return Astro.redirect(`/reports/${slug}`, 301);
+} catch (err) {
+  console.error(`[Report ID Redirect] Error looking up report ${report_id}:`, err);
+  // On error, redirect to home
+  return Astro.redirect("/", 500);
+}
+---

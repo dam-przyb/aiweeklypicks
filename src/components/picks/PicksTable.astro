@@ -1,0 +1,88 @@
+---
+import type { PicksListResponseDTO, PicksListQuery } from "@/types";
+import { mapPicksHistoryItemToRowVM } from "@/lib/view-helpers";
+import PicksTableHeaders from "./PicksTableHeaders";
+
+interface Props {
+  data: PicksListResponseDTO;
+  query: PicksListQuery;
+}
+
+const { data, query } = Astro.props;
+
+// Map DTOs to ViewModels
+const rows = data.items.map(mapPicksHistoryItemToRowVM);
+
+// Get current sort and order for header state
+const currentSort = query.sort || "published_at";
+const currentOrder = query.order || "desc";
+---
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <!-- Responsive wrapper for horizontal scroll on mobile -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200" role="table" aria-label="Historical stock picks">
+      <thead class="bg-gray-50">
+        <PicksTableHeaders
+          client:load
+          currentSort={currentSort}
+          currentOrder={currentOrder}
+          otherParams={query}
+        />
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {
+          rows.map((row, index) => (
+            <tr class="hover:bg-gray-50 transition-colors duration-150">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.publishedDateISO}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row.reportWeek}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{row.ticker}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row.exchange}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
+                <span
+                  class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    row.side === "long"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {row.side === "long" ? "Long" : "Short"}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <span
+                  class={
+                    row.targetChangePctDisplay.startsWith("+")
+                      ? "text-green-700"
+                      : "text-red-700"
+                  }
+                >
+                  {row.targetChangePctDisplay}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
+                <a
+                  href={row.reportLinkHref}
+                  class="text-blue-600 hover:text-blue-800 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded transition-colors"
+                  aria-label={`View report for ${row.ticker} from ${row.reportWeek}`}
+                >
+                  View Report
+                </a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility: Screen reader announcement for sort changes -->
+  <div
+    id="sort-announcer"
+    class="sr-only"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+  />
+</div>
+

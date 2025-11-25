@@ -1,26 +1,31 @@
 ---
-import type { ReportsListQuery } from "@/types";
-import { buildQueryString } from "@/lib/view-helpers";
+import type { ReportsListQuery, PicksListQuery } from "@/types";
+import { buildQueryString, buildPicksQueryString } from "@/lib/view-helpers";
 
 interface Props {
   page: number;
   pageSize: number;
   totalPages: number;
   totalItems: number;
-  currentQuery: ReportsListQuery;
+  currentQuery: ReportsListQuery | PicksListQuery;
+  itemLabel?: string;
 }
 
-const { page, pageSize, totalPages, totalItems, currentQuery } = Astro.props;
+const { page, pageSize, totalPages, totalItems, currentQuery, itemLabel = "reports" } = Astro.props;
 
 // Don't render if only one page
 if (totalPages <= 1) {
   return null;
 }
 
-// Build URLs for previous and next pages
-const prevUrl = page > 1 ? buildQueryString({ ...currentQuery, page: page - 1 }) : null;
+// Determine which builder to use based on query type
+const isPicksQuery = "ticker" in currentQuery || "exchange" in currentQuery || "side" in currentQuery;
+const buildHref = isPicksQuery ? buildPicksQueryString : buildQueryString;
 
-const nextUrl = page < totalPages ? buildQueryString({ ...currentQuery, page: page + 1 }) : null;
+// Build URLs for previous and next pages
+const prevUrl = page > 1 ? buildHref({ ...currentQuery, page: page - 1 } as any) : null;
+
+const nextUrl = page < totalPages ? buildHref({ ...currentQuery, page: page + 1 } as any) : null;
 
 // Calculate range of items shown
 const startItem = (page - 1) * pageSize + 1;
@@ -110,7 +115,7 @@ const pageNumbers = getPageNumbers();
       <p class="text-sm text-gray-700">
         Showing <span class="font-medium">{startItem}</span> to{" "}
         <span class="font-medium">{endItem}</span> of{" "}
-        <span class="font-medium">{totalItems}</span> reports
+        <span class="font-medium">{totalItems}</span> {itemLabel}
       </p>
     </div>
 
@@ -163,10 +168,10 @@ const pageNumbers = getPageNumbers();
             }
 
             const isCurrentPage = pageNum === page;
-            const pageUrl = buildQueryString({
+            const pageUrl = buildHref({
               ...currentQuery,
               page: pageNum,
-            });
+            } as any);
 
             if (isCurrentPage) {
               return (

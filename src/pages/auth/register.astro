@@ -1,0 +1,143 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import AuthForm from "@/components/auth/AuthForm";
+
+// Get return URL from query params (optional)
+const returnUrl = Astro.url.searchParams.get("returnUrl") || undefined;
+
+// Optional: Check if user is already authenticated and redirect
+// For now, we'll allow access regardless of auth state
+// TODO: Add authentication check when Supabase auth is fully integrated
+
+// SEO metadata
+const pageTitle = "Register - AI Weekly Picks";
+const pageDescription = "Create your free account to access AI-powered stock analysis and weekly reports.";
+---
+
+<Layout title={pageTitle}>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+  >
+    Skip to main content
+  </a>
+
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen bg-gray-50 py-12" tabindex="-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Join AI Weekly Picks</h1>
+        <p class="text-gray-600">Create your free account to get started</p>
+      </div>
+
+      <!-- Auth Form Component (React Island) -->
+      <AuthForm client:load mode="register" returnUrl={returnUrl} />
+
+      <!-- Additional Info / Benefits -->
+      <div class="mt-12 max-w-3xl mx-auto">
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Why Create an Account?</h2>
+          <ul class="space-y-3 text-gray-700">
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <div>
+                <strong>Access Weekly Reports:</strong> Get detailed AI-powered stock analysis and recommendations
+                every week.
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <div>
+                <strong>Historical Data:</strong> Browse our complete history of stock picks and their performance.
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <div>
+                <strong>Personalized Experience:</strong> Save your favorite reports and customize your dashboard
+                (coming soon).
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Legal Notice -->
+        <div class="mt-6 text-center text-xs text-gray-500">
+          By creating an account, you agree to our{" "}
+          <a href="/legal/tos-en" class="text-blue-600 hover:text-blue-800 underline">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="/legal/privacy-en" class="text-blue-600 hover:text-blue-800 underline">
+            Privacy Policy
+          </a>
+          .
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- SEO Meta Tags -->
+  <Fragment slot="head">
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={Astro.url.href} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={Astro.url.href} />
+
+    <!-- Robots: Allow indexing of registration page -->
+    <meta name="robots" content="index, follow" />
+  </Fragment>
+</Layout>
+

@@ -40,7 +40,7 @@ function getClientIP(request: Request): string {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const { request } = context;
+  const { request, redirect } = context;
   const url = new URL(request.url);
   const pathname = url.pathname;
 
@@ -84,5 +84,34 @@ export const onRequest = defineMiddleware(async (context, next) => {
   });
 
   context.locals.supabase = supabase;
+
+  // Guard admin page routes (not API routes)
+  // API routes handle their own auth via requireAdmin() in handlers
+  if (pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
+    // Check if user is authenticated
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    // 401: Not authenticated - redirect to login with returnUrl
+    if (authError || !user) {
+      const returnUrl = encodeURIComponent(pathname + url.search);
+      return redirect(`/auth/login?returnUrl=${returnUrl}`, 302);
+    }
+
+    // User is authenticated, check if they have admin privileges
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("is_admin")
+      .eq("user_id", user.id)
+      .single();
+
+    // 403: Authenticated but not authorized
+    if (profileError || !profile || !profile.is_admin) {
+      return redirect("/admin/forbidden", 302);
+    }
+  }
+
   return next();
 });

@@ -1,0 +1,156 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ErrorBanner from "@/components/ErrorBanner.astro";
+import ImportAuditPanel from "@/components/admin/ImportAuditPanel.astro";
+import type { ImportAuditDetailDTO } from "@/types";
+
+// Get import_id from route params
+const { import_id } = Astro.params;
+
+// Validate import_id param
+if (!import_id) {
+  return Astro.redirect("/admin/imports", 302);
+}
+
+// Admin-only page - middleware already enforces this via redirect to /admin/forbidden
+// So if we reach here, user is already authenticated and is admin
+
+// Fetch import audit details from API
+const supabase = Astro.locals.supabase;
+
+let audit: ImportAuditDetailDTO | null = null;
+let errorCode: string | undefined;
+let errorMessage: string | undefined;
+
+try {
+  // Fetch import audit from database directly (alternative: call internal API)
+  const { data, error } = await supabase
+    .from("imports_audit")
+    .select("*")
+    .eq("import_id", import_id)
+    .single();
+
+  if (error || !data) {
+    errorCode = "404";
+    errorMessage = "Import audit record not found.";
+  } else {
+    // Build audit DTO with optional report linkage
+    // Need to fetch report_slug if report_id exists
+    let reportSlug: string | undefined;
+    if (data.report_id) {
+      const { data: reportData } = await supabase
+        .from("weekly_reports")
+        .select("slug")
+        .eq("report_id", data.report_id)
+        .single();
+      
+      reportSlug = reportData?.slug;
+    }
+
+    audit = {
+      import_id: data.import_id,
+      uploaded_by_user_id: data.uploaded_by_user_id,
+      filename: data.filename,
+      source_checksum: data.source_checksum,
+      schema_version: data.schema_version,
+      status: data.status,
+      error_message: data.error_message,
+      started_at: data.started_at,
+      finished_at: data.finished_at,
+      report_id: data.report_id,
+      report_slug: reportSlug,
+    };
+  }
+} catch (err) {
+  console.error("Error fetching import audit:", err);
+  errorCode = "500";
+  errorMessage = "An unexpected error occurred while loading import details.";
+}
+
+// SEO metadata
+const pageTitle = audit 
+  ? `Import: ${audit.filename} | Admin | AI Weekly Picks`
+  : "Import Not Found | Admin | AI Weekly Picks";
+const pageDescription = audit
+  ? `Import audit details for ${audit.filename}`
+  : "Import audit record not found";
+---
+
+<Layout title={pageTitle}>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+  >
+    Skip to main content
+  </a>
+
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen bg-gray-50 py-8" tabindex="-1">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Page Title -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Import Audit Details</h1>
+        <p class="mt-2 text-sm text-gray-600">
+          View the complete audit trail for this import operation.
+        </p>
+      </div>
+
+      {errorMessage ? (
+        <!-- Error State -->
+        <div class="py-8">
+          <ErrorBanner
+            code={errorCode}
+            message={errorMessage}
+            actionHref="/admin/imports"
+            actionLabel="Back to Imports"
+          />
+
+          {errorCode === "404" && (
+            <div class="mt-6 text-center">
+              <p class="text-gray-600 mb-4">
+                The import audit record you're looking for doesn't exist or may have been removed.
+              </p>
+              <a
+                href="/admin/imports"
+                class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+              >
+                View All Imports
+              </a>
+            </div>
+          )}
+        </div>
+      ) : audit ? (
+        <!-- Success: Display Import Audit Details -->
+        <ImportAuditPanel audit={audit} />
+      ) : (
+        <!-- Loading State (shouldn't happen with SSR) -->
+        <div class="py-12 text-center">
+          <p class="text-gray-500">Loading import details...</p>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- SEO Meta Tags -->
+  <Fragment slot="head">
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="noindex, nofollow" />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+  </Fragment>
+</Layout>
+

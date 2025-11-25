@@ -1,0 +1,181 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ErrorBanner from "@/components/ErrorBanner.astro";
+import PicksTable from "@/components/picks/PicksTable.astro";
+import PaginationControls from "@/components/PaginationControls.astro";
+import TableViewEventClient from "@/components/islands/TableViewEventClient";
+import { normalizePicksListQuery, buildPicksQueryString } from "@/lib/view-helpers";
+import type { PicksListResponseDTO } from "@/types";
+
+// Normalize and validate query parameters
+const normalizedQuery = normalizePicksListQuery(Astro.url.searchParams);
+
+// Build the internal API URL
+const apiUrl = new URL("/api/picks", Astro.url.origin);
+apiUrl.search = buildPicksQueryString(normalizedQuery);
+
+// Fetch data from internal API
+let error: { code?: string; message?: string } | null = null;
+let picksData: PicksListResponseDTO | null = null;
+
+try {
+  const response = await fetch(apiUrl.toString(), {
+    headers: {
+      // Forward any auth cookies if present
+      cookie: Astro.request.headers.get("cookie") || "",
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    error = {
+      code: errorData.code || "server_error",
+      message: errorData.message || "An unexpected error occurred while loading picks.",
+    };
+  } else {
+    picksData = await response.json();
+  }
+} catch (err) {
+  console.error("[Picks Page] Failed to fetch picks:", err);
+  error = {
+    code: "server_error",
+    message: "Failed to connect to the server. Please try again later.",
+  };
+}
+
+// SEO metadata
+const pageTitle = "Historical Stock Picks - AI Weekly Picks";
+const pageDescription = "Browse all historical stock picks with performance tracking and analysis.";
+
+// Empty state check
+const isEmpty = !error && picksData && picksData.items.length === 0;
+---
+
+<Layout title={pageTitle}>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+  >
+    Skip to main content
+  </a>
+
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen bg-gray-50 py-8" tabindex="-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Historical Stock Picks</h1>
+        <p class="text-gray-600">
+          View all historical stock picks with published dates, target changes, and related reports
+        </p>
+      </div>
+
+      <!-- Error Banner (conditional) -->
+      {error && <ErrorBanner errorCode={error.code} errorMessage={error.message} />}
+
+      <!-- Empty State -->
+      {
+        isEmpty && (
+          <div class="text-center py-16 bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="mx-auto h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <svg
+                class="h-10 w-10 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </div>
+
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No picks found</h3>
+
+            <p class="text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
+              There are no stock picks available at the moment. Please check back later.
+            </p>
+
+            <div class="mt-8">
+              <a
+                href="/"
+                class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all duration-150"
+                aria-label="Return to home page"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
+                </svg>
+                Go to Home
+              </a>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Picks Table and Pagination -->
+      {
+        !error && picksData && picksData.items.length > 0 && (
+          <div class="space-y-6">
+            <PicksTable data={picksData} query={normalizedQuery} />
+
+            <PaginationControls
+              page={picksData.page}
+              pageSize={picksData.page_size}
+              totalPages={picksData.total_pages}
+              totalItems={picksData.total_items}
+              currentQuery={normalizedQuery}
+              itemLabel="picks"
+            />
+          </div>
+        )
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- Analytics: Table View Event Tracker -->
+  <TableViewEventClient client:load />
+
+  <!-- SEO Meta Tags -->
+  <Fragment slot="head">
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={Astro.url.href} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={Astro.url.href} />
+
+    <!-- Structured Data for SEO -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: pageTitle,
+        description: pageDescription,
+        url: Astro.url.href,
+      })}
+    />
+  </Fragment>
+</Layout>

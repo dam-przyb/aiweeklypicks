@@ -1,0 +1,29 @@
+---
+interface Props {
+  variant?: "compact" | "default";
+}
+
+const { variant = "default" } = Astro.props;
+const isCompact = variant === "compact";
+---
+
+<aside
+  class={`bg-amber-50 border-l-4 border-amber-500 rounded-lg p-4 ${isCompact ? "text-xs" : "text-sm"}`}
+  role="note"
+  aria-label="Important disclaimers"
+>
+  <h3 class="font-bold text-amber-900 mb-2">Important Disclaimers</h3>
+  <div class="space-y-2 text-amber-800">
+    <p>
+      <strong>Not Investment Advice:</strong> The information provided on this page is for informational purposes only and
+      does not constitute investment advice, financial advice, trading advice, or any other sort of advice. You should not
+      treat any of the content as such. We do not recommend that any securities should be bought, sold, or held by you. Do
+      your own due diligence and consult your financial advisor before making any investment decisions.
+    </p>
+    <p>
+      <strong>Corporate Actions:</strong> Stock picks and target percentages do not account for corporate actions such as
+      splits, dividends, mergers, or other events that may affect stock prices and performance. Always verify current information
+      before making investment decisions.
+    </p>
+  </div>
+</aside>

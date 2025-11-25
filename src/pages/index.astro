@@ -1,6 +1,9 @@
 ---
 export const prerender = false;
 
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
 import ErrorBanner from "@/components/ErrorBanner.astro";
 import EmptyState from "@/components/EmptyState.astro";
 import ReportList from "@/components/ReportList.astro";
@@ -63,24 +66,78 @@ const pageTitle = "AI Weekly Picks - Weekly Reports";
 const pageDescription = "Browse our weekly reports with analysis and AI supported stock picks.";
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
+<Layout title={pageTitle}>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
+  >
+    Skip to main content
+  </a>
 
-    <!-- SEO Meta Tags -->
-    <title>{pageTitle}</title>
+  <!-- Header with Navigation -->
+  <Header currentPath={Astro.url.pathname} />
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen bg-gray-50 py-8" tabindex="-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Weekly Reports</h1>
+        <p class="text-gray-600">Browse our latest AI-powered stock analysis and recommendations</p>
+      </div>
+
+      <!-- Error Banner (conditional) -->
+      {error && <ErrorBanner errorCode={error.code} errorMessage={error.message} />}
+
+      <!-- Content Area -->
+      {!error && reports.length === 0 && <EmptyState />}
+
+      {
+        !error && reports.length > 0 && (
+          <div class="space-y-6">
+            <div class="bg-white rounded-lg shadow p-4">
+              <SortControls
+                client:load
+                initialSort={normalizedQuery.sort || "published_at"}
+                initialOrder={normalizedQuery.order || "desc"}
+                otherParams={{
+                  ...(normalizedQuery.week && { week: normalizedQuery.week }),
+                  ...(normalizedQuery.version && { version: normalizedQuery.version }),
+                  ...(normalizedQuery.published_before && { published_before: normalizedQuery.published_before }),
+                  ...(normalizedQuery.published_after && { published_after: normalizedQuery.published_after }),
+                }}
+              />
+            </div>
+
+            <ReportList reports={reports} />
+
+            <PaginationControls
+              page={pagination.page}
+              pageSize={pagination.page_size}
+              totalPages={pagination.total_pages}
+              totalItems={pagination.total_items}
+              currentQuery={normalizedQuery}
+            />
+          </div>
+        )
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- SEO Meta Tags -->
+  <Fragment slot="head">
     <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={Astro.url.href} />
 
-    <!-- Open Graph / Social Media -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta property="og:url" content={Astro.url.href} />
 
     <!-- Structured Data for SEO -->
     <script
@@ -93,65 +150,5 @@ const pageDescription = "Browse our weekly reports with analysis and AI supporte
         url: Astro.url.href,
       })}
     />
-  </head>
-  <body class="min-h-screen bg-gray-50">
-    <!-- Skip to main content link for keyboard navigation -->
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg"
-    >
-      Skip to main content
-    </a>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Header -->
-      <header class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">AI Weekly Picks</h1>
-        <p class="text-lg text-gray-600">Browse our weekly reports with analysis and AI supported stock picks</p>
-      </header>
-
-      <!-- Error Banner (conditional) -->
-      {error && <ErrorBanner errorCode={error.code} errorMessage={error.message} />}
-
-      <!-- Main Content Area -->
-      <main id="main-content" tabindex="-1" class="focus:outline-none">
-        {!error && reports.length === 0 && <EmptyState />}
-
-        {
-          !error && reports.length > 0 && (
-            <div class="space-y-6">
-              <div class="bg-white rounded-lg shadow p-4">
-                <SortControls
-                  client:load
-                  initialSort={normalizedQuery.sort || "published_at"}
-                  initialOrder={normalizedQuery.order || "desc"}
-                  otherParams={{
-                    ...(normalizedQuery.week && { week: normalizedQuery.week }),
-                    ...(normalizedQuery.version && { version: normalizedQuery.version }),
-                    ...(normalizedQuery.published_before && { published_before: normalizedQuery.published_before }),
-                    ...(normalizedQuery.published_after && { published_after: normalizedQuery.published_after }),
-                  }}
-                />
-              </div>
-
-              <ReportList reports={reports} />
-
-              <PaginationControls
-                page={pagination.page}
-                pageSize={pagination.page_size}
-                totalPages={pagination.total_pages}
-                totalItems={pagination.total_items}
-                currentQuery={normalizedQuery}
-              />
-            </div>
-          )
-        }
-      </main>
-
-      <!-- Footer -->
-      <footer class="mt-12 pt-8 border-t border-gray-200">
-        <p class="text-center text-sm text-gray-500">© 2025 AI Weekly Picks. All rights reserved.</p>
-      </footer>
-    </div>
-  </body>
-</html>
+  </Fragment>
+</Layout>

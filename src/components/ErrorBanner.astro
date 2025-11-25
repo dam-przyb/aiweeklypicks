@@ -1,31 +1,26 @@
 ---
 interface Props {
+  code?: string;
+  message?: string;
+  actionHref?: string;
+  actionLabel?: string;
+  // Backward compatibility with old prop names
   errorCode?: string;
   errorMessage?: string;
 }
 
-const { errorCode, errorMessage } = Astro.props;
+const {
+  code,
+  message,
+  actionHref = "/",
+  actionLabel = "Go to home",
+  errorCode,
+  errorMessage,
+} = Astro.props;
 
-// Don't render if no error
-if (!errorCode && !errorMessage) {
-  return null;
-}
-
-// User-friendly messages based on error code
-const getDisplayMessage = () => {
-  if (errorMessage) return errorMessage;
-
-  switch (errorCode) {
-    case "bad_request":
-      return "Invalid request parameters. Please check your filters and try again.";
-    case "server_error":
-      return "An unexpected error occurred. Please try again later.";
-    default:
-      return "An error occurred while loading reports.";
-  }
-};
-
-const displayMessage = getDisplayMessage();
+// Support both old and new prop names (old props take precedence for backward compatibility)
+const displayCode = errorCode ?? code;
+const displayMessage = errorMessage ?? message ?? "An error occurred.";
 ---
 
 <div role="alert" class="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 mb-6 shadow-sm">
@@ -39,15 +34,16 @@ const displayMessage = getDisplayMessage();
       </svg>
     </div>
     <div class="flex-1 min-w-0">
-      <h3 class="text-sm font-semibold text-red-900 mb-1">Error</h3>
+      {displayCode && <h3 class="text-sm font-semibold text-red-900 mb-1">Error {displayCode}</h3>}
+      {!displayCode && <h3 class="text-sm font-semibold text-red-900 mb-1">Error</h3>}
       <p class="text-sm text-red-800 leading-relaxed">{displayMessage}</p>
     </div>
     <a
-      href="/"
+      href={actionHref}
       class="flex-shrink-0 text-sm font-medium text-red-700 hover:text-red-900 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 rounded transition-colors"
-      aria-label="Reset all filters and return to home"
+      aria-label={actionLabel}
     >
-      Reset
+      {actionLabel}
     </a>
   </div>
 </div>

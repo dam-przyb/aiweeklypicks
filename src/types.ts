@@ -88,6 +88,12 @@ export type ImportsAuditDTO = Pick<
 
 export type AdminImportsListResponseDTO = Paginated<ImportsAuditDTO>;
 
+// Extended DTO for import detail view with optional report linkage
+export type ImportAuditDetailDTO = ImportsAuditDTO & {
+  report_id?: UUID;
+  report_slug?: string;
+};
+
 // Command model for JSON upload variant
 export interface AdminImportJsonCommand {
   filename: string;
@@ -310,3 +316,48 @@ export interface SortStateViewModel {
 }
 
 export type URLSearchParamsLike = Record<string, string | string[] | undefined>;
+
+// View models for report detail page (/reports/[slug])
+export interface ReportMetaVM {
+  reportId: UUID;
+  slug: string;
+  title: string;
+  summary: string;
+  reportWeek: string; // e.g., 2025-W42
+  publishedAtUtc: string; // ISO
+  publishedDateDisplay: string; // YYYY-MM-DD
+  publishedAtLocalTooltip: string; // localized datetime string for tooltip
+  version: string;
+}
+
+export interface PickItemVM {
+  pickId: UUID;
+  ticker: string;
+  exchange: string;
+  side: "long" | "short";
+  targetChangePct: number; // raw
+  targetChangePctDisplay: string; // e.g., +12.34%
+  rationale: string;
+}
+
+export interface ReportWithPicksVM {
+  report: ReportMetaVM;
+  picks: PickItemVM[];
+}
+
+// View models for picks history table page (/picks)
+export interface PicksRowVM {
+  publishedDateISO: string; // YYYY-MM-DD formatted
+  reportWeek: string;
+  ticker: string;
+  exchange: string;
+  side: Side;
+  targetChangePctDisplay: string; // e.g., +12.34%
+  reportLinkHref: string; // link to report detail page
+  reportId: string; // UUID for future use
+}
+
+export interface ErrorViewModel {
+  code?: string;
+  message: string;
+}

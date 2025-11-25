@@ -1,4 +1,4 @@
-import type { ReportsListQuery, ReportsListResponseDTO, ReportListItemDTO } from "@/types";
+import type { ReportsListQuery, ReportsListResponseDTO, ReportListItemDTO, UUID } from "@/types";
 import type { SupabaseClient } from "@/db/supabase.client";
 
 /**
@@ -85,4 +85,31 @@ export async function listReports(supabase: SupabaseClient, query: ReportsListQu
     total_items,
     total_pages,
   };
+}
+
+/**
+ * Gets the slug for a report by its ID.
+ * Used for redirecting from report_id-based links to slug-based canonical URLs.
+ *
+ * @param supabase - Supabase client from context.locals
+ * @param reportId - UUID of the report
+ * @returns Promise resolving to the slug, or null if not found
+ * @throws Supabase errors if database query fails
+ */
+export async function getReportSlugById(supabase: SupabaseClient, reportId: UUID): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("weekly_reports")
+    .select("slug")
+    .eq("report_id", reportId)
+    .single();
+
+  if (error) {
+    // If not found, return null instead of throwing
+    if (error.code === "PGRST116") {
+      return null;
+    }
+    throw error;
+  }
+
+  return data?.slug ?? null;
 }

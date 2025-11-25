@@ -1,0 +1,25 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import LegalContent from "../../components/legal/LegalContent.astro";
+
+const currentPath = "/legal/privacy-pl";
+---
+
+<Layout title="Polityka Prywatności - AI Weekly Picks">
+  <Fragment slot="head">
+    <meta name="description" content="Polityka Prywatności AI Weekly Picks - Dowiedz się, jak zbieramy, wykorzystujemy i chronimy Twoje dane osobowe." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={`${Astro.site}legal/privacy-pl`} />
+  </Fragment>
+
+  <Header currentPath={currentPath} />
+
+  <main class="min-h-screen bg-gray-50">
+    <LegalContent variant="privacy" lang="pl" />
+  </main>
+
+  <Footer />
+</Layout>
+

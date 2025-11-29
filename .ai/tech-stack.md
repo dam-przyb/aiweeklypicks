@@ -18,3 +18,8 @@ AI - Communication with models via the Openrouter.ai service:
 CI/CD and Hosting:
 - Github Actions for creating CI/CD pipelines
 - DigitalOcean for hosting applications via a Docker image
+
+Testing - Ensuring code quality and reliability:
+- Vitest for fast unit and integration testing, compatible with Vite/Astro
+- React Testing Library for testing React components in isolation
+- Playwright for automated End-to-End (E2E) testing across browsers

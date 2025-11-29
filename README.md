@@ -45,6 +45,11 @@ For the MVP, all content is publicly visible; authentication exists to enable ac
   - ESLint 9, Prettier, prettier-plugin-astro
   - Husky + lint-staged (pre-commit formatting/linting)
 
+- Testing
+  - Vitest (Unit & Integration)
+  - React Testing Library (Component testing)
+  - Playwright (E2E testing)
+
 References: `.ai/tech-stack.md`
 
 Key runtime/dependency highlights (see `package.json`): `astro@^5`, `@astrojs/react`, `@astrojs/node`, `@tailwindcss/vite`, `react@^19`, `react-dom@^19`, `tailwindcss@^4`, `lucide-react`, `class-variance-authority`, `clsx`.
@@ -91,6 +96,20 @@ npm run lint:fix   # Auto-fix where possible
 npm run format     # Prettier format
 ```
 
+Testing
+
+```
+npm test              # Run unit tests in watch mode
+npm run test:run      # Run unit tests once
+npm run test:ui       # Run unit tests with UI
+npm run test:coverage # Run unit tests with coverage
+npm run test:e2e      # Run E2E tests
+npm run test:e2e:ui   # Run E2E tests with UI
+npm run test:all      # Run all tests
+```
+
+See `.ai/testing-guide.md` for detailed testing documentation.
+
 Environment configuration (planned)
 
 - Supabase and OpenRouter credentials will be added as `.env` variables once backend wiring is introduced. Refer to `.ai/prd.md` for schema and auth requirements.
@@ -103,6 +122,16 @@ These are defined in `package.json`:
 - `build`: Production build
 - `preview`: Preview the production build locally
 - `astro`: Run Astro CLI directly
+- `test`: Run unit tests in watch mode
+- `test:run`: Run unit tests once
+- `test:ui`: Run unit tests with UI
+- `test:coverage`: Run unit tests with coverage report
+- `test:e2e`: Run E2E tests with Playwright
+- `test:e2e:ui`: Run E2E tests with Playwright UI
+- `test:e2e:debug`: Run E2E tests in debug mode
+- `test:e2e:report`: View Playwright test report
+- `test:e2e:codegen`: Generate E2E tests with Playwright codegen
+- `test:all`: Run all tests (unit + E2E)
 - `lint`: Run ESLint
 - `lint:fix`: Run ESLint with `--fix`
 - `format`: Run Prettier on the repo

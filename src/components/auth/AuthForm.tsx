@@ -152,14 +152,12 @@ export default function AuthForm({ mode, returnUrl }: AuthFormProps) {
         setPassword("");
         setConfirmPassword("");
         
-        // Optional: Redirect after a delay
-        if (returnUrl) {
-          setTimeout(() => {
-            window.location.href = returnUrl;
-          }, 3000);
-        }
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+          window.location.href = "/auth/login";
+        }, 2000);
       } else {
-        // Login successful - redirect
+        // Login successful - redirect to home page (reports list) or returnUrl
         window.location.href = returnUrl || "/";
       }
     } catch (err) {

@@ -33,6 +33,12 @@ try {
     Astro.response.status = 404;
     errorCode = "not_found";
     errorMessage = "Report not found. The report you're looking for doesn't exist or has been removed.";
+  } else if (response.status === 403) {
+    // Access restricted - guest trying to access recent report
+    Astro.response.status = 403;
+    errorCode = "access_restricted";
+    const errorData = await response.json().catch(() => ({}));
+    errorMessage = errorData.message || "This report is only available to registered users.";
   } else if (!response.ok) {
     // Other error responses
     Astro.response.status = response.status;
@@ -80,6 +86,45 @@ const canonicalPath = `/reports/${slug}`;
                 >
                   View All Reports
                 </a>
+              </div>
+            )}
+            {errorCode === "access_restricted" && (
+              <div class="text-center mt-8">
+                <div class="mx-auto h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+                  <svg class="h-12 w-12 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Sign In Required</h1>
+                <p class="text-lg text-gray-600 mb-2">
+                  This report was published within the last 30 days.
+                </p>
+                <p class="text-lg text-gray-600 mb-8">
+                  Create a free account or sign in to access all reports and features.
+                </p>
+                <div class="flex items-center justify-center gap-4">
+                  <a
+                    href={`/auth/login?returnUrl=${encodeURIComponent(Astro.url.pathname)}`}
+                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+                  >
+                    Sign In
+                  </a>
+                  <a
+                    href={`/auth/register?returnUrl=${encodeURIComponent(Astro.url.pathname)}`}
+                    class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+                  >
+                    Create Account
+                  </a>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                  <p class="text-sm text-gray-500 mb-4">Or view reports older than 30 days</p>
+                  <a
+                    href="/"
+                    class="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Browse All Available Reports →
+                  </a>
+                </div>
               </div>
             )}
           </div>

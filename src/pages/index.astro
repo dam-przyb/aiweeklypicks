@@ -12,6 +12,30 @@ import { SortControls } from "@/components/SortControls";
 import { normalizeReportsListQuery, mapReportDtoToViewModel, buildQueryString } from "@/lib/view-helpers";
 import type { ReportsListResponseDTO, ReportListItemViewModel } from "@/types";
 
+// Check for success/info messages from query params
+const logoutStatus = Astro.url.searchParams.get("logout");
+const verifiedStatus = Astro.url.searchParams.get("verified");
+
+let successMessage: string | null = null;
+let errorMessage: string | null = null;
+let infoMessage: string | null = null;
+
+if (logoutStatus === "success") {
+  successMessage = "You have been successfully logged out.";
+} else if (logoutStatus === "error") {
+  errorMessage = "There was an issue logging you out, but you can try logging in again.";
+}
+
+if (verifiedStatus === "true") {
+  successMessage = "Email verified successfully! You are now logged in.";
+}
+
+// Check if user is guest and should see info about limited access
+const isGuest = !Astro.locals.user;
+if (isGuest && !successMessage && !errorMessage) {
+  infoMessage = "You're viewing reports older than 30 days. Sign in for full access to all reports and historical picks.";
+}
+
 // Normalize and validate query parameters
 const normalizedQuery = normalizeReportsListQuery(Astro.url.searchParams);
 
@@ -87,6 +111,61 @@ const pageDescription = "Browse our weekly reports with analysis and AI supporte
         <p class="text-gray-600">Browse our latest AI-powered stock analysis and recommendations</p>
       </div>
 
+      <!-- Success Message (conditional, auto-dismiss after 4 seconds) -->
+      {successMessage && (
+        <div 
+          id="success-banner"
+          class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3 transition-opacity duration-500" 
+          role="status" 
+          aria-live="polite"
+        >
+          <svg class="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-green-800">{successMessage}</p>
+          </div>
+        </div>
+      )}
+
+      <!-- Error Message from Auth (conditional, auto-dismiss after 5 seconds) -->
+      {errorMessage && (
+        <div 
+          id="error-banner"
+          class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 transition-opacity duration-500" 
+          role="alert" 
+          aria-live="assertive"
+        >
+          <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-red-800">{errorMessage}</p>
+          </div>
+        </div>
+      )}
+
+      <!-- Info Message for Guests (conditional) -->
+      {infoMessage && (
+        <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+          <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-blue-900">{infoMessage}</p>
+            <div class="mt-2 flex items-center gap-3">
+              <a href="/auth/login" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                Sign In →
+              </a>
+              <span class="text-gray-400">|</span>
+              <a href="/auth/register" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                Create Free Account →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       <!-- Error Banner (conditional) -->
       {error && <ErrorBanner errorCode={error.code} errorMessage={error.message} />}
 
@@ -127,6 +206,40 @@ const pageDescription = "Browse our weekly reports with analysis and AI supporte
 
   <!-- Footer -->
   <Footer />
+
+  <!-- Auto-dismiss script for success/error messages -->
+  <script>
+    // Auto-dismiss success banner after 4 seconds
+    const successBanner = document.getElementById('success-banner');
+    if (successBanner) {
+      setTimeout(() => {
+        successBanner.style.opacity = '0';
+        setTimeout(() => {
+          // Remove query params from URL without reload
+          const url = new URL(window.location.href);
+          url.searchParams.delete('logout');
+          url.searchParams.delete('verified');
+          window.history.replaceState({}, '', url.toString());
+          successBanner.remove();
+        }, 500); // Wait for fade-out transition
+      }, 4000); // Show for 4 seconds
+    }
+
+    // Auto-dismiss error banner after 5 seconds
+    const errorBanner = document.getElementById('error-banner');
+    if (errorBanner) {
+      setTimeout(() => {
+        errorBanner.style.opacity = '0';
+        setTimeout(() => {
+          // Remove query params from URL without reload
+          const url = new URL(window.location.href);
+          url.searchParams.delete('logout');
+          window.history.replaceState({}, '', url.toString());
+          errorBanner.remove();
+        }, 500); // Wait for fade-out transition
+      }, 5000); // Show for 5 seconds
+    }
+  </script>
 
   <!-- SEO Meta Tags -->
   <Fragment slot="head">

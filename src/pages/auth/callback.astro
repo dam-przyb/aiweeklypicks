@@ -1,0 +1,71 @@
+---
+export const prerender = false;
+
+/**
+ * Auth Callback Handler
+ * 
+ * Handles email verification and password reset callbacks from Supabase Auth
+ * When users click on email verification or password reset links, they are redirected here
+ * This page exchanges the code for a session and redirects appropriately
+ */
+
+import Layout from "@/layouts/Layout.astro";
+
+const { url, cookies, redirect } = Astro;
+const code = url.searchParams.get("code");
+const error = url.searchParams.get("error");
+const errorDescription = url.searchParams.get("error_description");
+const type = url.searchParams.get("type");
+
+// Handle error from Supabase
+if (error) {
+  console.error("[Auth Callback] Error from Supabase:", error, errorDescription);
+  const message = encodeURIComponent(errorDescription || "Authentication failed");
+  return redirect(`/auth/login?error=${message}`, 302);
+}
+
+// If no code is present, redirect to login
+if (!code) {
+  return redirect("/auth/login?error=Missing%20verification%20code", 302);
+}
+
+// Exchange code for session using Supabase
+const { getSupabaseServerClient } = await import("@/db/supabaseServer");
+const supabase = getSupabaseServerClient(cookies, Astro.request.headers);
+
+const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+if (exchangeError) {
+  console.error("[Auth Callback] Failed to exchange code for session:", exchangeError);
+  const message = encodeURIComponent("Verification failed. Please try again.");
+  return redirect(`/auth/login?error=${message}`, 302);
+}
+
+// Check the type of callback
+if (type === "recovery") {
+  // Password reset flow - redirect to reset password page
+  return redirect("/auth/reset-password", 302);
+}
+
+// Email verification flow - redirect to home page with success message
+return redirect("/?verified=true", 302);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifying...</title>
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif;">
+    <div style="text-align: center;">
+      <h1>Verifying...</h1>
+      <p>Please wait while we verify your account.</p>
+    </div>
+  </div>
+</body>
+</html>
+

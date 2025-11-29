@@ -42,6 +42,25 @@ function formatDuration(startedAt: string | null, finishedAt: string | null): st
   const seconds = durationSec % 60;
   return `${minutes}m ${seconds}s`;
 }
+
+// Generate page numbers for pagination
+const pageNumbers: number[] = [];
+if (data.total_pages > 1) {
+  const maxPages = Math.min(5, data.total_pages);
+  for (let i = 0; i < maxPages; i++) {
+    let pageNum: number;
+    if (data.total_pages <= 5) {
+      pageNum = i + 1;
+    } else if (data.page <= 3) {
+      pageNum = i + 1;
+    } else if (data.page >= data.total_pages - 2) {
+      pageNum = data.total_pages - 4 + i;
+    } else {
+      pageNum = data.page - 2 + i;
+    }
+    pageNumbers.push(pageNum);
+  }
+}
 ---
 
 <div class="overflow-x-auto">
@@ -249,23 +268,16 @@ function formatDuration(startedAt: string | null, finishedAt: string | null): st
 
           {/* Page Numbers */}
           <div class="flex items-center gap-1">
-            {Array.from({ length: Math.min(5, data.total_pages) }, (_, i) => {
-              let pageNum: number;
-              if (data.total_pages <= 5) {
-                pageNum = i + 1;
-              } else if (data.page <= 3) {
-                pageNum = i + 1;
-              } else if (data.page >= data.total_pages - 2) {
-                pageNum = data.total_pages - 4 + i;
-              } else {
-                pageNum = data.page - 2 + i;
+            {pageNumbers.map((pageNum) => {
+              if (pageNum === data.page) {
+                return (
+                  <span class="px-3 py-2 border border-blue-600 rounded-md text-sm font-medium text-blue-600 bg-blue-50">
+                    {pageNum}
+                  </span>
+                );
               }
-
-              return pageNum === data.page ? (
-                <span class="px-3 py-2 border border-blue-600 rounded-md text-sm font-medium text-blue-600 bg-blue-50">
-                  {pageNum}
-                </span>
-              ) : (
+              
+              return (
                 <a
                   href={`?page=${pageNum}${query.status ? `&status=${query.status}` : ""}`}
                   class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"

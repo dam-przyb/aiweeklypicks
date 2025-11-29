@@ -1,11 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseServerClient } from "@/db/supabaseServer";
 import { limitPerKey } from "@/lib/services/rateLimit";
-
-import type { Database } from "../db/database.types";
-
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
 
 /**
  * Public GET endpoint prefixes that should be rate-limited per IP
@@ -40,7 +35,7 @@ function getClientIP(request: Request): string {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const { request, redirect } = context;
+  const { request, redirect, cookies } = context;
   const url = new URL(request.url);
   const pathname = url.pathname;
 
@@ -72,18 +67,31 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  // Extract Authorization header if present for per-request client
-  const authHeader = request.headers.get("authorization");
-
-  // Create a per-request Supabase client
-  // If an Authorization header is present, it will be used automatically by Supabase
-  const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-    global: {
-      headers: authHeader ? { authorization: authHeader } : {},
-    },
-  });
-
+  // Create SSR-enabled Supabase client with cookie management
+  const supabase = getSupabaseServerClient(cookies, request.headers);
   context.locals.supabase = supabase;
+
+  // Hydrate user into locals for all requests
+  // Use getUser() instead of getSession() for security - it validates the session with the auth server
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Get session separately if needed (for expiry info, etc.)
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  context.locals.session = session;
+  context.locals.user = user;
+
+  // Guard Historical Picks table - require authentication (FR-041)
+  if (pathname.startsWith("/picks")) {
+    if (!user) {
+      const returnUrl = encodeURIComponent(pathname + url.search);
+      return redirect(`/auth/login?returnUrl=${returnUrl}`, 302);
+    }
+  }
 
   // Guard admin page routes (not API routes)
   // API routes handle their own auth via requireAdmin() in handlers

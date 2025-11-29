@@ -1,12 +1,16 @@
-import { createClient } from "@supabase/supabase-js";
-import type { SupabaseClient as BaseSupabaseClient } from "@supabase/supabase-js";
+/**
+ * @deprecated Use getSupabaseServerClient() from "./supabaseServer" for SSR contexts
+ * or getSupabaseBrowserClient() from "./supabaseBrowser" for client-side React components.
+ *
+ * This file maintains type compatibility for the migration period.
+ */
 
+import type { SupabaseServerClient } from "./supabaseServer";
+import type { SupabaseBrowserClient } from "./supabaseBrowser";
 import type { Database } from "./database.types";
 
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
-
-export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
-
-// Export typed SupabaseClient for use throughout the app
-export type SupabaseClient = BaseSupabaseClient<Database>;
+/**
+ * Unified SupabaseClient type that works with both server and browser clients
+ * This maintains backward compatibility during migration
+ */
+export type SupabaseClient = SupabaseServerClient | SupabaseBrowserClient;

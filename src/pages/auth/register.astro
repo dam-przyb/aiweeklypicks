@@ -9,9 +9,14 @@ import AuthForm from "@/components/auth/AuthForm";
 // Get return URL from query params (optional)
 const returnUrl = Astro.url.searchParams.get("returnUrl") || undefined;
 
-// Optional: Check if user is already authenticated and redirect
-// For now, we'll allow access regardless of auth state
-// TODO: Add authentication check when Supabase auth is fully integrated
+// Check if user is already authenticated
+const { user } = Astro.locals;
+
+// If already logged in, redirect to home or returnUrl
+if (user) {
+  const redirectTo = returnUrl || "/";
+  return Astro.redirect(redirectTo, 302);
+}
 
 // SEO metadata
 const pageTitle = "Register - AI Weekly Picks";

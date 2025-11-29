@@ -24,6 +24,32 @@ export const GET: APIRoute = async (context) => {
       });
     }
 
+    // Check 30-day gating for guests (FR-041)
+    const user = locals.user;
+    const isAuthenticated = !!user;
+
+    if (!isAuthenticated) {
+      // Calculate 30 days ago
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      // Check if this report is newer than 30 days
+      const publishedAt = new Date(result.published_at);
+      if (publishedAt > thirtyDaysAgo) {
+        // Guest trying to access recent report - return 403 Forbidden
+        return new Response(
+          JSON.stringify({
+            code: "access_restricted",
+            message: "This report is only available to registered users. Please sign in or create an account.",
+          }),
+          {
+            status: 403,
+            headers: { "content-type": "application/json; charset=utf-8" },
+          }
+        );
+      }
+    }
+
     // Compute ETag from payload to support conditional GET
     const etag = `W/"${hashJSON(result)}"`;
 

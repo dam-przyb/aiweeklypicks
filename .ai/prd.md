@@ -130,6 +130,17 @@ Access policy (MVP)
   - All reports and picks are visible to guests and logged-in users.
   - The prior 30-day gating idea is deferred to post-MVP.
 
+Access policy (Post‑MVP update)
+- FR-041: Gated access rules
+  - Signed-in users: Full access to all weekly reports (list and detail) and the historical stock picks table.
+  - Guests (unsigned users):
+    - Reports: Can view and access only reports with `published_at <= current_date - 30 days` (list and detail).
+    - Historical picks table: No access; surface a clear login/register CTA.
+  - Enforcement:
+    - Middleware guards the table route to require authentication.
+    - Reports page data loaders filter by `published_at` cutoff for guests; signed-in users bypass the filter.
+    - For direct linking to newer reports by guests, render a gated message with sign-in CTA or redirect to login with `redirectTo`.
+
 Localization and formatting
 - FR-050: Currency and dates
   - Display currency values in USD (if any appear in text).
@@ -186,7 +197,7 @@ Out of scope (MVP)
 - Third-party analytics tooling.
 
 Assumptions and open items
-- 30-day gating may return post-MVP; currently disabled.
+- 30-day gating is enabled post-MVP: guests are limited to reports older than 30 days and cannot access the picks table.
 - Idempotency: checksum stored when provided; strict duplicate prevention via report_id uniqueness. Dry-run preview deferred.
 - Corporate actions: values are not adjusted for splits/dividends; disclaimer clarifies this for MVP.
 - Filename-to-week mapping: filename date must align with report_week and published_at in UTC; mismatch causes rejection.
@@ -406,6 +417,27 @@ US-030: Filename size and type checks
 - Description: As an admin, I want the UI to prevent obviously invalid uploads.
 - Acceptance Criteria:
   - Frontend restricts to .json; warns on oversized files before submission when possible.
+
+US-031: Gated access for recent reports (guest)
+- Title: Guest sees gating for recent reports
+- Description: As a guest, I want a clear message and CTA when I try to access a report published within the last 30 days.
+- Acceptance Criteria:
+  - Guests attempting to open a report with `published_at > current_date - 30 days` see a gated message with Login/Register CTA (or are redirected to `/auth/login?redirectTo=...`).
+  - Older reports remain accessible in list and detail.
+
+US-032: Picks table requires login
+- Title: Table access denied to guests
+- Description: As a guest, I should be asked to sign in before accessing the historical picks table.
+- Acceptance Criteria:
+  - Accessing the picks table route while signed out redirects to Login with `redirectTo`.
+  - No table data is leaked to unauthenticated users.
+
+US-033: Full access for signed-in users
+- Title: Signed-in user sees all content
+- Description: As a signed-in user, I want to access all reports (regardless of publish date) and the historical picks table.
+- Acceptance Criteria:
+  - All reports (list/detail) are visible when signed in.
+  - Historical picks table is fully accessible and sortable.
 
 
 ## 6. Success Metrics

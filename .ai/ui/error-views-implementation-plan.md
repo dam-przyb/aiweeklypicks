@@ -9,6 +9,9 @@ Foundational error and utility routes/behaviors that provide clear feedback and 
 - 401 / Expired Session
   - Behavior: Middleware redirects to `/auth/login?returnUrl=...` and shows a toast/message on the login page.
   - Dedicated page route not required (handled via redirect).
+- Gated content (guest access limitations)
+  - Picks table: Redirect to `/auth/login?returnUrl=...`; do not render or fetch table data for guests.
+  - Recent reports (< 30 days): Either render an inline gated message with Login/Register CTA or redirect to login. Older reports remain accessible.
 - 403 (Admin-only access)
   - Path: `/admin/forbidden` (optional helper) or inline render within guarded admin pages.
   - Behavior: Friendly 403 page if not authorized.
@@ -82,6 +85,8 @@ Foundational error and utility routes/behaviors that provide clear feedback and 
 4. Update `src/middleware/index.ts` to enforce:
    - 401 redirect to login with `returnUrl`.
    - 403 friendly render for admin routes when authenticated but unauthorized.
+   - Gating: require login for the picks table; for recent reports, either redirect to login or flag the page to render a gated message.
 5. QA: trigger 401/403/404/500 scenarios and verify copy, navigation, and accessibility.
+6. QA: verify gated content flows for guests (recent report detail and picks table) show CTA/redirects without leaking data.
 
 

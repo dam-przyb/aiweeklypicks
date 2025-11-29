@@ -1,0 +1,113 @@
+---
+description: Supabase Auth Implementation Guidelines for AI Weekly Picks
+globs: src/pages/auth/*, src/pages/api/auth/*, src/middleware/*, src/db/*
+alwaysApply: false
+---
+# Supabase Auth Integration (AI Weekly Picks Specific)
+
+Follow this guide to implement authentication consistent with `@.ai/auth/auth-spec.md` and `@.ai/prd.md`.
+
+## Core Architecture
+
+1.  **SSR & Node Adapter**: Use `@supabase/ssr` with Astro's Node adapter (`output: "server"`).
+2.  **Split Clients**:
+    *   `src/db/supabaseServer.ts`: For SSR pages and API routes (uses cookies).
+    *   `src/db/supabaseBrowser.ts`: For React islands (client-side).
+3.  **Middleware**: Handles session hydration, protected route guarding (`/account`, `/admin`), and content gating (30-day rule for guests).
+4.  **Events**: All auth actions (register, login) must log events via `src/lib/services/admin/events.ts` (or `src/lib/events.ts`).
+
+## Implementation Steps
+
+### 1. Supabase Clients
+
+**`src/db/supabaseServer.ts`**
+```typescript
+import { createServerClient, parseCookieHeader } from '@supabase/ssr';
+import type { AstroCookies } from 'astro';
+import type { Database } from './database.types';
+
+export const getSupabaseServerClient = (context: { cookies: AstroCookies; headers?: Headers }) => {
+  const cookies = context.cookies;
+
+  return createServerClient<Database>(
+    import.meta.env.SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY,
+    {
+      cookies: {
+        getAll() {
+          return parseCookieHeader(context.headers?.get('Cookie') ?? '');
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+};
+```
+
+**`src/db/supabaseBrowser.ts`**
+```typescript
+import { createBrowserClient } from '@supabase/ssr';
+import type { Database } from './database.types';
+
+export const getSupabaseBrowserClient = () => {
+  return createBrowserClient<Database>(
+    import.meta.env.SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+  );
+};
+```
+
+### 2. Middleware (`src/middleware/index.ts`)
+
+Must implement:
+1.  **Session Hydration**: Create server client, `getUser()`, populate `locals.user` and `locals.session`.
+2.  **Protected Routes**: Redirect `/account` and `/admin` if unauthorized.
+3.  **Admin Check**: Enforce `user.app_metadata.role === 'admin'` for `/admin`.
+4.  **Content Gating (Post-MVP)**:
+    *   Guests (no session) trying to access reports < 30 days old -> Redirect to login or show gate.
+    *   Guests trying to access `/picks` -> Redirect to login.
+
+### 3. Auth API Endpoints (`src/pages/api/auth/*.ts`)
+
+All endpoints must:
+1.  Use `getSupabaseServerClient`.
+2.  Validate input using Zod schemas from `src/lib/validation/auth.ts`.
+3.  Return JSON: `{ ok: boolean, data?: any, error?: { code: string, message: string } }`.
+4.  Log events on success.
+
+**Required Endpoints:**
+*   `POST /api/auth/register`: `signUp`, log `registration_complete`.
+*   `POST /api/auth/login`: `signInWithPassword`, log `login`.
+*   `POST /api/auth/logout`: `signOut`.
+*   `POST /api/auth/request-password-reset`: `resetPasswordForEmail`.
+*   `POST /api/auth/reset-password`: `updateUser` (requires recovery session).
+
+### 4. Event Logging
+
+Integration with event logging service (ensure `ipHash` and `userAgent` are captured):
+
+```typescript
+// Example in login endpoint
+await recordEvent({
+  eventType: 'login',
+  userId: user.id,
+  // ... other fields
+});
+```
+
+## Security Checklist
+
+1.  **Validation**: Never trust client input. Use Zod schemas.
+2.  **Rate Limiting**: Apply `limitPerKey` (from `src/lib/services/rateLimit.ts`) to all POST auth endpoints.
+3.  **Error Messages**: Use canonical error codes (e.g., `auth/invalid-email`) to avoid leaking sensitive info.
+4.  **Redirects**: Validate `redirectTo` params to prevent open redirects (allow only relative paths or whitelisted domains).
+
+## Pitfalls to Avoid
+
+*   Do NOT use `auth-helpers` (deprecated).
+*   Do NOT use `supabase-js` client directly in SSR/Middleware (cookies won't work).
+*   Do NOT leak detailed Supabase error messages to the client.

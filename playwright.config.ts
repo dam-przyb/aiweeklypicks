@@ -1,4 +1,14 @@
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Define __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from .env.test
+dotenv.config({ path: path.resolve(__dirname, ".env.test") });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -42,7 +52,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "npm run preview",
-    url: "http://localhost:4321",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

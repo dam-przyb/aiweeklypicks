@@ -1,0 +1,16 @@
+name: Setup Node and install dependencies
+description: Use Node version from .nvmrc and install npm dependencies with cache
+runs:
+  using: composite
+  steps:
+    - name: Use Node from .nvmrc
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+
+

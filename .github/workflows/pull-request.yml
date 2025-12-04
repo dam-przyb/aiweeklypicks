@@ -20,14 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from .nvmrc
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup Node and install dependencies
+        uses: ./.github/actions/setup-node-and-install
 
       - name: Run ESLint
         run: npm run lint
@@ -40,14 +34,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from .nvmrc
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup Node and install dependencies
+        uses: ./.github/actions/setup-node-and-install
 
       - name: Run Unit Tests with Coverage
         run: npm run test:coverage
@@ -81,14 +69,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from .nvmrc
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup Node and install dependencies
+        uses: ./.github/actions/setup-node-and-install
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4

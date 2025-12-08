@@ -10,6 +10,8 @@ import node from "@astrojs/node";
 export default defineConfig({
   output: "server",
   integrations: [react(), sitemap()],
+  // In production (Docker/Node), Astro will respect the PORT env var.
+  // This local dev port is only used for `astro dev`.
   server: { port: 3000 },
   vite: {
     plugins: [tailwindcss()],

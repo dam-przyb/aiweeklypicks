@@ -331,7 +331,7 @@ export default function AuthForm({ mode, returnUrl }: AuthFormProps) {
               </p>
             ) : (
               <p className="text-gray-600">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <a href="/auth/register" className="text-blue-600 hover:text-blue-800 font-medium">
                   Create one
                 </a>

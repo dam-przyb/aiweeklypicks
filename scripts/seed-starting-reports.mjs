@@ -1,3 +1,6 @@
+/* eslint-env node */
+/* global fetch */
+
 /**
  * Seed script: imports all JSON reports from ./supabase/seeds/starting_reports
  * via the admin imports API endpoint.

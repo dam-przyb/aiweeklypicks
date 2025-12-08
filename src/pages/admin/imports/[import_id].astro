@@ -104,7 +104,6 @@ const pageDescription = audit
       </div>
 
       {errorMessage ? (
-        <!-- Error State -->
         <div class="py-8">
           <ErrorBanner
             code={errorCode}
@@ -128,10 +127,8 @@ const pageDescription = audit
           )}
         </div>
       ) : audit ? (
-        <!-- Success: Display Import Audit Details -->
         <ImportAuditPanel audit={audit} />
       ) : (
-        <!-- Loading State (shouldn't happen with SSR) -->
         <div class="py-12 text-center">
           <p class="text-gray-500">Loading import details...</p>
         </div>

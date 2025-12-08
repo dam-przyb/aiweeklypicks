@@ -8,9 +8,8 @@ const { currentPath = "/" } = Astro.props;
 // Determine active state
 const isActive = (path: string) => currentPath === path || currentPath.startsWith(path + "/");
 
-// Get user and session from locals (set by middleware)
+// Get user and Supabase client from locals (set by middleware)
 const user = Astro.locals.user;
-const session = Astro.locals.session;
 const supabase = Astro.locals.supabase;
 
 let isAuthenticated = !!user;

@@ -20,13 +20,10 @@ WORKDIR /app
 # RUN apk add --no-cache libc6-compat
 
 # Install dependencies in a separate layer for better caching.
-COPY package.json ./
-# If a lockfile is added later, uncomment the appropriate COPY and adjust install command.
-# COPY package-lock.json ./
-# COPY pnpm-lock.yaml ./
-# COPY bun.lockb ./
+# Use the lockfile to get deterministic installs in CI/CD and production.
+COPY package.json package-lock.json ./
 
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+RUN npm ci
 
 # Copy the rest of the source and build the app.
 COPY . .
@@ -66,7 +63,7 @@ USER nodeuser
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node ./dist/server/entry.mjs --help >/dev/null 2>&1 || exit 1
+  CMD wget -qO- "http://127.0.0.1:${PORT}/" >/dev/null 2>&1 || exit 1
 
 CMD ["node", "./dist/server/entry.mjs"]
 

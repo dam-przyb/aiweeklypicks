@@ -33,7 +33,7 @@ export const GET: APIRoute = async (context) => {
 
     // Step 2: Extract and validate import_id from path params
     const { import_id } = params;
-    
+
     if (!import_id) {
       return jsonResponse(
         {
@@ -75,7 +75,7 @@ export const GET: APIRoute = async (context) => {
         .select("slug")
         .eq("report_id", auditData.report_id)
         .single();
-      
+
       reportSlug = reportData?.slug;
     }
 
@@ -160,4 +160,3 @@ function jsonResponse(data: unknown, status: number): Response {
     },
   });
 }
-

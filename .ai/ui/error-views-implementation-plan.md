@@ -43,10 +43,12 @@ Foundational error and utility routes/behaviors that provide clear feedback and 
 ## 4. Component Details
 
 ### ErrorBanner (SSR)
+
 - Purpose: Reusable presentation of error state with semantic `role="alert"`.
 - Props: `{ code?: string; message: string; actionHref?: string; actionLabel?: string }`.
 
 ### Middleware / Guards
+
 - `src/middleware/index.ts`:
   - Redirect 401 to `/auth/login?returnUrl=...`.
   - Render friendly 403 in admin routes when authenticated but not authorized.
@@ -88,5 +90,3 @@ Foundational error and utility routes/behaviors that provide clear feedback and 
    - Gating: require login for the picks table; for recent reports, either redirect to login or flag the page to render a gated message.
 5. QA: trigger 401/403/404/500 scenarios and verify copy, navigation, and accessibility.
 6. QA: verify gated content flows for guests (recent report detail and picks table) show CTA/redirects without leaking data.
-
-

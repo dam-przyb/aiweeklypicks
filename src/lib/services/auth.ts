@@ -29,7 +29,7 @@ export async function registerUser(
   command: RegisterCommand
 ): Promise<RegisterResponseDTO> {
   const siteUrl = import.meta.env.SITE_URL || "http://localhost:3000";
-  
+
   const { data, error } = await supabase.auth.signUp({
     email: command.email,
     password: command.password,
@@ -79,10 +79,7 @@ export async function registerUser(
  * @returns LoginResponseDTO with user_id (tokens are managed via cookies)
  * @throws AuthError if login fails
  */
-export async function loginUser(
-  supabase: SupabaseServerClient,
-  command: LoginCommand
-): Promise<LoginResponseDTO> {
+export async function loginUser(supabase: SupabaseServerClient, command: LoginCommand): Promise<LoginResponseDTO> {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: command.email,
     password: command.password,
@@ -143,4 +140,3 @@ export async function logoutUser(supabase: SupabaseServerClient): Promise<void> 
     throw new AuthError("unknown", "Logout failed. Please try again later.");
   }
 }
-

@@ -1,6 +1,6 @@
 /**
  * Example E2E Test
- * 
+ *
  * This file demonstrates basic E2E testing patterns with Playwright.
  * Following guidelines from .cursor/rules/testing-e2e-playwright.mdc
  */
@@ -41,12 +41,11 @@ test.describe("Home Page", () => {
 test.describe("Visual Regression", () => {
   test("should match home page screenshot", async ({ page }) => {
     await page.goto("/");
-    
+
     // Wait for content to load
     await page.waitForLoadState("networkidle");
-    
+
     // Take screenshot and compare (uncomment when baseline is established)
     // await expect(page).toHaveScreenshot("home-page.png");
   });
 });
-

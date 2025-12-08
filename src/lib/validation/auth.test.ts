@@ -688,4 +688,3 @@ describe("parseLoginCommand", () => {
     }
   });
 });
-

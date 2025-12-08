@@ -33,8 +33,12 @@ export default function PicksTableHeaders({ currentSort, currentOrder, otherPara
   const buildHref = (column: NonNullable<PicksListQuery["sort"]>): string => {
     const isActive = currentSort === column;
     const nextOrder: SortOrder = !isActive
-      ? column === "published_at" ? "desc" : "asc"
-      : currentOrder === "asc" ? "desc" : "asc";
+      ? column === "published_at"
+        ? "desc"
+        : "asc"
+      : currentOrder === "asc"
+        ? "desc"
+        : "asc";
 
     const params = new URLSearchParams();
 
@@ -65,8 +69,12 @@ export default function PicksTableHeaders({ currentSort, currentOrder, otherPara
   const handleClick = (column: NonNullable<PicksListQuery["sort"]>, label: string) => {
     const isActive = currentSort === column;
     const nextOrder = !isActive
-      ? column === "published_at" ? "desc" : "asc"
-      : currentOrder === "asc" ? "desc" : "asc";
+      ? column === "published_at"
+        ? "desc"
+        : "asc"
+      : currentOrder === "asc"
+        ? "desc"
+        : "asc";
     const orderLabel = nextOrder === "asc" ? "ascending" : "descending";
     setAnnouncement(`Sorting by ${label}, ${orderLabel}`);
   };
@@ -159,4 +167,3 @@ export default function PicksTableHeaders({ currentSort, currentOrder, otherPara
     </tr>
   );
 }
-

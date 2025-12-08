@@ -19,6 +19,7 @@ SUPABASE_KEY=your-anon-public-key-here
 ## Setup Instructions
 
 1. **Create `.env` file**:
+
    ```bash
    cp .env.example .env
    # Or create manually
@@ -32,6 +33,7 @@ SUPABASE_KEY=your-anon-public-key-here
    - Copy the anon/public key to `SUPABASE_KEY`
 
 3. **Run database migrations**:
+
    ```bash
    npx supabase db push
    # Or if using Supabase CLI linked to your project:
@@ -82,17 +84,19 @@ curl "http://localhost:4321/api/picks?page=1&page_size=10&sort=published_at&orde
 ## Troubleshooting
 
 ### "relation picks_history does not exist"
+
 - The materialized view hasn't been created yet
 - Run: `npx supabase db push` to apply all migrations
 - The API will automatically fall back to joining tables if the MV is missing
 
 ### "SUPABASE_URL is not defined"
+
 - Ensure `.env` file exists in project root
 - Verify environment variables are set correctly
 - Restart the dev server after changing `.env`
 
 ### Rate limiting in development
+
 - Rate limits are applied per IP address (60 req/min for public endpoints)
 - In development, all requests may appear from the same IP ('unknown')
 - To reset rate limits during development, restart the server
-

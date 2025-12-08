@@ -1,7 +1,7 @@
 ---
 interface Props {
-  variant: 'tos' | 'privacy';
-  lang: 'en' | 'pl';
+  variant: "tos" | "privacy";
+  lang: "en" | "pl";
 }
 
 const { variant, lang } = Astro.props;
@@ -10,240 +10,292 @@ const { variant, lang } = Astro.props;
 const content = {
   tos: {
     en: {
-      title: 'Terms of Service',
-      lastUpdated: 'November 25, 2025',
+      title: "Terms of Service",
+      lastUpdated: "November 25, 2025",
       sections: [
         {
-          heading: '1. Acceptance of Terms',
-          content: 'By accessing and using AI Weekly Picks ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by these Terms of Service, please do not use this Service.'
+          heading: "1. Acceptance of Terms",
+          content:
+            'By accessing and using AI Weekly Picks ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by these Terms of Service, please do not use this Service.',
         },
         {
-          heading: '2. Description of Service',
-          content: 'AI Weekly Picks provides AI-powered stock analysis and recommendations for informational and educational purposes only. The Service includes weekly reports, historical picks analysis, and related features.'
+          heading: "2. Description of Service",
+          content:
+            "AI Weekly Picks provides AI-powered stock analysis and recommendations for informational and educational purposes only. The Service includes weekly reports, historical picks analysis, and related features.",
         },
         {
-          heading: '3. Investment Disclaimer',
-          content: 'The information provided on this Service does not constitute investment advice, financial advice, trading advice, or any other sort of advice. Nothing on this Service constitutes a solicitation, recommendation, endorsement, or offer to buy or sell any securities or other financial instruments. All content is for informational purposes only and should not be relied upon to make investment decisions. You alone assume the sole responsibility of evaluating the merits and risks associated with the use of any information or content on this Service.'
+          heading: "3. Investment Disclaimer",
+          content:
+            "The information provided on this Service does not constitute investment advice, financial advice, trading advice, or any other sort of advice. Nothing on this Service constitutes a solicitation, recommendation, endorsement, or offer to buy or sell any securities or other financial instruments. All content is for informational purposes only and should not be relied upon to make investment decisions. You alone assume the sole responsibility of evaluating the merits and risks associated with the use of any information or content on this Service.",
         },
         {
-          heading: '4. No Guarantees',
-          content: 'Past performance is not indicative of future results. The Service makes no guarantees regarding the accuracy, completeness, or timeliness of the information provided. All investment decisions should be made in consultation with a qualified financial professional.'
+          heading: "4. No Guarantees",
+          content:
+            "Past performance is not indicative of future results. The Service makes no guarantees regarding the accuracy, completeness, or timeliness of the information provided. All investment decisions should be made in consultation with a qualified financial professional.",
         },
         {
-          heading: '5. User Accounts',
-          content: 'You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account. You must notify us immediately of any unauthorized use of your account.'
+          heading: "5. User Accounts",
+          content:
+            "You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account. You must notify us immediately of any unauthorized use of your account.",
         },
         {
-          heading: '6. Intellectual Property',
-          content: 'All content on this Service, including but not limited to text, graphics, logos, and software, is the property of AI Weekly Picks and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, or create derivative works without explicit written permission.'
+          heading: "6. Intellectual Property",
+          content:
+            "All content on this Service, including but not limited to text, graphics, logos, and software, is the property of AI Weekly Picks and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, or create derivative works without explicit written permission.",
         },
         {
-          heading: '7. Prohibited Uses',
-          content: 'You agree not to use the Service for any unlawful purpose or in any way that could damage, disable, or impair the Service. Prohibited activities include but are not limited to: automated scraping, attempting to gain unauthorized access, transmitting malware, or impersonating others.'
+          heading: "7. Prohibited Uses",
+          content:
+            "You agree not to use the Service for any unlawful purpose or in any way that could damage, disable, or impair the Service. Prohibited activities include but are not limited to: automated scraping, attempting to gain unauthorized access, transmitting malware, or impersonating others.",
         },
         {
-          heading: '8. Data Collection and Privacy',
-          content: 'Your use of the Service is also governed by our Privacy Policy. By using the Service, you consent to the collection and use of information as described in our Privacy Policy.'
+          heading: "8. Data Collection and Privacy",
+          content:
+            "Your use of the Service is also governed by our Privacy Policy. By using the Service, you consent to the collection and use of information as described in our Privacy Policy.",
         },
         {
-          heading: '9. Limitation of Liability',
-          content: 'To the fullest extent permitted by law, AI Weekly Picks shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from your use of the Service.'
+          heading: "9. Limitation of Liability",
+          content:
+            "To the fullest extent permitted by law, AI Weekly Picks shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from your use of the Service.",
         },
         {
-          heading: '10. Modifications to Terms',
-          content: 'We reserve the right to modify these Terms of Service at any time. Changes will be effective immediately upon posting to the Service. Your continued use of the Service following the posting of changes constitutes your acceptance of such changes.'
+          heading: "10. Modifications to Terms",
+          content:
+            "We reserve the right to modify these Terms of Service at any time. Changes will be effective immediately upon posting to the Service. Your continued use of the Service following the posting of changes constitutes your acceptance of such changes.",
         },
         {
-          heading: '11. Termination',
-          content: 'We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason, including breach of these Terms of Service.'
+          heading: "11. Termination",
+          content:
+            "We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason, including breach of these Terms of Service.",
         },
         {
-          heading: '12. Governing Law',
-          content: 'These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which AI Weekly Picks operates, without regard to its conflict of law provisions.'
+          heading: "12. Governing Law",
+          content:
+            "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which AI Weekly Picks operates, without regard to its conflict of law provisions.",
         },
         {
-          heading: '13. Contact Information',
-          content: 'If you have any questions about these Terms of Service, please contact us through the contact information provided on our website.'
-        }
-      ]
+          heading: "13. Contact Information",
+          content:
+            "If you have any questions about these Terms of Service, please contact us through the contact information provided on our website.",
+        },
+      ],
     },
     pl: {
-      title: 'Regulamin Serwisu',
-      lastUpdated: '25 listopada 2025',
+      title: "Regulamin Serwisu",
+      lastUpdated: "25 listopada 2025",
       sections: [
         {
-          heading: '1. Akceptacja Warunków',
-          content: 'Korzystając z serwisu AI Weekly Picks ("Serwis"), akceptujesz i zgadzasz się przestrzegać warunków niniejszej umowy. Jeśli nie zgadzasz się z niniejszym Regulaminem, prosimy o niekorzystanie z Serwisu.'
+          heading: "1. Akceptacja Warunków",
+          content:
+            'Korzystając z serwisu AI Weekly Picks ("Serwis"), akceptujesz i zgadzasz się przestrzegać warunków niniejszej umowy. Jeśli nie zgadzasz się z niniejszym Regulaminem, prosimy o niekorzystanie z Serwisu.',
         },
         {
-          heading: '2. Opis Serwisu',
-          content: 'AI Weekly Picks dostarcza analizy akcji i rekomendacje oparte na sztucznej inteligencji wyłącznie w celach informacyjnych i edukacyjnych. Serwis obejmuje cotygodniowe raporty, analizę historycznych wyborów i powiązane funkcje.'
+          heading: "2. Opis Serwisu",
+          content:
+            "AI Weekly Picks dostarcza analizy akcji i rekomendacje oparte na sztucznej inteligencji wyłącznie w celach informacyjnych i edukacyjnych. Serwis obejmuje cotygodniowe raporty, analizę historycznych wyborów i powiązane funkcje.",
         },
         {
-          heading: '3. Wyłączenie Odpowiedzialności Inwestycyjnej',
-          content: 'Informacje dostarczone w Serwisie nie stanowią porady inwestycyjnej, finansowej, transakcyjnej ani żadnej innej porady. Żadna treść w Serwisie nie stanowi zachęty, rekomendacji, poparcia ani oferty kupna lub sprzedaży papierów wartościowych lub innych instrumentów finansowych. Wszystkie treści mają charakter wyłącznie informacyjny i nie należy na nich opierać decyzji inwestycyjnych. Wyłącznie Ty ponosisz odpowiedzialność za ocenę zalet i ryzyka związanego z korzystaniem z informacji lub treści w Serwisie.'
+          heading: "3. Wyłączenie Odpowiedzialności Inwestycyjnej",
+          content:
+            "Informacje dostarczone w Serwisie nie stanowią porady inwestycyjnej, finansowej, transakcyjnej ani żadnej innej porady. Żadna treść w Serwisie nie stanowi zachęty, rekomendacji, poparcia ani oferty kupna lub sprzedaży papierów wartościowych lub innych instrumentów finansowych. Wszystkie treści mają charakter wyłącznie informacyjny i nie należy na nich opierać decyzji inwestycyjnych. Wyłącznie Ty ponosisz odpowiedzialność za ocenę zalet i ryzyka związanego z korzystaniem z informacji lub treści w Serwisie.",
         },
         {
-          heading: '4. Brak Gwarancji',
-          content: 'Wyniki z przeszłości nie gwarantują przyszłych rezultatów. Serwis nie gwarantuje dokładności, kompletności ani aktualności dostarczanych informacji. Wszystkie decyzje inwestycyjne powinny być podejmowane w konsultacji z wykwalifikowanym doradcą finansowym.'
+          heading: "4. Brak Gwarancji",
+          content:
+            "Wyniki z przeszłości nie gwarantują przyszłych rezultatów. Serwis nie gwarantuje dokładności, kompletności ani aktualności dostarczanych informacji. Wszystkie decyzje inwestycyjne powinny być podejmowane w konsultacji z wykwalifikowanym doradcą finansowym.",
         },
         {
-          heading: '5. Konta Użytkowników',
-          content: 'Jesteś odpowiedzialny za zachowanie poufności swojego konta i hasła. Zgadzasz się przyjąć odpowiedzialność za wszystkie działania wykonywane z Twojego konta. Musisz niezwłocznie powiadomić nas o każdym nieautoryzowanym użyciu Twojego konta.'
+          heading: "5. Konta Użytkowników",
+          content:
+            "Jesteś odpowiedzialny za zachowanie poufności swojego konta i hasła. Zgadzasz się przyjąć odpowiedzialność za wszystkie działania wykonywane z Twojego konta. Musisz niezwłocznie powiadomić nas o każdym nieautoryzowanym użyciu Twojego konta.",
         },
         {
-          heading: '6. Własność Intelektualna',
-          content: 'Wszystkie treści w Serwisie, w tym między innymi teksty, grafiki, loga i oprogramowanie, są własnością AI Weekly Picks i są chronione prawami autorskimi oraz innymi prawami własności intelektualnej. Nie możesz powielać, dystrybuować ani tworzyć dzieł pochodnych bez wyraźnej pisemnej zgody.'
+          heading: "6. Własność Intelektualna",
+          content:
+            "Wszystkie treści w Serwisie, w tym między innymi teksty, grafiki, loga i oprogramowanie, są własnością AI Weekly Picks i są chronione prawami autorskimi oraz innymi prawami własności intelektualnej. Nie możesz powielać, dystrybuować ani tworzyć dzieł pochodnych bez wyraźnej pisemnej zgody.",
         },
         {
-          heading: '7. Zabronione Użycia',
-          content: 'Zgadzasz się nie używać Serwisu w celach niezgodnych z prawem ani w sposób, który mógłby uszkodzić, wyłączyć lub zakłócić działanie Serwisu. Zabronione działania obejmują między innymi: zautomatyzowane pobieranie danych, próby uzyskania nieautoryzowanego dostępu, transmisję złośliwego oprogramowania lub podszywanie się pod innych.'
+          heading: "7. Zabronione Użycia",
+          content:
+            "Zgadzasz się nie używać Serwisu w celach niezgodnych z prawem ani w sposób, który mógłby uszkodzić, wyłączyć lub zakłócić działanie Serwisu. Zabronione działania obejmują między innymi: zautomatyzowane pobieranie danych, próby uzyskania nieautoryzowanego dostępu, transmisję złośliwego oprogramowania lub podszywanie się pod innych.",
         },
         {
-          heading: '8. Zbieranie Danych i Prywatność',
-          content: 'Twoje korzystanie z Serwisu podlega również naszej Polityce Prywatności. Korzystając z Serwisu, wyrażasz zgodę na zbieranie i wykorzystywanie informacji zgodnie z opisem w naszej Polityce Prywatności.'
+          heading: "8. Zbieranie Danych i Prywatność",
+          content:
+            "Twoje korzystanie z Serwisu podlega również naszej Polityce Prywatności. Korzystając z Serwisu, wyrażasz zgodę na zbieranie i wykorzystywanie informacji zgodnie z opisem w naszej Polityce Prywatności.",
         },
         {
-          heading: '9. Ograniczenie Odpowiedzialności',
-          content: 'W maksymalnym zakresie dozwolonym przez prawo, AI Weekly Picks nie ponosi odpowiedzialności za jakiekolwiek szkody pośrednie, przypadkowe, specjalne, wtórne lub karne, utratę zysków lub przychodów, czy to poniesione bezpośrednio czy pośrednio, lub utratę danych, użytkowania, wartości firmy lub innych strat niematerialnych wynikających z korzystania przez Ciebie z Serwisu.'
+          heading: "9. Ograniczenie Odpowiedzialności",
+          content:
+            "W maksymalnym zakresie dozwolonym przez prawo, AI Weekly Picks nie ponosi odpowiedzialności za jakiekolwiek szkody pośrednie, przypadkowe, specjalne, wtórne lub karne, utratę zysków lub przychodów, czy to poniesione bezpośrednio czy pośrednio, lub utratę danych, użytkowania, wartości firmy lub innych strat niematerialnych wynikających z korzystania przez Ciebie z Serwisu.",
         },
         {
-          heading: '10. Modyfikacje Regulaminu',
-          content: 'Zastrzegamy sobie prawo do modyfikacji niniejszego Regulaminu w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu w Serwisie. Dalsze korzystanie z Serwisu po opublikowaniu zmian stanowi akceptację tych zmian.'
+          heading: "10. Modyfikacje Regulaminu",
+          content:
+            "Zastrzegamy sobie prawo do modyfikacji niniejszego Regulaminu w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu w Serwisie. Dalsze korzystanie z Serwisu po opublikowaniu zmian stanowi akceptację tych zmian.",
         },
         {
-          heading: '11. Zakończenie',
-          content: 'Możemy zakończyć lub zawiesić Twoje konto i dostęp do Serwisu natychmiast, bez uprzedniego powiadomienia lub odpowiedzialności, z dowolnego powodu, w tym naruszenia niniejszego Regulaminu.'
+          heading: "11. Zakończenie",
+          content:
+            "Możemy zakończyć lub zawiesić Twoje konto i dostęp do Serwisu natychmiast, bez uprzedniego powiadomienia lub odpowiedzialności, z dowolnego powodu, w tym naruszenia niniejszego Regulaminu.",
         },
         {
-          heading: '12. Prawo Właściwe',
-          content: 'Niniejszy Regulamin podlega i jest interpretowany zgodnie z prawem jurysdykcji, w której działa AI Weekly Picks, bez względu na przepisy dotyczące konfliktu praw.'
+          heading: "12. Prawo Właściwe",
+          content:
+            "Niniejszy Regulamin podlega i jest interpretowany zgodnie z prawem jurysdykcji, w której działa AI Weekly Picks, bez względu na przepisy dotyczące konfliktu praw.",
         },
         {
-          heading: '13. Informacje Kontaktowe',
-          content: 'Jeśli masz jakiekolwiek pytania dotyczące niniejszego Regulaminu, skontaktuj się z nami za pośrednictwem informacji kontaktowych dostępnych na naszej stronie internetowej.'
-        }
-      ]
-    }
+          heading: "13. Informacje Kontaktowe",
+          content:
+            "Jeśli masz jakiekolwiek pytania dotyczące niniejszego Regulaminu, skontaktuj się z nami za pośrednictwem informacji kontaktowych dostępnych na naszej stronie internetowej.",
+        },
+      ],
+    },
   },
   privacy: {
     en: {
-      title: 'Privacy Policy',
-      lastUpdated: 'November 25, 2025',
+      title: "Privacy Policy",
+      lastUpdated: "November 25, 2025",
       sections: [
         {
-          heading: '1. Introduction',
-          content: 'AI Weekly Picks ("we," "our," or "us") respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, store, and share information about you when you use our Service.'
+          heading: "1. Introduction",
+          content:
+            'AI Weekly Picks ("we," "our," or "us") respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, store, and share information about you when you use our Service.',
         },
         {
-          heading: '2. Information We Collect',
-          content: 'We collect several types of information: (a) Account Information: Email address, password (encrypted), and user ID when you register; (b) Usage Data: Information about how you interact with the Service, including pages viewed, reports accessed, time spent, and clicks; (c) Technical Data: IP address (hashed for analytics), browser type, device information, and operating system; (d) Analytics Events: Login events, registration completion, report views with dwell time, and navigation patterns.'
+          heading: "2. Information We Collect",
+          content:
+            "We collect several types of information: (a) Account Information: Email address, password (encrypted), and user ID when you register; (b) Usage Data: Information about how you interact with the Service, including pages viewed, reports accessed, time spent, and clicks; (c) Technical Data: IP address (hashed for analytics), browser type, device information, and operating system; (d) Analytics Events: Login events, registration completion, report views with dwell time, and navigation patterns.",
         },
         {
-          heading: '3. How We Use Your Information',
-          content: 'We use your information to: (a) Provide and maintain the Service; (b) Authenticate users and manage accounts; (c) Analyze usage patterns to improve the Service; (d) Prevent fraud and abuse; (e) Comply with legal obligations; (f) Communicate with you about the Service (if you opt in).'
+          heading: "3. How We Use Your Information",
+          content:
+            "We use your information to: (a) Provide and maintain the Service; (b) Authenticate users and manage accounts; (c) Analyze usage patterns to improve the Service; (d) Prevent fraud and abuse; (e) Comply with legal obligations; (f) Communicate with you about the Service (if you opt in).",
         },
         {
-          heading: '4. Data Storage and Security',
-          content: 'Your data is stored securely using Supabase (PostgreSQL database) with industry-standard encryption. Passwords are hashed using secure algorithms. IP addresses are hashed before storage for privacy. We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.'
+          heading: "4. Data Storage and Security",
+          content:
+            "Your data is stored securely using Supabase (PostgreSQL database) with industry-standard encryption. Passwords are hashed using secure algorithms. IP addresses are hashed before storage for privacy. We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.",
         },
         {
-          heading: '5. Data Retention',
-          content: 'We retain your personal data only for as long as necessary to provide the Service and fulfill the purposes outlined in this Privacy Policy. Account information is retained while your account is active. Analytics events are retained for analysis and improvement purposes. You may request deletion of your account and associated data at any time.'
+          heading: "5. Data Retention",
+          content:
+            "We retain your personal data only for as long as necessary to provide the Service and fulfill the purposes outlined in this Privacy Policy. Account information is retained while your account is active. Analytics events are retained for analysis and improvement purposes. You may request deletion of your account and associated data at any time.",
         },
         {
-          heading: '6. Cookies and Tracking',
-          content: 'We use cookies and similar tracking technologies to: (a) Maintain your logged-in session; (b) Remember your preferences; (c) Analyze usage patterns. You can control cookie settings through your browser, but disabling cookies may limit Service functionality.'
+          heading: "6. Cookies and Tracking",
+          content:
+            "We use cookies and similar tracking technologies to: (a) Maintain your logged-in session; (b) Remember your preferences; (c) Analyze usage patterns. You can control cookie settings through your browser, but disabling cookies may limit Service functionality.",
         },
         {
-          heading: '7. Third-Party Services',
-          content: 'We use third-party services that may collect information: (a) Supabase: For authentication and database services (see their privacy policy at supabase.com); (b) Hosting provider: For serving the application. These services are bound by their own privacy policies and terms.'
+          heading: "7. Third-Party Services",
+          content:
+            "We use third-party services that may collect information: (a) Supabase: For authentication and database services (see their privacy policy at supabase.com); (b) Hosting provider: For serving the application. These services are bound by their own privacy policies and terms.",
         },
         {
-          heading: '8. Data Sharing and Disclosure',
-          content: 'We do not sell your personal data. We may share your information only in the following circumstances: (a) With your consent; (b) To comply with legal obligations or respond to lawful requests; (c) To protect our rights, property, or safety, or that of others; (d) With service providers who assist in operating the Service (under strict confidentiality agreements).'
+          heading: "8. Data Sharing and Disclosure",
+          content:
+            "We do not sell your personal data. We may share your information only in the following circumstances: (a) With your consent; (b) To comply with legal obligations or respond to lawful requests; (c) To protect our rights, property, or safety, or that of others; (d) With service providers who assist in operating the Service (under strict confidentiality agreements).",
         },
         {
-          heading: '9. Your Rights',
-          content: 'Depending on your jurisdiction, you may have the following rights: (a) Access: Request a copy of your personal data; (b) Correction: Request correction of inaccurate data; (c) Deletion: Request deletion of your data; (d) Portability: Receive your data in a structured, machine-readable format; (e) Objection: Object to certain data processing activities; (f) Withdrawal: Withdraw consent at any time (where processing is based on consent).'
+          heading: "9. Your Rights",
+          content:
+            "Depending on your jurisdiction, you may have the following rights: (a) Access: Request a copy of your personal data; (b) Correction: Request correction of inaccurate data; (c) Deletion: Request deletion of your data; (d) Portability: Receive your data in a structured, machine-readable format; (e) Objection: Object to certain data processing activities; (f) Withdrawal: Withdraw consent at any time (where processing is based on consent).",
         },
         {
-          heading: '10. Children\'s Privacy',
-          content: 'The Service is not intended for users under the age of 18. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us immediately.'
+          heading: "10. Children's Privacy",
+          content:
+            "The Service is not intended for users under the age of 18. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us immediately.",
         },
         {
-          heading: '11. International Data Transfers',
-          content: 'Your information may be transferred to and processed in countries other than your country of residence. These countries may have different data protection laws. We ensure appropriate safeguards are in place to protect your data.'
+          heading: "11. International Data Transfers",
+          content:
+            "Your information may be transferred to and processed in countries other than your country of residence. These countries may have different data protection laws. We ensure appropriate safeguards are in place to protect your data.",
         },
         {
-          heading: '12. Changes to This Privacy Policy',
-          content: 'We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date. We encourage you to review this Privacy Policy periodically. Continued use of the Service after changes constitutes acceptance of the updated policy.'
+          heading: "12. Changes to This Privacy Policy",
+          content:
+            'We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date. We encourage you to review this Privacy Policy periodically. Continued use of the Service after changes constitutes acceptance of the updated policy.',
         },
         {
-          heading: '13. Contact Us',
-          content: 'If you have questions about this Privacy Policy or wish to exercise your rights, please contact us through the contact information provided on our website.'
-        }
-      ]
+          heading: "13. Contact Us",
+          content:
+            "If you have questions about this Privacy Policy or wish to exercise your rights, please contact us through the contact information provided on our website.",
+        },
+      ],
     },
     pl: {
-      title: 'Polityka Prywatności',
-      lastUpdated: '25 listopada 2025',
+      title: "Polityka Prywatności",
+      lastUpdated: "25 listopada 2025",
       sections: [
         {
-          heading: '1. Wprowadzenie',
-          content: 'AI Weekly Picks ("my", "nasz" lub "nas") szanuje Twoją prywatność i zobowiązuje się do ochrony Twoich danych osobowych. Niniejsza Polityka Prywatności wyjaśnia, w jaki sposób zbieramy, wykorzystujemy, przechowujemy i udostępniamy informacje o Tobie podczas korzystania z naszego Serwisu.'
+          heading: "1. Wprowadzenie",
+          content:
+            'AI Weekly Picks ("my", "nasz" lub "nas") szanuje Twoją prywatność i zobowiązuje się do ochrony Twoich danych osobowych. Niniejsza Polityka Prywatności wyjaśnia, w jaki sposób zbieramy, wykorzystujemy, przechowujemy i udostępniamy informacje o Tobie podczas korzystania z naszego Serwisu.',
         },
         {
-          heading: '2. Zbierane Informacje',
-          content: 'Zbieramy kilka rodzajów informacji: (a) Informacje o Koncie: adres e-mail, hasło (zaszyfrowane) i identyfikator użytkownika podczas rejestracji; (b) Dane Użytkowania: informacje o tym, jak korzystasz z Serwisu, w tym oglądane strony, dostępne raporty, spędzony czas i kliknięcia; (c) Dane Techniczne: adres IP (zahaszowany do celów analitycznych), typ przeglądarki, informacje o urządzeniu i system operacyjny; (d) Zdarzenia Analityczne: zdarzenia logowania, ukończenie rejestracji, wyświetlenia raportów z czasem przebywania i wzorce nawigacji.'
+          heading: "2. Zbierane Informacje",
+          content:
+            "Zbieramy kilka rodzajów informacji: (a) Informacje o Koncie: adres e-mail, hasło (zaszyfrowane) i identyfikator użytkownika podczas rejestracji; (b) Dane Użytkowania: informacje o tym, jak korzystasz z Serwisu, w tym oglądane strony, dostępne raporty, spędzony czas i kliknięcia; (c) Dane Techniczne: adres IP (zahaszowany do celów analitycznych), typ przeglądarki, informacje o urządzeniu i system operacyjny; (d) Zdarzenia Analityczne: zdarzenia logowania, ukończenie rejestracji, wyświetlenia raportów z czasem przebywania i wzorce nawigacji.",
         },
         {
-          heading: '3. Jak Wykorzystujemy Twoje Informacje',
-          content: 'Wykorzystujemy Twoje informacje do: (a) świadczenia i utrzymywania Serwisu; (b) uwierzytelniania użytkowników i zarządzania kontami; (c) analizy wzorców użytkowania w celu poprawy Serwisu; (d) zapobiegania oszustwom i nadużyciom; (e) wypełniania zobowiązań prawnych; (f) komunikacji z Tobą dotyczącej Serwisu (jeśli wyrazisz zgodę).'
+          heading: "3. Jak Wykorzystujemy Twoje Informacje",
+          content:
+            "Wykorzystujemy Twoje informacje do: (a) świadczenia i utrzymywania Serwisu; (b) uwierzytelniania użytkowników i zarządzania kontami; (c) analizy wzorców użytkowania w celu poprawy Serwisu; (d) zapobiegania oszustwom i nadużyciom; (e) wypełniania zobowiązań prawnych; (f) komunikacji z Tobą dotyczącej Serwisu (jeśli wyrazisz zgodę).",
         },
         {
-          heading: '4. Przechowywanie i Bezpieczeństwo Danych',
-          content: 'Twoje dane są bezpiecznie przechowywane przy użyciu Supabase (baza danych PostgreSQL) z szyfrowaniem zgodnym ze standardami branżowymi. Hasła są haszowane przy użyciu bezpiecznych algorytmów. Adresy IP są haszowane przed zapisaniem w celu ochrony prywatności. Wdrażamy odpowiednie środki techniczne i organizacyjne w celu ochrony Twoich danych przed nieautoryzowanym dostępem, zmianą, ujawnieniem lub zniszczeniem.'
+          heading: "4. Przechowywanie i Bezpieczeństwo Danych",
+          content:
+            "Twoje dane są bezpiecznie przechowywane przy użyciu Supabase (baza danych PostgreSQL) z szyfrowaniem zgodnym ze standardami branżowymi. Hasła są haszowane przy użyciu bezpiecznych algorytmów. Adresy IP są haszowane przed zapisaniem w celu ochrony prywatności. Wdrażamy odpowiednie środki techniczne i organizacyjne w celu ochrony Twoich danych przed nieautoryzowanym dostępem, zmianą, ujawnieniem lub zniszczeniem.",
         },
         {
-          heading: '5. Przechowywanie Danych',
-          content: 'Przechowujemy Twoje dane osobowe tylko tak długo, jak jest to konieczne do świadczenia Serwisu i realizacji celów określonych w niniejszej Polityce Prywatności. Informacje o koncie są przechowywane, gdy Twoje konto jest aktywne. Zdarzenia analityczne są przechowywane w celach analizy i ulepszania. Możesz w każdej chwili poprosić o usunięcie swojego konta i związanych z nim danych.'
+          heading: "5. Przechowywanie Danych",
+          content:
+            "Przechowujemy Twoje dane osobowe tylko tak długo, jak jest to konieczne do świadczenia Serwisu i realizacji celów określonych w niniejszej Polityce Prywatności. Informacje o koncie są przechowywane, gdy Twoje konto jest aktywne. Zdarzenia analityczne są przechowywane w celach analizy i ulepszania. Możesz w każdej chwili poprosić o usunięcie swojego konta i związanych z nim danych.",
         },
         {
-          heading: '6. Pliki Cookie i Śledzenie',
-          content: 'Używamy plików cookie i podobnych technologii śledzenia w celu: (a) utrzymywania sesji zalogowanego użytkownika; (b) zapamiętywania Twoich preferencji; (c) analizy wzorców użytkowania. Możesz kontrolować ustawienia plików cookie za pośrednictwem przeglądarki, ale wyłączenie plików cookie może ograniczyć funkcjonalność Serwisu.'
+          heading: "6. Pliki Cookie i Śledzenie",
+          content:
+            "Używamy plików cookie i podobnych technologii śledzenia w celu: (a) utrzymywania sesji zalogowanego użytkownika; (b) zapamiętywania Twoich preferencji; (c) analizy wzorców użytkowania. Możesz kontrolować ustawienia plików cookie za pośrednictwem przeglądarki, ale wyłączenie plików cookie może ograniczyć funkcjonalność Serwisu.",
         },
         {
-          heading: '7. Usługi Zewnętrzne',
-          content: 'Korzystamy z usług zewnętrznych, które mogą zbierać informacje: (a) Supabase: do uwierzytelniania i usług bazy danych (zobacz ich politykę prywatności na supabase.com); (b) Dostawca hostingu: do obsługi aplikacji. Te usługi są związane własnymi politykami prywatności i warunkami.'
+          heading: "7. Usługi Zewnętrzne",
+          content:
+            "Korzystamy z usług zewnętrznych, które mogą zbierać informacje: (a) Supabase: do uwierzytelniania i usług bazy danych (zobacz ich politykę prywatności na supabase.com); (b) Dostawca hostingu: do obsługi aplikacji. Te usługi są związane własnymi politykami prywatności i warunkami.",
         },
         {
-          heading: '8. Udostępnianie i Ujawnianie Danych',
-          content: 'Nie sprzedajemy Twoich danych osobowych. Możemy udostępniać Twoje informacje tylko w następujących okolicznościach: (a) za Twoją zgodą; (b) w celu wypełnienia zobowiązań prawnych lub odpowiedzi na zgodne z prawem żądania; (c) w celu ochrony naszych praw, własności lub bezpieczeństwa lub bezpieczeństwa innych osób; (d) z dostawcami usług, którzy pomagają w obsłudze Serwisu (na podstawie ścisłych umów o poufności).'
+          heading: "8. Udostępnianie i Ujawnianie Danych",
+          content:
+            "Nie sprzedajemy Twoich danych osobowych. Możemy udostępniać Twoje informacje tylko w następujących okolicznościach: (a) za Twoją zgodą; (b) w celu wypełnienia zobowiązań prawnych lub odpowiedzi na zgodne z prawem żądania; (c) w celu ochrony naszych praw, własności lub bezpieczeństwa lub bezpieczeństwa innych osób; (d) z dostawcami usług, którzy pomagają w obsłudze Serwisu (na podstawie ścisłych umów o poufności).",
         },
         {
-          heading: '9. Twoje Prawa',
-          content: 'W zależności od Twojej jurysdykcji możesz mieć następujące prawa: (a) Dostęp: żądanie kopii swoich danych osobowych; (b) Poprawienie: żądanie poprawienia nieprawidłowych danych; (c) Usunięcie: żądanie usunięcia swoich danych; (d) Przenoszenie: otrzymanie swoich danych w ustrukturyzowanym, czytelnym maszynowo formacie; (e) Sprzeciw: sprzeciw wobec niektórych działań przetwarzania danych; (f) Wycofanie: wycofanie zgody w dowolnym momencie (gdy przetwarzanie opiera się na zgodzie).'
+          heading: "9. Twoje Prawa",
+          content:
+            "W zależności od Twojej jurysdykcji możesz mieć następujące prawa: (a) Dostęp: żądanie kopii swoich danych osobowych; (b) Poprawienie: żądanie poprawienia nieprawidłowych danych; (c) Usunięcie: żądanie usunięcia swoich danych; (d) Przenoszenie: otrzymanie swoich danych w ustrukturyzowanym, czytelnym maszynowo formacie; (e) Sprzeciw: sprzeciw wobec niektórych działań przetwarzania danych; (f) Wycofanie: wycofanie zgody w dowolnym momencie (gdy przetwarzanie opiera się na zgodzie).",
         },
         {
-          heading: '10. Prywatność Dzieci',
-          content: 'Serwis nie jest przeznaczony dla użytkowników poniżej 18 roku życia. Nie zbieramy świadomie danych osobowych od dzieci. Jeśli uważasz, że zebraliśmy informacje od dziecka, prosimy o natychmiastowy kontakt.'
+          heading: "10. Prywatność Dzieci",
+          content:
+            "Serwis nie jest przeznaczony dla użytkowników poniżej 18 roku życia. Nie zbieramy świadomie danych osobowych od dzieci. Jeśli uważasz, że zebraliśmy informacje od dziecka, prosimy o natychmiastowy kontakt.",
         },
         {
-          heading: '11. Międzynarodowe Transfery Danych',
-          content: 'Twoje informacje mogą być przekazywane i przetwarzane w krajach innych niż kraj Twojego zamieszkania. Kraje te mogą mieć różne przepisy dotyczące ochrony danych. Zapewniamy odpowiednie zabezpieczenia w celu ochrony Twoich danych.'
+          heading: "11. Międzynarodowe Transfery Danych",
+          content:
+            "Twoje informacje mogą być przekazywane i przetwarzane w krajach innych niż kraj Twojego zamieszkania. Kraje te mogą mieć różne przepisy dotyczące ochrony danych. Zapewniamy odpowiednie zabezpieczenia w celu ochrony Twoich danych.",
         },
         {
-          heading: '12. Zmiany w Polityce Prywatności',
-          content: 'Możemy od czasu do czasu aktualizować niniejszą Politykę Prywatności. Zmiany zostaną opublikowane na tej stronie z zaktualizowaną datą "Ostatnia aktualizacja". Zachęcamy do okresowego przeglądania niniejszej Polityki Prywatności. Dalsze korzystanie z Serwisu po wprowadzeniu zmian stanowi akceptację zaktualizowanej polityki.'
+          heading: "12. Zmiany w Polityce Prywatności",
+          content:
+            'Możemy od czasu do czasu aktualizować niniejszą Politykę Prywatności. Zmiany zostaną opublikowane na tej stronie z zaktualizowaną datą "Ostatnia aktualizacja". Zachęcamy do okresowego przeglądania niniejszej Polityki Prywatności. Dalsze korzystanie z Serwisu po wprowadzeniu zmian stanowi akceptację zaktualizowanej polityki.',
         },
         {
-          heading: '13. Skontaktuj się z Nami',
-          content: 'Jeśli masz pytania dotyczące niniejszej Polityki Prywatności lub chcesz skorzystać ze swoich praw, skontaktuj się z nami za pośrednictwem informacji kontaktowych dostępnych na naszej stronie internetowej.'
-        }
-      ]
-    }
-  }
+          heading: "13. Skontaktuj się z Nami",
+          content:
+            "Jeśli masz pytania dotyczące niniejszej Polityki Prywatności lub chcesz skorzystać ze swoich praw, skontaktuj się z nami za pośrednictwem informacji kontaktowych dostępnych na naszej stronie internetowej.",
+        },
+      ],
+    },
+  },
 };
 
 const pageContent = content[variant][lang];
@@ -256,41 +308,39 @@ const pageContent = content[variant][lang];
   </header>
 
   <div class="space-y-6">
-    {pageContent.sections.map((section) => (
-      <section class="border-l-4 border-blue-500 pl-4">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-3">{section.heading}</h2>
-        <p class="text-gray-700 leading-relaxed">{section.content}</p>
-      </section>
-    ))}
+    {
+      pageContent.sections.map((section) => (
+        <section class="border-l-4 border-blue-500 pl-4">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-3">{section.heading}</h2>
+          <p class="text-gray-700 leading-relaxed">{section.content}</p>
+        </section>
+      ))
+    }
   </div>
 
   <!-- Language switcher at the bottom -->
   <footer class="mt-12 pt-8 border-t border-gray-200">
     <p class="text-sm text-gray-600 mb-3">
-      {lang === 'en' ? 'View this page in:' : 'Zobacz tę stronę w języku:'}
+      {lang === "en" ? "View this page in:" : "Zobacz tę stronę w języku:"}
     </p>
     <div class="flex gap-4">
       <a
         href={`/legal/${variant}-en`}
         class={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-          lang === 'en'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          lang === "en" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
         }`}
         aria-label="English version"
-        aria-current={lang === 'en' ? 'page' : undefined}
+        aria-current={lang === "en" ? "page" : undefined}
       >
         English
       </a>
       <a
         href={`/legal/${variant}-pl`}
         class={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-          lang === 'pl'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          lang === "pl" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
         }`}
         aria-label="Wersja polska"
-        aria-current={lang === 'pl' ? 'page' : undefined}
+        aria-current={lang === "pl" ? "page" : undefined}
       >
         Polski
       </a>
@@ -317,4 +367,3 @@ const pageContent = content[variant][lang];
     margin-bottom: 0;
   }
 </style>
-

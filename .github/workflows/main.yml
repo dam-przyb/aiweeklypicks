@@ -2,7 +2,7 @@ name: Main CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 concurrency:
   group: main-${{ github.ref }}
@@ -40,12 +40,10 @@ jobs:
       - name: Run Unit Tests with Coverage
         run: npm run test:coverage
 
-  deploy:
-    name: Deploy to Cloudflare Pages
+  build:
+    name: Build
     needs: [lint, unit-test]
     runs-on: ubuntu-latest
-    environment:
-      name: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,6 +54,32 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy to Cloudflare Pages
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node and install dependencies
+        uses: ./.github/actions/setup-node-and-install
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
@@ -65,5 +89,3 @@ jobs:
           directory: dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: main
-
-

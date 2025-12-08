@@ -52,4 +52,3 @@ export const GET: APIRoute = async (context) => {
   // Redirect to login with informative message
   return redirect("/auth/login?info=Please%20use%20the%20logout%20button", 302);
 };
-

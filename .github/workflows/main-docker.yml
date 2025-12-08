@@ -2,7 +2,7 @@ name: Main Docker CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 concurrency:
   group: main-docker-${{ github.ref }}
@@ -113,5 +113,3 @@ jobs:
 
           echo "Applying updated spec..."
           doctl apps update "${DO_APP_ID}" --spec app-spec.yaml
-
-

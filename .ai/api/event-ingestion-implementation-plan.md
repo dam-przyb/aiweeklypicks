@@ -18,12 +18,14 @@ Public endpoint to ingest client events (e.g., `registration_complete`, `login`,
   - `metadata`: object (optional; JSON)
 
 Validation rules:
+
 - `event_type` must be from the allowed set.
 - When `event_type == 'report_view'`: `dwell_seconds` is required and `>= 10`.
 - `report_id` must be a valid UUID when present.
 - `metadata` must be a JSON object (no arrays/primitives) and size-limited (recommend ≤ 8KB serialized) to prevent abuse.
 
 Rate limits (per API plan):
+
 - Global: 60/min per IP for all POSTs to `/api/events`.
 - Additional: 10/min per user (when authenticated) for `report_view` events.
 
@@ -126,65 +128,76 @@ Server logs (structured): `{ route: '/api/events', user_id?, event_type, report_
 // src/pages/api/events.ts
 export const prerender = false;
 
-import type { APIRoute } from 'astro';
-import { postEventSchema, assertMetadataSize } from '@/lib/validation/events';
-import { ingestEvent } from '@/lib/services/events';
-import { limitPerKey } from '@/lib/services/rateLimit';
-import crypto from 'node:crypto';
+import type { APIRoute } from "astro";
+import { postEventSchema, assertMetadataSize } from "@/lib/validation/events";
+import { ingestEvent } from "@/lib/services/events";
+import { limitPerKey } from "@/lib/services/rateLimit";
+import crypto from "node:crypto";
 
 function getClientIp(request: Request): string {
-  const xff = request.headers.get('x-forwarded-for');
-  if (xff) return xff.split(',')[0].trim();
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
   // As a fallback, you may need adapter-specific access to remote IP; leave empty when unknown
-  return '';
+  return "";
 }
 
 function hashIp(ip: string, salt: string): string {
-  return crypto.createHash('sha256').update(`${salt}|${ip}`).digest('hex');
+  return crypto.createHash("sha256").update(`${salt}|${ip}`).digest("hex");
 }
 
 export const POST: APIRoute = async (context) => {
   const { request, locals } = context;
   const supabase = locals.supabase;
 
-  if ((request.headers.get('content-type') || '').includes('application/json') === false) {
-    return new Response(JSON.stringify({ code: 'bad_request', message: 'content-type must be application/json' }), { status: 400 });
+  if ((request.headers.get("content-type") || "").includes("application/json") === false) {
+    return new Response(JSON.stringify({ code: "bad_request", message: "content-type must be application/json" }), {
+      status: 400,
+    });
   }
 
   try {
     const body = await request.json();
     const parsed = postEventSchema.safeParse(body);
     if (!parsed.success) {
-      return new Response(JSON.stringify({ code: 'bad_request', message: parsed.error.issues.map(i => i.message).join('; ') }), { status: 400 });
+      return new Response(
+        JSON.stringify({ code: "bad_request", message: parsed.error.issues.map((i) => i.message).join("; ") }),
+        { status: 400 }
+      );
     }
 
     const input = parsed.data;
     if (input.metadata) {
       const ok = assertMetadataSize(input.metadata);
-      if (!ok) return new Response(JSON.stringify({ code: 'bad_request', message: 'metadata too large' }), { status: 400 });
+      if (!ok)
+        return new Response(JSON.stringify({ code: "bad_request", message: "metadata too large" }), { status: 400 });
     }
 
-    if (input.event_type === 'report_view' && (typeof input.dwell_seconds !== 'number' || input.dwell_seconds < 10)) {
-      return new Response(JSON.stringify({ code: 'validation_error', message: 'dwell_seconds must be >= 10 for report_view' }), { status: 422 });
+    if (input.event_type === "report_view" && (typeof input.dwell_seconds !== "number" || input.dwell_seconds < 10)) {
+      return new Response(
+        JSON.stringify({ code: "validation_error", message: "dwell_seconds must be >= 10 for report_view" }),
+        { status: 422 }
+      );
     }
 
     const ip = getClientIp(request);
     const salt = import.meta.env.EVENTS_IP_SALT;
     const ip_hash = hashIp(ip, salt);
-    const user_agent = request.headers.get('user-agent') || '';
+    const user_agent = request.headers.get("user-agent") || "";
 
     // Rate limits
     if (!limitPerKey({ key: `ip:${ip_hash}`, max: 60, windowMs: 60_000 })) {
-      return new Response(JSON.stringify({ code: 'rate_limited', message: 'too many requests' }), { status: 429 });
+      return new Response(JSON.stringify({ code: "rate_limited", message: "too many requests" }), { status: 429 });
     }
 
     // Per-user limit for report_view
-    if (input.event_type === 'report_view') {
+    if (input.event_type === "report_view") {
       const { data: userRes } = await supabase.auth.getUser();
       const userId = userRes?.user?.id;
       if (userId) {
         if (!limitPerKey({ key: `user:${userId}:report_view`, max: 10, windowMs: 60_000 })) {
-          return new Response(JSON.stringify({ code: 'rate_limited', message: 'too many report_view events' }), { status: 429 });
+          return new Response(JSON.stringify({ code: "rate_limited", message: "too many report_view events" }), {
+            status: 429,
+          });
         }
       }
     }
@@ -193,10 +206,10 @@ export const POST: APIRoute = async (context) => {
 
     return new Response(JSON.stringify({ event_id, accepted: true }), {
       status: 202,
-      headers: { 'content-type': 'application/json' },
+      headers: { "content-type": "application/json" },
     });
   } catch (err: any) {
-    return new Response(JSON.stringify({ code: 'server_error', message: 'unexpected error' }), { status: 500 });
+    return new Response(JSON.stringify({ code: "server_error", message: "unexpected error" }), { status: 500 });
   }
 };
 ```
@@ -205,13 +218,13 @@ export const POST: APIRoute = async (context) => {
 
 ```ts
 // src/lib/services/events.ts
-import type { PostEventCommand } from '@/types';
+import type { PostEventCommand } from "@/types";
 
 type RpcArgs = PostEventCommand & { ip_hash: string; user_agent: string };
 
-export async function ingestEvent(supabase: App.Locals['supabase'], args: RpcArgs): Promise<{ event_id: string }> {
+export async function ingestEvent(supabase: App.Locals["supabase"], args: RpcArgs): Promise<{ event_id: string }> {
   // Suggested RPC signature (DB): ingest_event(event_type text, dwell_seconds numeric, report_id uuid, metadata jsonb, ip_hash text, user_agent text)
-  const { data, error } = await supabase.rpc('ingest_event', args as any);
+  const { data, error } = await supabase.rpc("ingest_event", args as any);
   if (error) throw error;
   return { event_id: (data as any).event_id };
 }
@@ -221,28 +234,42 @@ export async function ingestEvent(supabase: App.Locals['supabase'], args: RpcArg
 
 ```ts
 // src/lib/validation/events.ts
-import { z } from 'zod';
+import { z } from "zod";
 
-const publicEventType = z.enum(['registration_complete', 'login', 'report_view', 'table_view']);
+const publicEventType = z.enum(["registration_complete", "login", "report_view", "table_view"]);
 const uuid = z.string().uuid();
 
-export const postEventSchema = z.object({
-  event_type: publicEventType,
-  dwell_seconds: z.number().positive().optional(),
-  report_id: uuid.optional(),
-  metadata: z.record(z.any()).optional(),
-}).superRefine((val, ctx) => {
-  if (val.event_type === 'report_view') {
-    if (typeof val.dwell_seconds !== 'number') {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'dwell_seconds is required for report_view', path: ['dwell_seconds'] });
-    } else if (val.dwell_seconds < 10) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'dwell_seconds must be >= 10 for report_view', path: ['dwell_seconds'] });
+export const postEventSchema = z
+  .object({
+    event_type: publicEventType,
+    dwell_seconds: z.number().positive().optional(),
+    report_id: uuid.optional(),
+    metadata: z.record(z.any()).optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.event_type === "report_view") {
+      if (typeof val.dwell_seconds !== "number") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "dwell_seconds is required for report_view",
+          path: ["dwell_seconds"],
+        });
+      } else if (val.dwell_seconds < 10) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "dwell_seconds must be >= 10 for report_view",
+          path: ["dwell_seconds"],
+        });
+      }
     }
-  }
-});
+  });
 
 export function assertMetadataSize(obj: unknown, maxBytes = 8 * 1024): boolean {
-  try { return Buffer.byteLength(JSON.stringify(obj)) <= maxBytes; } catch { return false; }
+  try {
+    return Buffer.byteLength(JSON.stringify(obj)) <= maxBytes;
+  } catch {
+    return false;
+  }
 }
 ```
 
@@ -254,4 +281,3 @@ export function assertMetadataSize(obj: unknown, maxBytes = 8 * 1024): boolean {
 - New: `src/lib/services/rateLimit.ts`
 - New: `src/lib/services/events.ts`
 - New: `src/pages/api/events.ts`
-

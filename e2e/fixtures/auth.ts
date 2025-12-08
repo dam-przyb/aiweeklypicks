@@ -1,6 +1,6 @@
 /**
  * Auth Fixtures for E2E Tests
- * 
+ *
  * Provides test fixtures for authentication-related E2E tests
  */
 
@@ -21,4 +21,3 @@ export const test = base.extend({
 });
 
 export { expect } from "@playwright/test";
-

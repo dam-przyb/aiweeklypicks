@@ -23,12 +23,7 @@ const currentOrder = query.order || "desc";
   <div class="overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200" role="table" aria-label="Historical stock picks">
       <thead class="bg-gray-50">
-        <PicksTableHeaders
-          client:load
-          currentSort={currentSort}
-          currentOrder={currentOrder}
-          otherParams={query}
-        />
+        <PicksTableHeaders client:load currentSort={currentSort} currentOrder={currentOrder} otherParams={query} />
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         {
@@ -41,22 +36,14 @@ const currentOrder = query.order || "desc";
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <span
                   class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    row.side === "long"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
+                    row.side === "long" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                   }`}
                 >
                   {row.side === "long" ? "Long" : "Short"}
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <span
-                  class={
-                    row.targetChangePctDisplay.startsWith("+")
-                      ? "text-green-700"
-                      : "text-red-700"
-                  }
-                >
+                <span class={row.targetChangePctDisplay.startsWith("+") ? "text-green-700" : "text-red-700"}>
                   {row.targetChangePctDisplay}
                 </span>
               </td>
@@ -77,12 +64,5 @@ const currentOrder = query.order || "desc";
   </div>
 
   <!-- Accessibility: Screen reader announcement for sort changes -->
-  <div
-    id="sort-announcer"
-    class="sr-only"
-    role="status"
-    aria-live="polite"
-    aria-atomic="true"
-  />
+  <div id="sort-announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 </div>
-

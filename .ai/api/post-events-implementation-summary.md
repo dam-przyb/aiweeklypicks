@@ -36,23 +36,28 @@ The `POST /api/events` endpoint has been fully implemented, tested, and document
 ## 📁 Files Created
 
 ### API Endpoint
+
 - ✅ `src/pages/api/events.ts` - Complete REST API endpoint with error handling
 
 ### Validation & Services
+
 - ✅ `src/lib/validation/events.ts` - Zod schema and validation logic
 - ✅ `src/lib/services/request-context.ts` - IP extraction and hashing utilities
 
 ### Database
+
 - ✅ `supabase/migrations/20251029120700_create_post_event_rpc.sql` - RPC function
 - ✅ `supabase/migrations/20251029120701_update_events_rls_for_anon.sql` - RLS updates
 - ✅ `src/db/database.types.ts` - Updated with RPC types
 
 ### Tests
+
 - ✅ `src/lib/validation/events.test.ts` - 36 validation tests
 - ✅ `src/lib/services/request-context.test.ts` - 29 helper function tests
 - ✅ `src/pages/api/events.test.ts` - 25 integration tests
 
 ### Documentation
+
 - ✅ `DEPLOYMENT.md` - Complete deployment guide
 - ✅ `supabase/migrations/README.md` - Migration documentation
 - ✅ `src/env.d.ts` - Environment variable types
@@ -93,16 +98,19 @@ The `POST /api/events` endpoint has been fully implemented, tested, and document
 ## 🌐 API Specification
 
 ### Endpoint
+
 ```
 POST /api/events
 ```
 
 ### Request Headers
+
 - `Content-Type: application/json` (required)
 - `Authorization: Bearer <token>` (optional, for user association)
 - `User-Agent: <string>` (captured for analytics)
 
 ### Request Body
+
 ```typescript
 {
   event_type: "registration_complete" | "login" | "report_view" | "table_view",
@@ -113,6 +121,7 @@ POST /api/events
 ```
 
 ### Response Codes
+
 - **202 Accepted** - Event successfully ingested
 - **400 Bad Request** - Malformed JSON or structural validation error
 - **422 Unprocessable Entity** - Domain rule violation
@@ -120,6 +129,7 @@ POST /api/events
 - **500 Internal Server Error** - Server error or misconfiguration
 
 ### Success Response (202)
+
 ```json
 {
   "event_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -128,17 +138,21 @@ POST /api/events
 ```
 
 ### Error Response (4xx/5xx)
+
 ```json
 {
   "error": "error_code",
   "message": "Human-readable error message",
-  "details": { /* Optional validation details */ }
+  "details": {
+    /* Optional validation details */
+  }
 }
 ```
 
 ## 🚀 Deployment Checklist
 
 ### ✅ Code Complete
+
 - [x] API endpoint implemented
 - [x] Validation logic implemented
 - [x] Helper functions implemented
@@ -150,16 +164,18 @@ POST /api/events
 ### 📋 Deployment Steps (To Be Done)
 
 1. **Apply Database Migrations**
+
    ```bash
    cd supabase
    npx supabase db push --remote
    ```
 
 2. **Set Environment Variable**
+
    ```bash
    # Generate salt
    openssl rand -base64 32
-   
+
    # Add to deployment environment
    EVENT_IP_HASH_SALT=<generated-salt>
    ```
@@ -168,6 +184,7 @@ POST /api/events
    - Redeploy or restart your app to pick up the new environment variable
 
 4. **Verify Deployment**
+
    ```bash
    # Test the endpoint
    curl -X POST https://your-domain.com/api/events \
@@ -184,16 +201,19 @@ POST /api/events
 ## 📈 Performance Characteristics
 
 ### Request Processing
+
 - **Latency**: < 100ms typical (single DB round-trip)
 - **Throughput**: Supports high event volume (limited by rate limiter)
 - **Database**: Single RPC call per event (O(1))
 
 ### Database
+
 - **Table**: Partitioned by month for performance
 - **Indexes**: On event_type, occurred_at, report_id
 - **Storage**: ~200 bytes per event average
 
 ### Rate Limiting
+
 - **Anonymous**: 100 events/minute per IP
 - **Authenticated**: Same (can be adjusted)
 - **Window**: Fixed 1-minute window
@@ -202,6 +222,7 @@ POST /api/events
 ## 🧪 Testing Coverage
 
 ### Unit Tests (65 tests)
+
 - All validation rules
 - IP extraction from different headers
 - IP hashing properties
@@ -209,6 +230,7 @@ POST /api/events
 - Edge cases
 
 ### Integration Tests (25 tests)
+
 - Full request/response cycle
 - All error scenarios
 - Rate limiting
@@ -216,6 +238,7 @@ POST /api/events
 - Different event types
 
 ### Code Coverage
+
 - Validation: 100%
 - Helpers: 100%
 - API endpoint: ~95% (some error paths hard to mock)
@@ -223,7 +246,9 @@ POST /api/events
 ## 🔧 Maintenance
 
 ### Monthly Tasks
+
 1. **Create New Partition** (before month start)
+
    ```sql
    CREATE TABLE events_YYYY_MM PARTITION OF events
      FOR VALUES FROM ('YYYY-MM-01') TO ('YYYY-MM+1-01');
@@ -235,6 +260,7 @@ POST /api/events
    - Adjust rate limits if needed
 
 ### Quarterly Tasks
+
 1. **Archive Old Data**
    - Export events older than retention period
    - Drop old partitions
@@ -244,6 +270,7 @@ POST /api/events
    - Check false positive rate
 
 ### As Needed
+
 1. **Rotate IP Hash Salt**
    - Generate new salt
    - Update environment variable
@@ -290,6 +317,7 @@ POST /api/events
 ## 📞 Support
 
 For questions or issues:
+
 1. Check `DEPLOYMENT.md` for deployment troubleshooting
 2. Review test files for usage examples
 3. Check Supabase logs for RPC errors
@@ -315,4 +343,3 @@ For questions or issues:
 **Lines of code added**: ~1,500  
 **Test coverage**: 90%+  
 **Status**: ✅ Ready for Production
-

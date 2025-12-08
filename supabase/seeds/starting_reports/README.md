@@ -28,8 +28,7 @@ Each file should contain a single report payload shaped like:
 ```
 
 Import options:
+
 - Use the admin API: POST /api/admin/imports with either multipart/form-data (file) or application/json:
   { "filename": "YYYY-MM-DDreport.json", "payload": <object> }
 - Or run the seed script described in the project root README.
-
-

@@ -23,12 +23,14 @@ Migrations are executed in chronological order based on their timestamp prefix:
 **Purpose:** Creates the `admin_post_event` SECURITY DEFINER function for secure event ingestion.
 
 **What it does:**
+
 - Creates RPC function that accepts event data from API endpoint
 - Uses `auth.uid()` to automatically associate authenticated users
 - Returns `event_id` as JSON
 - Grants execute permissions to both `authenticated` and `anon` roles
 
 **Dependencies:**
+
 - `events` table (created in 20251029120200)
 - `weekly_reports` table (for FK constraint on report_id)
 
@@ -37,6 +39,7 @@ Migrations are executed in chronological order based on their timestamp prefix:
 **Purpose:** Updates RLS policies to allow anonymous event tracking.
 
 **What it does:**
+
 - Drops old `events_insert_service` policy
 - Creates new `events_insert_via_rpc` policy allowing both authenticated and anon users
 - INSERT operations still controlled via SECURITY DEFINER RPC
@@ -100,22 +103,23 @@ DROP FUNCTION IF EXISTS admin_post_event(text, numeric, uuid, jsonb, text, text)
 Check applied migrations:
 
 ```sql
-SELECT * FROM supabase_migrations.schema_migrations 
+SELECT * FROM supabase_migrations.schema_migrations
 ORDER BY version DESC;
 ```
 
 Check the events RPC exists:
 
 ```sql
-SELECT 
+SELECT
   proname as function_name,
   proargnames as arguments,
   prosecdef as is_security_definer
-FROM pg_proc 
+FROM pg_proc
 WHERE proname = 'admin_post_event';
 ```
 
 Expected result:
+
 - `function_name`: admin_post_event
 - `arguments`: {p_event_type, p_dwell_seconds, p_report_id, p_metadata, p_user_agent, p_ip_hash}
 - `is_security_definer`: true
@@ -188,4 +192,3 @@ DROP TABLE events_2024_11;
 Current schema version after all migrations: **20251029120701**
 
 Last updated: 2025-11-16
-

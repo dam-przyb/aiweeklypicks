@@ -1,14 +1,17 @@
 # View Implementation Plan – Reports List (Home)
 
 ## 1. Overview
+
 A public, SEO-friendly list of weekly AI stock reports rendered at the home route. The page displays report cards with `title`, `report_week`, `published_at`, `version`, `summary`, and links into report details by `slug`. Users can change sorting (default `published_at desc`) and paginate. The page handles empty states and clear error messages for invalid query parameters.
 
 ## 2. View Routing
+
 - Path: `/`
 - File: `src/pages/index.astro`
 - Rendering: SSR (Astro) with a small React island for sort controls.
 
 ## 3. Component Structure
+
 - `src/pages/index.astro` (page)
   - `SEOHead` (astro/SSR) — metadata and structured data
   - `Header` (astro/SSR)
@@ -22,7 +25,9 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
   - `Footer` (astro/SSR)
 
 ## 4. Component Details
+
 ### IndexPage (`src/pages/index.astro`)
+
 - Purpose: Compose the view, fetch data from `GET /api/reports`, pass data and URL state into child components, handle errors/empty states.
 - Main elements:
   - Server-side fetch from internal API using `Astro.url.searchParams`.
@@ -37,6 +42,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: N/A (page root). Receives data from API.
 
 ### SEOHead
+
 - Purpose: Provide page `<title>`, meta description, and structured data.
 - Main elements: `<title>`, meta tags, optional JSON-LD for list.
 - Handled interactions: None.
@@ -45,6 +51,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: `{ title, description }`.
 
 ### Header / Footer
+
 - Purpose: Global shell for navigation and brand/footer info.
 - Main elements: Semantic `<header>`/`<footer>` with nav links.
 - Interactions: Standard navigation.
@@ -53,6 +60,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: none (or site metadata if already standardized).
 
 ### ErrorBanner
+
 - Purpose: Display friendly error messages for invalid params (400) and server errors (500).
 - Main elements: `<div role="alert">` with message and optional Reset Filters button.
 - Interactions: Reset button clears sorting/pagination to defaults.
@@ -61,6 +69,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: `{ errorCode?: string; errorMessage?: string; onReset?: () => void }`.
 
 ### SortControls (React island)
+
 - Purpose: Allow sorting by `published_at|report_week|title` and order `asc|desc`.
 - Main elements: Shadcn/ui `Select` for sort field, `Button` toggle for order; accessible labels and focus.
 - Interactions:
@@ -71,6 +80,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: `{ initialSort: 'published_at'|'report_week'|'title'; initialOrder: 'asc'|'desc'; otherParams: URLSearchParamsLike }`.
 
 ### ReportList
+
 - Purpose: Render a list of report cards.
 - Main elements: `<section>` containing multiple `ReportCard` components.
 - Interactions: None.
@@ -79,6 +89,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: `{ items: ReportListItemViewModel[] }`.
 
 ### ReportCard
+
 - Purpose: Display a single report summary and navigate to detail.
 - Main elements: Card with `title` (link to `/reports/[slug]`, optionally wrapped with `PrefetchLink`), `report_week`, `published_at` (ISO string, UTC), `version`, `summary`.
 - Interactions: Click title or CTA navigates to detail.
@@ -87,6 +98,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: `{ item: ReportListItemViewModel }`.
 
 ### PrefetchLink (React island, optional)
+
 - Purpose: Prefetch report detail data on hover/focus to improve perceived navigation speed from the list.
 - Main elements: Headless component that attaches mouseenter/focus listeners to trigger a low-priority prefetch of `/reports/[slug]` (route assets) and/or `/api/reports/{slug}`.
 - Interactions:
@@ -102,6 +114,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
   - `disabledOnTouch`: default `true`.
 
 ### PaginationControls
+
 - Purpose: Navigate across pages, preserving other query params.
 - Main elements: Prev/Next buttons and page indicators; accessible with `aria-label`s.
 - Interactions: Click to navigate to `?page=N` while retaining `sort`, `order`, `week`, `version`, `published_*` filters.
@@ -112,6 +125,7 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: Same as above.
 
 ### EmptyState
+
 - Purpose: Friendly message when there are no reports.
 - Main elements: Icon, title, short copy, and a button to reset filters.
 - Interactions: Reset button clears query params to defaults.
@@ -120,14 +134,17 @@ A public, SEO-friendly list of weekly AI stock reports rendered at the home rout
 - Props: `{ onReset?: () => void }`.
 
 ## 5. Types
+
 Use the shared DTOs from `src/types.ts` and add minimal view models for formatting.
 
 Existing:
+
 - `ReportsListResponseDTO = Paginated<ReportListItemDTO>`
 - `ReportListItemDTO` with: `report_id`, `slug`, `report_week`, `published_at`, `version`, `title`, `summary`, `created_at`.
 - `ReportsListQuery` with: `page?`, `page_size?`, `sort?`, `order?`, `week?`, `version?`, `published_before?`, `published_after?`.
 
 New (view-only):
+
 - `type ReportListItemViewModel = {
   reportId: string; // UUID
   slug: string;
@@ -147,11 +164,13 @@ New (view-only):
 Mapping: Convert `ReportListItemDTO` into `ReportListItemViewModel` by formatting `published_at` to `YYYY-MM-DD` for display and computing a localized tooltip string for hover.
 
 ## 6. State Management
+
 - SSR data: fetched in `index.astro` from `GET /api/reports` and passed to SSR children as plain props.
 - Client state (React island): `SortControls` holds `sort` and `order` in local state initialized from URL, and updates URL on change using `history.replaceState` followed by `location.assign(location.href)` to trigger SSR reload (or use `location.search = ...`).
 - No global state needed.
 
 ## 7. API Integration
+
 - Endpoint: `GET /api/reports` (implemented in `src/pages/api/reports.ts`).
 - Request query params (subset of `ReportsListQuery`):
   - `page` (default 1, min 1)
@@ -163,6 +182,7 @@ Mapping: Convert `ReportListItemDTO` into `ReportListItemViewModel` by formattin
 - Server fetch: In `index.astro` frontmatter, build query from `Astro.url.searchParams`, coerce/validate, then call `await fetch(new URL('/api/reports' + '?' + qs, Astro.url))` and parse JSON.
 
 ## 8. User Interactions
+
 - Sort field change: Updates `sort` query param, resets `page=1`, navigates to SSR-rendered page.
 - Order toggle: Toggles `order`, resets `page=1`, navigates.
 - Pagination click: Navigates to `?page=N` preserving other query params.
@@ -170,6 +190,7 @@ Mapping: Convert `ReportListItemDTO` into `ReportListItemViewModel` by formattin
 - Report card click: Navigates to `/reports/[slug]` for detail page.
 
 ## 9. Conditions and Validation
+
 - Query constraints applied before generating links and as initial state:
   - `page`: if missing or `<1`, use `1`.
   - `page_size`: if missing or out of range, use `20`.
@@ -182,12 +203,14 @@ Mapping: Convert `ReportListItemDTO` into `ReportListItemViewModel` by formattin
   - Dates shown as ISO `YYYY-MM-DD` (UTC) with local time tooltip.
 
 ## 10. Error Handling
+
 - 400 Bad Request (validation errors): Show `ErrorBanner` with the server message and a Reset button that rewrites URL to defaults.
 - 500 Server Error or network errors: Show generic error copy with retry/Reset.
 - Empty results: Show `EmptyState` with call to action to reset filters.
 - Defensive rendering: Omit broken cards if required fields are missing; log to console in dev.
 
 ## 11. Implementation Steps
+
 1. Create `src/pages/index.astro` with SSR frontmatter: read `Astro.url.searchParams`, normalize query, fetch `/api/reports`, branch on success/error.
 2. Build `SEOHead` within the page with appropriate title and description.
 3. Implement `ErrorBanner` (astro/SSR) with reset handler that navigates to `/` (no query).

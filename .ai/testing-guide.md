@@ -39,10 +39,10 @@ describe("ComponentName", () => {
   it("should do something specific", () => {
     // Arrange
     const props = { value: "test" };
-    
+
     // Act
     render(<ComponentName {...props} />);
-    
+
     // Assert
     expect(screen.getByText("test")).toBeInTheDocument();
   });
@@ -57,6 +57,7 @@ Tests automatically use the appropriate environment:
 - **node**: API routes (`**/pages/api/**/*.test.ts`), services, validation logic
 
 Override per-file with:
+
 ```typescript
 // @vitest-environment node
 ```
@@ -64,6 +65,7 @@ Override per-file with:
 ### Mocking Patterns
 
 #### Function Mocks
+
 ```typescript
 const mockFn = vi.fn();
 mockFn.mockReturnValue("result");
@@ -71,6 +73,7 @@ mockFn.mockResolvedValue("async result");
 ```
 
 #### Module Mocks
+
 ```typescript
 vi.mock("@/lib/supabase", () => ({
   createClient: vi.fn(() => mockSupabaseClient),
@@ -78,6 +81,7 @@ vi.mock("@/lib/supabase", () => ({
 ```
 
 #### Spy on Existing Functions
+
 ```typescript
 const spy = vi.spyOn(object, "method");
 expect(spy).toHaveBeenCalledWith(expectedArg);
@@ -91,10 +95,10 @@ import { userEvent } from "@testing-library/user-event";
 
 it("should handle user interactions", async () => {
   render(<MyComponent />);
-  
+
   const button = screen.getByRole("button", { name: /submit/i });
   await fireEvent.click(button);
-  
+
   await waitFor(() => {
     expect(screen.getByText("Success")).toBeVisible();
   });
@@ -123,6 +127,7 @@ npm run test:coverage
 ```
 
 Coverage is configured to exclude:
+
 - Test files
 - Type definitions
 - Configuration files
@@ -175,7 +180,7 @@ test.describe("Feature Name", () => {
   test("should perform action", async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
-    
+
     await expect(homePage.heading).toBeVisible();
   });
 });
@@ -199,7 +204,7 @@ Test backend APIs directly:
 test("should return valid response", async ({ request }) => {
   const response = await request.get("/api/reports");
   expect(response.ok()).toBeTruthy();
-  
+
   const data = await response.json();
   expect(data).toHaveProperty("reports");
 });
@@ -213,7 +218,7 @@ Compare screenshots for visual regressions:
 test("should match screenshot", async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
-  
+
   await expect(page).toHaveScreenshot("homepage.png", {
     maxDiffPixels: 100,
   });
@@ -230,11 +235,11 @@ test("should work in authenticated context", async ({ browser }) => {
     storageState: "auth.json", // Load saved auth state
   });
   const page = await context.newPage();
-  
+
   // Test as authenticated user
   await page.goto("/admin");
   await expect(page).toHaveURL(/admin/);
-  
+
   await context.close();
 });
 ```
@@ -323,35 +328,42 @@ npm run test:all
 ### Vitest
 
 **Tests not found**
+
 - Check `vitest.config.ts` include/exclude patterns
 - Ensure test files match `*.{test,spec}.{ts,tsx}`
 
 **jsdom errors**
+
 - Verify jsdom is installed: `npm install -D jsdom`
 - Check environment setting in config
 
 **Import errors**
+
 - Verify path aliases in `vitest.config.ts` match `tsconfig.json`
 - Check that all dependencies are installed
 
 ### Playwright
 
 **Tests timeout**
+
 - Increase timeout in `playwright.config.ts`
 - Check if dev server is running
 - Verify `baseURL` is correct
 
 **Elements not found**
+
 - Use `page.pause()` to debug interactively
 - Check if element is visible with `await element.waitFor()`
 - Verify locator strategy is correct
 
 **Screenshots don't match**
+
 - Update baseline: `npm run test:e2e -- --update-snapshots`
 - Check if content is dynamic (dates, random data)
 - Consider increasing `maxDiffPixels`
 
 **Browser not launching**
+
 - Install browser: `npx playwright install chromium`
 - Check system dependencies on Linux
 
@@ -381,4 +393,3 @@ BASE_URL=http://localhost:3000
 - [Testing Library](https://testing-library.com/)
 - [Test Guidelines](.cursor/rules/testing-unit-vitest.mdc)
 - [E2E Guidelines](.cursor/rules/testing-e2e-playwright.mdc)
-

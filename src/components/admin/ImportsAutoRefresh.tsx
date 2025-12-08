@@ -9,9 +9,7 @@ interface ImportsAutoRefreshProps {
  * Pauses when the tab is hidden using the Page Visibility API.
  * Displays a toggle to enable/disable auto-refresh and shows last refresh time.
  */
-export default function ImportsAutoRefresh({
-  refreshIntervalSeconds = 30,
-}: ImportsAutoRefreshProps) {
+export default function ImportsAutoRefresh({ refreshIntervalSeconds = 30 }: ImportsAutoRefreshProps) {
   const [enabled, setEnabled] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(refreshIntervalSeconds);
@@ -124,19 +122,14 @@ export default function ImportsAutoRefresh({
 
         {/* Label and Status */}
         <div>
-          <p className="text-sm font-medium text-gray-900">
-            Auto-refresh {enabled ? "enabled" : "disabled"}
-          </p>
+          <p className="text-sm font-medium text-gray-900">Auto-refresh {enabled ? "enabled" : "disabled"}</p>
           {enabled && (
             <p className="text-xs text-gray-600">
-              Next refresh in {countdown}s
-              {document.visibilityState !== "visible" && " (paused - tab hidden)"}
+              Next refresh in {countdown}s{document.visibilityState !== "visible" && " (paused - tab hidden)"}
             </p>
           )}
           {!enabled && lastRefresh && (
-            <p className="text-xs text-gray-600">
-              Last refreshed at {lastRefresh.toLocaleTimeString()}
-            </p>
+            <p className="text-xs text-gray-600">Last refreshed at {lastRefresh.toLocaleTimeString()}</p>
           )}
         </div>
       </div>
@@ -148,13 +141,7 @@ export default function ImportsAutoRefresh({
           className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-700 hover:text-blue-800 bg-white border border-blue-300 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition-colors"
           aria-label="Refresh now"
         >
-          <svg
-            className="w-3 h-3"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -168,4 +155,3 @@ export default function ImportsAutoRefresh({
     </div>
   );
 }
-

@@ -12,6 +12,7 @@ Public endpoint that fetches a single weekly report by its permalink `slug`, inc
   - `slug` (string): permalink of the report
 
 Validation rules for `slug` (defensive hardening):
+
 - Non-empty string, length 1..120
 - Pattern: `^[a-z0-9]+(?:-[a-z0-9]+)*$` (lowercase, digits, hyphens)
 
@@ -37,6 +38,7 @@ Validation rules for `slug` (defensive hardening):
   - Unexpected server/database errors.
 
 Caching headers:
+
 - `Cache-Control: public, max-age=60, s-maxage=60, stale-while-revalidate=120`
 - Optional: `ETag` based on a hash of `{ report.report_id, report.updated fields?, picks length + checksums }` (or simply JSON payload hash) to support conditional GET.
 
@@ -63,12 +65,15 @@ Caching headers:
 - **500 Internal Server Error** for unexpected database or server failures.
 
 Error body shape:
+
 ```json
 { "code": "bad_request", "message": "invalid slug" }
 ```
+
 ```json
 { "code": "not_found", "message": "report not found" }
 ```
+
 ```json
 { "code": "server_error", "message": "unexpected error" }
 ```
@@ -115,31 +120,33 @@ Server-side logging (structured): `{ route: '/api/reports/{slug}', slug, error }
 // src/pages/api/reports/[slug].ts
 export const prerender = false;
 
-import type { APIRoute } from 'astro';
-import { parseReportSlug } from '@/lib/validation/report-by-slug';
-import { getReportWithPicksBySlug } from '@/lib/services/reportBySlug';
+import type { APIRoute } from "astro";
+import { parseReportSlug } from "@/lib/validation/report-by-slug";
+import { getReportWithPicksBySlug } from "@/lib/services/reportBySlug";
 
 export const GET: APIRoute = async (context) => {
   const { locals, params } = context;
 
   try {
-    const slug = parseReportSlug({ slug: String(params?.slug ?? '') });
+    const slug = parseReportSlug({ slug: String(params?.slug ?? "") });
     const result = await getReportWithPicksBySlug(locals.supabase, slug);
     if (!result) {
-      return new Response(JSON.stringify({ code: 'not_found', message: 'report not found' }), { status: 404 });
+      return new Response(JSON.stringify({ code: "not_found", message: "report not found" }), { status: 404 });
     }
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: {
-        'content-type': 'application/json',
-        'cache-control': 'public, max-age=60, s-maxage=60, stale-while-revalidate=120',
+        "content-type": "application/json",
+        "cache-control": "public, max-age=60, s-maxage=60, stale-while-revalidate=120",
       },
     });
   } catch (err: any) {
-    if (err?.code === 'bad_request') {
-      return new Response(JSON.stringify({ code: 'bad_request', message: err.message || 'invalid slug' }), { status: 400 });
+    if (err?.code === "bad_request") {
+      return new Response(JSON.stringify({ code: "bad_request", message: err.message || "invalid slug" }), {
+        status: 400,
+      });
     }
-    return new Response(JSON.stringify({ code: 'server_error', message: 'unexpected error' }), { status: 500 });
+    return new Response(JSON.stringify({ code: "server_error", message: "unexpected error" }), { status: 500 });
   }
 };
 ```
@@ -148,33 +155,50 @@ export const GET: APIRoute = async (context) => {
 
 ```ts
 // src/lib/services/reportBySlug.ts
-import type { ReportWithPicksDTO, ReportDTO, StockPickDTO } from '@/types';
+import type { ReportWithPicksDTO, ReportDTO, StockPickDTO } from "@/types";
 
 const REPORT_COLUMNS = [
-  'report_id', 'slug', 'report_week', 'published_at', 'version', 'title', 'summary', 'created_at',
+  "report_id",
+  "slug",
+  "report_week",
+  "published_at",
+  "version",
+  "title",
+  "summary",
+  "created_at",
 ] as const;
 
 const PICK_COLUMNS = [
-  'pick_id', 'report_id', 'ticker', 'exchange', 'side', 'target_change_pct', 'rationale', 'created_at',
+  "pick_id",
+  "report_id",
+  "ticker",
+  "exchange",
+  "side",
+  "target_change_pct",
+  "rationale",
+  "created_at",
 ] as const;
 
-export async function getReportWithPicksBySlug(supabase: App.Locals['supabase'], slug: string): Promise<ReportWithPicksDTO | null> {
+export async function getReportWithPicksBySlug(
+  supabase: App.Locals["supabase"],
+  slug: string
+): Promise<ReportWithPicksDTO | null> {
   const { data: report, error: reportError } = await supabase
-    .from('weekly_reports')
-    .select(REPORT_COLUMNS.join(','))
-    .eq('slug', slug)
+    .from("weekly_reports")
+    .select(REPORT_COLUMNS.join(","))
+    .eq("slug", slug)
     .single();
 
-  if (reportError?.code === 'PGRST116' /* No rows */) return null; // Supabase PostgREST not found code
+  if (reportError?.code === "PGRST116" /* No rows */) return null; // Supabase PostgREST not found code
   if (reportError) throw reportError;
   if (!report) return null;
 
   const { data: picks, error: picksError } = await supabase
-    .from('stock_picks')
-    .select(PICK_COLUMNS.join(','))
-    .eq('report_id', report.report_id)
-    .order('ticker', { ascending: true })
-    .order('side', { ascending: true });
+    .from("stock_picks")
+    .select(PICK_COLUMNS.join(","))
+    .eq("report_id", report.report_id)
+    .order("ticker", { ascending: true })
+    .order("side", { ascending: true });
 
   if (picksError) throw picksError;
 
@@ -186,19 +210,23 @@ export async function getReportWithPicksBySlug(supabase: App.Locals['supabase'],
 
 ```ts
 // src/lib/validation/report-by-slug.ts
-import { z } from 'zod';
-import type { ReportSlugParams } from '@/types';
+import { z } from "zod";
+import type { ReportSlugParams } from "@/types";
 
 export const reportSlugSchema = z.object({
-  slug: z.string().min(1).max(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  slug: z
+    .string()
+    .min(1)
+    .max(120)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 });
 
 export function parseReportSlug(params: ReportSlugParams): string {
   const parsed = reportSlugSchema.safeParse(params);
   if (!parsed.success) {
-    const message = parsed.error.issues.map(i => i.message).join('; ');
-    const error: any = new Error(message || 'invalid slug');
-    error.code = 'bad_request';
+    const message = parsed.error.issues.map((i) => i.message).join("; ");
+    const error: any = new Error(message || "invalid slug");
+    error.code = "bad_request";
     throw error;
   }
   return parsed.data.slug;
@@ -211,4 +239,3 @@ export function parseReportSlug(params: ReportSlugParams): string {
 - New: `src/lib/services/reportBySlug.ts`
 - New: `src/pages/api/reports/[slug].ts`
 - No middleware changes required for public GET; existing `locals.supabase` usage applies.
-

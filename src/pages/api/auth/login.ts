@@ -262,4 +262,3 @@ async function emitLoginEvent(request: Request, userId: string): Promise<void> {
     // Don't throw - this is fire-and-forget
   }
 }
-

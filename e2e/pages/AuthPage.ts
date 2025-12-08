@@ -1,6 +1,6 @@
 /**
  * Auth Page Object Model
- * 
+ *
  * Page Object Model for authentication pages (login, register).
  * Encapsulates authentication-related interactions.
  */
@@ -42,4 +42,3 @@ export class AuthPage {
     await this.submitButton.click();
   }
 }
-

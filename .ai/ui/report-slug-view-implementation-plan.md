@@ -104,24 +104,24 @@ Leverage existing DTOs from `src/types.ts`, and add lightweight view models for 
 
 - New View Models (for SSR shaping)
   - `type ReportMetaVM = {
-      reportId: UUID;
-      slug: string;
-      title: string;
-      summary: string;
-      reportWeek: string; // e.g., 2025-W42
-      publishedAtUtc: string; // ISO
-      publishedDateDisplay: string; // YYYY-MM-DD
-      version: string;
-    }`
+  reportId: UUID;
+  slug: string;
+  title: string;
+  summary: string;
+  reportWeek: string; // e.g., 2025-W42
+  publishedAtUtc: string; // ISO
+  publishedDateDisplay: string; // YYYY-MM-DD
+  version: string;
+}`
   - `type PickItemVM = {
-      pickId: UUID;
-      ticker: string;
-      exchange: string;
-      side: "long" | "short";
-      targetChangePct: number; // raw
-      targetChangePctDisplay: string; // e.g., +12.34%
-      rationale: string;
-    }`
+  pickId: UUID;
+  ticker: string;
+  exchange: string;
+  side: "long" | "short";
+  targetChangePct: number; // raw
+  targetChangePctDisplay: string; // e.g., +12.34%
+  rationale: string;
+}`
   - `type ReportWithPicksVM = { report: ReportMetaVM; picks: PickItemVM[] }`
 
 - Component Props
@@ -212,11 +212,11 @@ Leverage existing DTOs from `src/types.ts`, and add lightweight view models for 
    - Simulate visibility changes to validate timer behavior and single event post.
    - Check headers/footers and disclaimer visibility on all viewports.
 10. Performance
-   - Keep island minimal; no heavy dependencies.
-   - Confirm SSR uses API caching headers implicitly; no client fetch for content.
+
+- Keep island minimal; no heavy dependencies.
+- Confirm SSR uses API caching headers implicitly; no client fetch for content.
 
 ---
 
 - Tech alignment: Astro 5, TypeScript 5, React 19 islands, Tailwind 4, Shadcn/ui.
 - PRD/User Stories coverage: FR-031 (content), FR-060 (disclaimer), FR-051 (numeric formatting), FR-070 (>=10s event), FR-080 (performance); US-002, US-015, US-016, US-018, US-021, US-026.
-

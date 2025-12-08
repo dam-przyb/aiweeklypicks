@@ -11,6 +11,7 @@
 - Picks History — materialized view `picks_history`
 
 Notes
+
 - Public read access (via RLS policies) is allowed for `weekly_reports` and `stock_picks`.
 - Admin-only access for `imports_audit`, `events`, and `staff_networks`.
 - Admin is determined by `profiles.is_admin = true` for `auth.uid()`.
@@ -19,6 +20,7 @@ Notes
 ## 2. Endpoints
 
 Conventions
+
 - Base path: `/api`
 - Auth: Supabase Auth JWT in `Authorization: Bearer <token>`; anon allowed for public GETs
 - Pagination: `page` (1-based), `page_size` (default 20, max 100)
@@ -28,7 +30,8 @@ Conventions
 
 ### Weekly Reports
 
-1) GET /api/reports
+1. GET /api/reports
+
 - Description: List weekly reports ordered by publish date desc
 - Query
   - `page`, `page_size`
@@ -42,7 +45,8 @@ Conventions
   - `page`,`page_size`,`total_items`,`total_pages`
 - Errors: 400 invalid params
 
-2) GET /api/reports/{slug}
+2. GET /api/reports/{slug}
+
 - Description: Fetch a single report by permalink slug, including its picks
 - Path: `slug` (string)
 - Response 200
@@ -50,7 +54,8 @@ Conventions
   - `picks`: array of Stock Pick (see schema below)
 - Errors: 404 not found
 
-3) GET /api/reports/id/{report_id}
+3. GET /api/reports/id/{report_id}
+
 - Description: Fetch a single report by UUID (alternative to slug)
 - Path: `report_id` (UUID)
 - Response 200: same shape as by slug
@@ -60,7 +65,8 @@ Note: Creating/updating/deleting reports occurs only through the Import endpoint
 
 ### Stock Picks
 
-4) GET /api/picks
+4. GET /api/picks
+
 - Description: Historical picks table (uses `picks_history` MV when available)
 - Query
   - `page`, `page_size`
@@ -72,7 +78,8 @@ Note: Creating/updating/deleting reports occurs only through the Import endpoint
   - `page`,`page_size`,`total_items`,`total_pages`
 - Errors: 400 invalid params
 
-5) GET /api/reports/{report_id}/picks
+5. GET /api/reports/{report_id}/picks
+
 - Description: List picks for a given report (directly from `stock_picks`)
 - Path: `report_id` (UUID)
 - Query: none (small cardinality)
@@ -80,11 +87,13 @@ Note: Creating/updating/deleting reports occurs only through the Import endpoint
 - Errors: 400 invalid UUID, 404 report not found
 
 Stock Pick JSON shape
+
 - `{ "pick_id": UUID, "report_id": UUID, "ticker": string, "exchange": string, "side": "long"|"short", "target_change_pct": number, "rationale": string, "created_at": string }`
 
 ### Admin: Imports
 
-6) GET /api/admin/imports ✅ **IMPLEMENTED**
+6. GET /api/admin/imports ✅ **IMPLEMENTED**
+
 - AuthZ: admin only (via `requireAdmin` + RLS)
 - Rate Limit: 30 requests/min per admin user
 - Description: List recent imports from `imports_audit` with pagination and filters
@@ -115,14 +124,16 @@ Stock Pick JSON shape
   - RLS Verification: `.ai/admin-imports-rls-verification.md`
   - Plan: `.ai/admin-imports-implementation-plan.md`
 
-7) GET /api/admin/imports/{import_id}
+7. GET /api/admin/imports/{import_id}
+
 - AuthZ: admin only
 - Description: Fetch a specific import audit row
 - Path: `import_id` (UUID)
 - Response 200: single audit row (fields as above)
 - Errors: 400 invalid UUID, 403 not admin, 404 not found
 
-8) POST /api/admin/imports
+8. POST /api/admin/imports
+
 - AuthZ: admin only
 - Description: Upload a weekly report JSON and import atomically via RPC `admin_import_report(payload JSONB, filename TEXT)`
 - Content Types
@@ -138,21 +149,24 @@ Stock Pick JSON shape
 
 ### Admin: Profiles
 
-9) GET /api/admin/profiles
+9. GET /api/admin/profiles
+
 - AuthZ: admin only
 - Description: List profiles; useful for admin management
 - Query: `page`, `page_size`, `is_admin` (boolean)
 - Response 200: `items`: array {`user_id`, `is_admin`, `created_at`}
 - Errors: 403 not admin
 
-10) POST /api/admin/profiles/{user_id}/grant-admin
+10. POST /api/admin/profiles/{user_id}/grant-admin
+
 - AuthZ: admin only
 - Description: Set `profiles.is_admin = true` for the specified user
 - Path: `user_id` (UUID)
 - Response 200: `{ "user_id": UUID, "is_admin": true }`
 - Errors: 400 invalid UUID, 403 not admin, 404 user/profile not found
 
-11) POST /api/admin/profiles/{user_id}/revoke-admin
+11. POST /api/admin/profiles/{user_id}/revoke-admin
+
 - AuthZ: admin only
 - Description: Set `profiles.is_admin = false`
 - Response 200: `{ "user_id": UUID, "is_admin": false }`
@@ -162,7 +176,8 @@ Note: These should be executed via a server-side service role or a SECURITY DEFI
 
 ### Events
 
-12) POST /api/events
+12. POST /api/events
+
 - AuthZ: public (server executes with RPC that does not require `auth.uid()`); associates `auth.uid()` when present
 - Description: Generic event ingestion (validated types, server-controlled timestamps, IP hashing)
 - Request JSON
@@ -176,7 +191,8 @@ Note: These should be executed via a server-side service role or a SECURITY DEFI
 - Response 202: `{ "event_id": UUID, "accepted": true }`
 - Errors: 400 validation, 422 dwell < 10 for report_view, 429 rate limit
 
-13) GET /api/admin/events
+13. GET /api/admin/events
+
 - AuthZ: admin only
 - Description: Query events for ops analytics (excludes bots/staff via filters when requested)
 - Query
@@ -189,21 +205,24 @@ Note: These should be executed via a server-side service role or a SECURITY DEFI
 
 ### Staff Networks
 
-14) GET /api/admin/staff-networks
+14. GET /api/admin/staff-networks
+
 - AuthZ: admin only
 - Description: List staff networks used to flag staff IPs
 - Query: `page`, `page_size`
 - Response 200: `items`: array {`network`,`label`,`created_at`}
 - Errors: 403 not admin
 
-15) POST /api/admin/staff-networks
+15. POST /api/admin/staff-networks
+
 - AuthZ: admin only
 - Description: Add a CIDR to `staff_networks`
 - Request JSON: `{ "network": string (CIDR), "label": string }`
 - Response 201: created record
 - Errors: 400 invalid CIDR, 403 not admin, 409 duplicate
 
-16) DELETE /api/admin/staff-networks/{network}
+16. DELETE /api/admin/staff-networks/{network}
+
 - AuthZ: admin only
 - Description: Remove a CIDR entry
 - Path: `network` as URL-encoded CIDR
@@ -212,26 +231,30 @@ Note: These should be executed via a server-side service role or a SECURITY DEFI
 
 ### Auth (Supabase-provided; optional REST facades)
 
-17) POST /api/auth/register
+17. POST /api/auth/register
+
 - Description: Proxy to Supabase Auth sign-up to emit consistent events server-side
 - Request JSON: `{ "email": string, "password": string }`
 - Response 201: `{ "user_id": UUID }` and schedules `registration_complete` event
 - Errors: 400 invalid, 409 email exists, 429 rate limit
 
-18) POST /api/auth/login
+18. POST /api/auth/login
+
 - Description: Proxy to Supabase Auth sign-in; emits `login` event on success
 - Request JSON: `{ "email": string, "password": string }`
 - Response 200: `{ "access_token": string, "refresh_token": string, "user_id": UUID }`
 - Errors: 400/401 invalid creds, 429 rate limit
 
-19) POST /api/auth/logout
+19. POST /api/auth/logout
+
 - Description: Invalidate session (client should also clear tokens)
 - Request: empty
 - Response 204
 
 ### Utility
 
-20) GET /api/health
+20. GET /api/health
+
 - Description: Liveness check
 - Response 200: `{ "status": "ok" }`
 
@@ -244,12 +267,14 @@ Note: These should be executed via a server-side service role or a SECURITY DEFI
 - Session persistence: Handled by Supabase SDK on the client; server trusts bearer tokens.
 
 Rate Limiting
+
 - `POST /api/auth/login` and `/api/auth/register`: 5/min per IP and email
 - `POST /api/events`: 60/min per IP, 10/min per user for `report_view`
 - Public GETs: 60/min per IP
 - Admin endpoints: 30/min per admin
 
 Security Controls
+
 - IP hashing: salted SHA-256 for `ip_hash` (salt in env secret)
 - Input whitelisting for `sort`,`order`; strict schema validation for import
 - Enforce content-type checks; reject files > 2MB at edge and > 5MB in DB
@@ -259,6 +284,7 @@ Security Controls
 ## 4. Validation and Business Logic
 
 Weekly Reports
+
 - Validation
   - `slug` unique, `report_week` is generated from `published_at` (server-side; not client-provided)
   - Uniqueness on (`report_week`,`version`) and `slug`
@@ -266,6 +292,7 @@ Weekly Reports
   - Exposed only via import; direct CRUD not provided to maintain invariants
 
 Stock Picks
+
 - Validation
   - `side` in {`long`,`short`}
   - `target_change_pct` within domain `pct_change` (−1000 ≤ value ≤ 1000)
@@ -274,6 +301,7 @@ Stock Picks
   - Created only through successful report import; read-only otherwise
 
 Imports
+
 - Validation
   - Filename regex `^\d{4}-\d{2}-\d{2}report\.json$`
   - JSON schema v1: required root fields and pick fields per PRD
@@ -284,12 +312,14 @@ Imports
   - Refresh `picks_history` MV on success
 
 Profiles
+
 - Validation
   - `user_id` exists in `auth.users`
 - Business Logic
   - Admin grants/revokes adjust `is_admin`; operations via privileged RPC or service role
 
 Events
+
 - Validation
   - `event_type` in allowed set
   - `dwell_seconds` required and ≥ 10 for `report_view`
@@ -299,26 +329,28 @@ Events
   - Partitions created monthly; retention policies applied out-of-band
 
 Staff Networks
+
 - Validation
   - `network` must be valid CIDR; unique PK
 - Business Logic
   - Maintained by admins; used by triggers to flag staff IPs in events
 
 Picks History (Materialized View)
+
 - Validation
   - Read-only; reflects join of reports and picks
 - Business Logic
   - Refreshed after successful imports for fast historical queries
 
 Error Model (common)
+
 - 200 OK (GET), 201 Created (POST create), 202 Accepted (event ingestion), 204 No Content (DELETE)
 - 400 Bad Request (invalid query/body), 401 Unauthorized (missing/invalid token), 403 Forbidden (not admin), 404 Not Found, 409 Conflict (duplicate), 413 Payload Too Large, 422 Unprocessable Entity (schema/field validation), 429 Too Many Requests, 500 Internal Server Error
 
 Implementation Notes (Astro + Supabase)
+
 - Place handlers under `src/pages/api/**` using TypeScript; use Supabase JS server client.
 - For admin checks, query `profiles` where `user_id = auth.uid()`.
 - For RPCs, configure and call: `admin_import_report(payload, filename)` and `get_current_user_identity()`.
 - Use MV `picks_history` for `/api/picks` with fallback to join if MV absent.
 - Apply output shaping and RLS-safe selects; avoid over-fetching.
-
-

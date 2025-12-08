@@ -7,6 +7,7 @@ The GET /api/picks endpoint has been fully implemented and production-ready with
 ## Implementation Completed (Steps 1-3)
 
 ### Step 1: Validation Layer ✅
+
 **File**: `src/lib/validation/picks.ts`
 
 - ✅ Created Zod schema with parameter validation and coercion
@@ -16,6 +17,7 @@ The GET /api/picks endpoint has been fully implemented and production-ready with
 - ✅ Helper function `parsePicksListQuery()` with error handling
 
 ### Step 2: Service Layer ✅
+
 **File**: `src/lib/services/picks.ts`
 
 - ✅ Primary path: Query `picks_history` materialized view
@@ -26,6 +28,7 @@ The GET /api/picks endpoint has been fully implemented and production-ready with
 - ✅ Data mapping to DTO format
 
 ### Step 3: API Route ✅
+
 **File**: `src/pages/api/picks.ts`
 
 - ✅ GET handler with proper configuration
@@ -37,22 +40,26 @@ The GET /api/picks endpoint has been fully implemented and production-ready with
 ## Additional Improvements Completed (Steps 4-6)
 
 ### Step 4: Database RLS Policy ✅
+
 **File**: `supabase/migrations/20251029120600_add_picks_history_rls_policy.sql`
 
 **Issue Found**: The `picks_history` materialized view didn't have its own RLS policies, even though the source tables did. This would have caused access errors.
 
 **Solution**:
+
 - ✅ Created new migration adding two RLS policies for picks_history
 - ✅ Policy for anonymous (anon) role - allows SELECT
 - ✅ Policy for authenticated role - allows SELECT
 - ✅ Proper documentation and comments
 
 ### Step 5: Rate Limiting ✅
+
 **File**: `src/middleware/index.ts` (updated)
 
 **Issue Found**: No rate limiting was implemented for public endpoints despite being documented in the plan.
 
 **Solution**:
+
 - ✅ Enhanced middleware to apply rate limiting
 - ✅ 60 requests per minute per IP for public GET endpoints
 - ✅ IP extraction from common proxy headers (x-forwarded-for, x-real-ip, cf-connecting-ip)
@@ -61,13 +68,16 @@ The GET /api/picks endpoint has been fully implemented and production-ready with
 - ✅ Configurable public routes list
 
 **Rate Limited Endpoints**:
+
 - `/api/picks`
 - `/api/reports`
 
 ### Step 6: Environment Documentation ✅
+
 **File**: `.ai/environment-setup.md`
 
 **Created comprehensive documentation**:
+
 - ✅ Required environment variables (SUPABASE_URL, SUPABASE_KEY)
 - ✅ Step-by-step setup instructions
 - ✅ Database migration list and order
@@ -78,26 +88,29 @@ The GET /api/picks endpoint has been fully implemented and production-ready with
 ## API Endpoint Specification
 
 ### Request
+
 ```
 GET /api/picks
 ```
 
 ### Query Parameters (all optional)
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| page | number | 1 | Page number (min: 1) |
-| page_size | number | 20 | Items per page (min: 1, max: 100) |
-| sort | enum | published_at | Sort column: published_at, ticker, exchange, side, target_change_pct |
-| order | enum | desc | Sort order: asc, desc |
-| ticker | string | - | Filter by ticker (case-insensitive) |
-| exchange | string | - | Filter by exchange (case-insensitive) |
-| side | enum | - | Filter by side: long, short |
-| date_before | ISO datetime | - | Published before date |
-| date_after | ISO datetime | - | Published after date |
+
+| Parameter   | Type         | Default      | Description                                                          |
+| ----------- | ------------ | ------------ | -------------------------------------------------------------------- |
+| page        | number       | 1            | Page number (min: 1)                                                 |
+| page_size   | number       | 20           | Items per page (min: 1, max: 100)                                    |
+| sort        | enum         | published_at | Sort column: published_at, ticker, exchange, side, target_change_pct |
+| order       | enum         | desc         | Sort order: asc, desc                                                |
+| ticker      | string       | -            | Filter by ticker (case-insensitive)                                  |
+| exchange    | string       | -            | Filter by exchange (case-insensitive)                                |
+| side        | enum         | -            | Filter by side: long, short                                          |
+| date_before | ISO datetime | -            | Published before date                                                |
+| date_after  | ISO datetime | -            | Published after date                                                 |
 
 ### Response Examples
 
 **200 OK - Success**:
+
 ```json
 {
   "items": [
@@ -119,6 +132,7 @@ GET /api/picks
 ```
 
 **400 Bad Request - Validation Error**:
+
 ```json
 {
   "code": "bad_request",
@@ -127,6 +141,7 @@ GET /api/picks
 ```
 
 **429 Too Many Requests - Rate Limited**:
+
 ```json
 {
   "code": "rate_limited",
@@ -135,6 +150,7 @@ GET /api/picks
 ```
 
 **500 Internal Server Error**:
+
 ```json
 {
   "code": "server_error",
@@ -145,7 +161,7 @@ GET /api/picks
 ## Performance Optimizations
 
 1. **Materialized View**: Uses `picks_history` MV to avoid expensive joins
-2. **Indexes**: 
+2. **Indexes**:
    - `idx_picks_history_published_at` for date sorting
    - `idx_picks_history_ticker` for ticker filtering
 3. **Caching**: HTTP caching headers for 60s
@@ -163,6 +179,7 @@ GET /api/picks
 ## Files Created/Modified
 
 ### New Files
+
 1. `src/lib/validation/picks.ts` - Validation logic
 2. `src/lib/services/picks.ts` - Business logic
 3. `src/pages/api/picks.ts` - API endpoint
@@ -171,6 +188,7 @@ GET /api/picks
 6. `.ai/picks-endpoint-completion-summary.md` - This file
 
 ### Modified Files
+
 1. `src/middleware/index.ts` - Added rate limiting
 
 ## Testing Recommendations
@@ -178,6 +196,7 @@ GET /api/picks
 While a full test suite wasn't created (no testing framework configured), here are recommended test scenarios:
 
 ### Unit Tests (validation)
+
 - ✅ Valid parameters with defaults
 - ✅ Page size clamping (0 → 1, 200 → 100)
 - ✅ Invalid sort/order values
@@ -185,6 +204,7 @@ While a full test suite wasn't created (no testing framework configured), here a
 - ✅ Date validation (date_after > date_before)
 
 ### Integration Tests (API)
+
 - ✅ Successful query with MV present
 - ✅ Fallback to join when MV missing
 - ✅ All filter combinations
@@ -226,13 +246,14 @@ curl "http://localhost:4321/api/picks?side=invalid"
 The endpoint is production-ready. Recommended next actions:
 
 1. **Deploy Database Migration**: Apply the new RLS policy migration to production
+
    ```bash
    npx supabase db push
    ```
 
 2. **Test in Staging**: Verify rate limiting and caching behavior
 
-3. **Monitor Performance**: 
+3. **Monitor Performance**:
    - Check if MV refresh after imports is working
    - Monitor query performance with real data
    - Verify cache hit rates
@@ -252,4 +273,3 @@ The endpoint is production-ready. Recommended next actions:
 ✅ **Production-ready**
 
 The GET /api/picks endpoint is now fully functional, secure, performant, and ready for production deployment.
-

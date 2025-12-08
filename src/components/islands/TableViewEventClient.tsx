@@ -3,7 +3,7 @@ import type { PostEventCommand, PostEventAcceptedDTO } from "@/types";
 
 /**
  * TableViewEventClient - React island that posts a table_view event once on mount.
- * 
+ *
  * This component is headless (no UI) and fires the event as soon as the page loads.
  * It uses a ref guard to prevent duplicate posts and silently handles failures
  * to ensure analytics issues don't impact user experience.
@@ -41,7 +41,7 @@ export default function TableViewEventClient() {
 
         if (response.ok) {
           const result = (await response.json()) as PostEventAcceptedDTO;
-          
+
           // Log success in development only
           if (import.meta.env.DEV) {
             console.log("table_view event posted successfully:", result.event_id);
@@ -67,4 +67,3 @@ export default function TableViewEventClient() {
   // This component has no visible UI
   return null;
 }
-

@@ -47,7 +47,7 @@ export const GET: APIRoute = async (context) => {
     if (!isAuthenticated) {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
+
       // Override published_before filter to enforce 30-day cutoff
       // Use the earlier of user's filter or 30-day cutoff
       if (!query.published_before || new Date(query.published_before) > thirtyDaysAgo) {

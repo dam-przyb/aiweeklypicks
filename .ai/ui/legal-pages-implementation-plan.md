@@ -25,6 +25,7 @@ Static, public pages that present Terms of Service and Privacy Policy in English
 ## 4. Component Details
 
 ### LegalContent (SSR)
+
 - Purpose: Render the legal text with semantic headings and readable typography.
 - Main elements: `<article>` with headings (`h1`, `h2`, etc.), paragraphs, lists.
 - Props: `{ variant: 'tos'|'privacy'; lang: 'en'|'pl' }`.
@@ -61,5 +62,3 @@ Static, public pages that present Terms of Service and Privacy Policy in English
 2. Implement `LegalContent` as SSR component (`src/components/legal/LegalContent.astro`) or inline content per page.
 3. Add header/footer links to all four routes.
 4. QA: check EN/PL rendering, headings hierarchy, and link accessibility.
-
-

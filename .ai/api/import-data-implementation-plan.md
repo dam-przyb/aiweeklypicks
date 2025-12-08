@@ -55,6 +55,7 @@ Uploads a weekly report JSON (via multipart form-data file upload or direct JSON
   - Unexpected server/RPC error
 
 Notes:
+
 - For RPC-handled failures (business validation), return an error HTTP status (409/422) and include body shaped like `AdminImportFailedResponse` (so clients can show `import_id` from the audit row).
 
 ### 5. Data Flow
@@ -159,10 +160,10 @@ Notes:
 // src/pages/api/admin/imports.ts
 export const prerender = false;
 
-import type { APIRoute } from 'astro';
-import { filenameSchema, jsonVariantSchema } from '@/lib/validation/imports';
-import { requireAdmin } from '@/lib/services/authz';
-import { adminImportReport } from '@/lib/services/imports';
+import type { APIRoute } from "astro";
+import { filenameSchema, jsonVariantSchema } from "@/lib/validation/imports";
+import { requireAdmin } from "@/lib/services/authz";
+import { adminImportReport } from "@/lib/services/imports";
 
 export const POST: APIRoute = async (context) => {
   const { request, locals } = context;
@@ -171,65 +172,85 @@ export const POST: APIRoute = async (context) => {
   try {
     await requireAdmin(supabase);
 
-    const contentType = request.headers.get('content-type') || '';
+    const contentType = request.headers.get("content-type") || "";
 
     let filename: string;
     let payload: unknown;
 
-    if (contentType.includes('multipart/form-data')) {
+    if (contentType.includes("multipart/form-data")) {
       const form = await request.formData();
-      const file = form.get('file');
+      const file = form.get("file");
       if (!file || !(file instanceof File)) {
-        return new Response(JSON.stringify({ code: 'bad_request', message: 'file is required' }), { status: 400 });
+        return new Response(JSON.stringify({ code: "bad_request", message: "file is required" }), { status: 400 });
       }
-      if (!('name' in file) || !String(file.name).endsWith('.json')) {
-        return new Response(JSON.stringify({ code: 'bad_request', message: 'file must be a .json' }), { status: 400 });
+      if (!("name" in file) || !String(file.name).endsWith(".json")) {
+        return new Response(JSON.stringify({ code: "bad_request", message: "file must be a .json" }), { status: 400 });
       }
       if (file.size > 5 * 1024 * 1024) {
-        return new Response(JSON.stringify({ code: 'payload_too_large', message: 'file exceeds 5MB' }), { status: 413 });
+        return new Response(JSON.stringify({ code: "payload_too_large", message: "file exceeds 5MB" }), {
+          status: 413,
+        });
       }
-      filename = String(form.get('filename') || file.name);
+      filename = String(form.get("filename") || file.name);
       const text = await file.text();
-      try { payload = JSON.parse(text); } catch { return new Response(JSON.stringify({ code: 'bad_json', message: 'invalid JSON' }), { status: 400 }); }
-    } else if (contentType.includes('application/json')) {
+      try {
+        payload = JSON.parse(text);
+      } catch {
+        return new Response(JSON.stringify({ code: "bad_json", message: "invalid JSON" }), { status: 400 });
+      }
+    } else if (contentType.includes("application/json")) {
       let body: unknown;
-      try { body = await request.json(); } catch { return new Response(JSON.stringify({ code: 'bad_json', message: 'invalid JSON' }), { status: 400 }); }
+      try {
+        body = await request.json();
+      } catch {
+        return new Response(JSON.stringify({ code: "bad_json", message: "invalid JSON" }), { status: 400 });
+      }
       const parsed = jsonVariantSchema.safeParse(body);
       if (!parsed.success) {
-        return new Response(JSON.stringify({ code: 'bad_request', message: 'invalid body' }), { status: 400 });
+        return new Response(JSON.stringify({ code: "bad_request", message: "invalid body" }), { status: 400 });
       }
       filename = parsed.data.filename;
       payload = parsed.data.payload;
       const size = Buffer.byteLength(JSON.stringify(payload));
       if (size > 5 * 1024 * 1024) {
-        return new Response(JSON.stringify({ code: 'payload_too_large', message: 'payload exceeds 5MB' }), { status: 413 });
+        return new Response(JSON.stringify({ code: "payload_too_large", message: "payload exceeds 5MB" }), {
+          status: 413,
+        });
       }
     } else {
-      return new Response(JSON.stringify({ code: 'unsupported_media_type', message: 'use multipart/form-data or application/json' }), { status: 400 });
+      return new Response(
+        JSON.stringify({ code: "unsupported_media_type", message: "use multipart/form-data or application/json" }),
+        { status: 400 }
+      );
     }
 
     const f = filenameSchema.safeParse(filename);
     if (!f.success) {
-      return new Response(JSON.stringify({ code: 'invalid_filename', message: 'filename must match YYYY-MM-DDreport.json' }), { status: 400 });
+      return new Response(
+        JSON.stringify({ code: "invalid_filename", message: "filename must match YYYY-MM-DDreport.json" }),
+        { status: 400 }
+      );
     }
 
     const rpc = await adminImportReport(supabase, payload as any, f.data);
 
-    if (rpc.status === 'success') {
-      return new Response(JSON.stringify(rpc), { status: 201, headers: { 'content-type': 'application/json' } });
+    if (rpc.status === "success") {
+      return new Response(JSON.stringify(rpc), { status: 201, headers: { "content-type": "application/json" } });
     }
 
     // Map known error categories if surfaced by service
     const status = /duplicate/i.test(rpc.error) ? 409 : /schema|validation/i.test(rpc.error) ? 422 : 500;
-    return new Response(JSON.stringify(rpc), { status, headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify(rpc), { status, headers: { "content-type": "application/json" } });
   } catch (err: any) {
-    if (err?.code === 'forbidden') {
-      return new Response(JSON.stringify({ code: 'forbidden', message: 'admin required' }), { status: 403 });
+    if (err?.code === "forbidden") {
+      return new Response(JSON.stringify({ code: "forbidden", message: "admin required" }), { status: 403 });
     }
-    if (err?.code === 'unauthorized') {
-      return new Response(JSON.stringify({ code: 'unauthorized', message: 'invalid or missing token' }), { status: 401 });
+    if (err?.code === "unauthorized") {
+      return new Response(JSON.stringify({ code: "unauthorized", message: "invalid or missing token" }), {
+        status: 401,
+      });
     }
-    return new Response(JSON.stringify({ code: 'server_error', message: 'unexpected error' }), { status: 500 });
+    return new Response(JSON.stringify({ code: "server_error", message: "unexpected error" }), { status: 500 });
   }
 };
 ```
@@ -256,4 +277,3 @@ export const POST: APIRoute = async (context) => {
 - On failure:
   - `{ import_id UUID, status TEXT = 'failed', error TEXT }`
 - It writes `imports_audit` with status and optional `error_message` and refreshes `picks_history` on success.
-

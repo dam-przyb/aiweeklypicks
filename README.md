@@ -166,5 +166,3 @@ For details: `.ai/prd.md` (sections: Functional Requirements, Boundaries, User S
 ### License
 
 No license file is present yet. Until a license is added, the project should be treated as “All rights reserved.” If you intend to open source, add a `LICENSE` file (e.g., MIT) and update the badge above.
-
-

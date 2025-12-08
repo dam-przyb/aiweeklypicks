@@ -9,6 +9,7 @@ All 6 steps from the implementation plan have been successfully completed and ve
 ## 📦 Deliverables
 
 ### 1. **Validation Module** (`src/lib/validation/admin/imports.ts`)
+
 - ✅ Zod schema `adminImportsQuerySchema` with full validation
 - ✅ Query parameter parsing with type coercion and defaults
 - ✅ Cross-field validation (started_after ≤ started_before)
@@ -16,11 +17,13 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - ✅ `parseAdminImportsQuery` function for URL query parsing
 
 **Key Features**:
+
 - Pagination: page (default 1, min 1), page_size (default 20, range 1-100)
 - Filters: status (success|failed), date range, uploader UUID
 - Robust error messages for all validation failures
 
 ### 2. **Service Layer** (`src/lib/services/admin/imports.ts`)
+
 - ✅ `listAdminImports` function with typed Supabase queries
 - ✅ Column selection constant (excludes heavy `source_json`)
 - ✅ Pagination calculation (from/to ranges)
@@ -29,12 +32,14 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - ✅ Total count and total pages computation
 
 **Query Characteristics**:
+
 - Ordered by `started_at DESC` (most recent first)
 - Uses `count: 'exact'` for pagination metadata
 - Parameterized queries via Supabase query builder
 - Error handling with cause chain preservation
 
 ### 3. **API Route Handler** (`src/pages/api/admin/imports.ts`)
+
 - ✅ GET handler coexisting with existing POST handler
 - ✅ 6-step request flow (parse → auth → rate limit → query → respond)
 - ✅ Comprehensive error handling for all error types
@@ -43,6 +48,7 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - ✅ Detailed JSDoc documentation
 
 **Error Handling**:
+
 - ValidationError → 400 with descriptive messages
 - UnauthorizedError → 401 (missing/invalid JWT)
 - ForbiddenError → 403 (not admin)
@@ -50,6 +56,7 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - DatabaseError → 500 with logging
 
 ### 4. **RLS Policy Verification** (`.ai/admin-imports-rls-verification.md`)
+
 - ✅ Confirmed `imports_audit_select_admin` policy enforces admin-only SELECT
 - ✅ Verified two-layer security (application + database)
 - ✅ Validated column selection matches DTO and table schema
@@ -57,12 +64,14 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - ✅ Documented defense-in-depth security model
 
 **Security Layers**:
+
 1. Application: `requireAdmin` checks `profiles.is_admin`
 2. Database: RLS policy uses identical check
 3. Rate Limiting: 30 requests/min per admin
 4. Data Filtering: Only DTO columns exposed
 
 ### 5. **Comprehensive Tests** (`src/lib/validation/admin/imports.test.ts`)
+
 - ✅ 45 unit tests, all passing
 - ✅ Pagination parameter validation (bounds, defaults, coercion)
 - ✅ Status enum validation (success, failed, invalid values)
@@ -73,6 +82,7 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - ✅ Error handling verification
 
 **Test Coverage**:
+
 - Valid parameter combinations
 - Default value application
 - Boundary conditions (min/max values)
@@ -81,6 +91,7 @@ All 6 steps from the implementation plan have been successfully completed and ve
 - Error message generation
 
 ### 6. **Documentation Updates** (`.ai/api-plan.md`)
+
 - ✅ Marked endpoint as **IMPLEMENTED** in API plan
 - ✅ Added detailed query parameters with constraints
 - ✅ Documented all response codes and error scenarios
@@ -93,6 +104,7 @@ All 6 steps from the implementation plan have been successfully completed and ve
 ## 🔧 Technical Architecture
 
 ### Request Flow
+
 ```
 HTTP GET /api/admin/imports?page=1&status=success
     ↓
@@ -137,6 +149,7 @@ HTTP 200 OK
 ```
 
 ### Error Flow
+
 ```
 Exception Thrown
     ↓
@@ -168,6 +181,7 @@ Test Files  1 passed (1)
 ```
 
 **Test Categories**:
+
 - Pagination: 11 tests
 - Status Filter: 4 tests
 - Datetime Filters: 9 tests
@@ -182,16 +196,19 @@ Test Files  1 passed (1)
 ## 🔒 Security Verification
 
 ### ✅ Authentication
+
 - Supabase JWT required in `Authorization: Bearer <token>` header
 - `requireAdmin` validates user session via `supabase.auth.getUser()`
 - Unauthenticated requests blocked with HTTP 401
 
 ### ✅ Authorization
+
 - **Application Layer**: `requireAdmin` checks `profiles.is_admin = true`
 - **Database Layer**: RLS policy `imports_audit_select_admin` enforces identical check
 - Non-admin requests blocked with HTTP 403
 
 ### ✅ Input Validation
+
 - All query parameters validated via Zod schemas
 - Type coercion with bounds checking
 - UUID and ISO datetime format validation
@@ -199,11 +216,13 @@ Test Files  1 passed (1)
 - No user input interpolated into SQL
 
 ### ✅ Rate Limiting
+
 - Per-admin key: `admin:imports:<user_id>`
 - Limit: 30 requests per 60 seconds
 - Enforced after authentication, before database query
 
 ### ✅ Data Exposure
+
 - Only DTO columns returned (`ImportsAuditDTO`)
 - Heavy `source_json` payload excluded (up to 5MB)
 - No sensitive internal details exposed
@@ -214,12 +233,14 @@ Test Files  1 passed (1)
 ## 📈 Performance Considerations
 
 ### Indexing
+
 - ✅ `imports_audit.import_id` (PK) - used for uniqueness
 - ✅ `imports_audit.uploaded_by_user_id` - used for uploader filter
 - ✅ `imports_audit.started_at DESC` - used for ordering and date filters
 - ✅ `imports_audit.status` (optional) - used for status filter
 
 ### Query Optimization
+
 - Pagination with bounded `page_size` (max 100)
 - `range(from, to)` for efficient row limiting
 - `count: 'exact'` for total_items (acceptable for admin usage)
@@ -227,6 +248,7 @@ Test Files  1 passed (1)
 - Filters aligned with available indexes
 
 ### Response Size
+
 - Excludes `source_json` column (up to 5MB per row)
 - Maximum ~100 rows per page
 - Lightweight DTO fields only
@@ -237,23 +259,27 @@ Test Files  1 passed (1)
 ## 📝 Code Quality
 
 ### ✅ Linter Status
+
 - No TypeScript errors
 - No ESLint warnings
 - All files pass linting checks
 
 ### ✅ Type Safety
+
 - Full TypeScript type coverage
 - Proper use of `SupabaseClient` type from `src/db/supabase.client.ts`
 - DTO types from `src/types.ts`
 - No `any` types used
 
 ### ✅ Code Consistency
+
 - Follows patterns from `/api/admin/events`
 - Reuses existing error classes and helpers
 - Consistent naming conventions
 - JSDoc documentation for all exported functions
 
 ### ✅ Best Practices
+
 - Early return pattern for error handling
 - Guard clauses for preconditions
 - Error wrapping with cause chains
@@ -264,6 +290,7 @@ Test Files  1 passed (1)
 ## 🎯 Implementation Checklist
 
 ### Step 1: Validation Schema ✅
+
 - [x] Create `src/lib/validation/admin/imports.ts`
 - [x] Define `adminImportsQuerySchema` with Zod
 - [x] Implement `parseAdminImportsQuery` function
@@ -271,6 +298,7 @@ Test Files  1 passed (1)
 - [x] Add cross-field validation for date ranges
 
 ### Step 2: Service Layer ✅
+
 - [x] Create `src/lib/services/admin/imports.ts`
 - [x] Define `ADMIN_IMPORTS_COLUMNS` constant
 - [x] Implement `listAdminImports` function
@@ -279,6 +307,7 @@ Test Files  1 passed (1)
 - [x] Compute total pages and return DTO
 
 ### Step 3: API Route Handler ✅
+
 - [x] Extend `src/pages/api/admin/imports.ts` with GET handler
 - [x] Import validation, service, and authz modules
 - [x] Implement 6-step request flow
@@ -288,6 +317,7 @@ Test Files  1 passed (1)
 - [x] Reuse `jsonResponse` helper
 
 ### Step 4: RLS Verification ✅
+
 - [x] Review RLS policy `imports_audit_select_admin`
 - [x] Verify admin-only SELECT enforcement
 - [x] Confirm alignment with application layer
@@ -295,6 +325,7 @@ Test Files  1 passed (1)
 - [x] Create verification document
 
 ### Step 5: Testing ✅
+
 - [x] Create `src/lib/validation/admin/imports.test.ts`
 - [x] Write 45 comprehensive unit tests
 - [x] Test all query parameters and constraints
@@ -302,6 +333,7 @@ Test Files  1 passed (1)
 - [x] Verify all tests pass
 
 ### Step 6: Documentation ✅
+
 - [x] Update `.ai/api-plan.md` with implementation status
 - [x] Add detailed query parameters and response codes
 - [x] Link to implementation files and docs
@@ -313,6 +345,7 @@ Test Files  1 passed (1)
 ## 🚀 Deployment Readiness
 
 ### ✅ Production Ready
+
 - All implementation steps completed
 - All tests passing (45/45)
 - No linter errors
@@ -322,6 +355,7 @@ Test Files  1 passed (1)
 - Documentation complete
 
 ### 📋 Pre-Deployment Checklist
+
 - [x] Code implemented and tested
 - [x] Security verified (authentication, authorization, RLS)
 - [x] Rate limiting configured
@@ -356,4 +390,3 @@ The GET `/api/admin/imports` endpoint has been **successfully implemented** with
 - ✅ **Production-ready code** (type-safe, linted, tested)
 
 The endpoint follows all best practices from the existing codebase and is ready for deployment.
-

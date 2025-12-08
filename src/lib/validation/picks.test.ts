@@ -771,4 +771,3 @@ describe("parsePicksListQuery", () => {
     expect(result.date_before).toBe(datetime);
   });
 });
-

@@ -38,7 +38,7 @@ const relativeTime = getRelativeTime(report.publishedAtIso);
 const getIconIndex = (id: string) => {
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
-    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash = (hash << 5) - hash + id.charCodeAt(i);
     hash = hash & hash;
   }
   return Math.abs(hash) % 6; // 6 different icons
@@ -71,7 +71,7 @@ const stockIcons = [
   // Presentation Chart
   `<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-  </svg>`
+  </svg>`,
 ];
 
 const iconSvg = stockIcons[iconIndex];
@@ -81,7 +81,9 @@ const iconSvg = stockIcons[iconIndex];
   <div class="flex gap-4">
     <!-- Thumbnail/Avatar -->
     <div class="flex-shrink-0">
-      <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center text-white">
+      <div
+        class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center text-white"
+      >
         <Fragment set:html={iconSvg} />
       </div>
     </div>

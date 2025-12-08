@@ -3,6 +3,7 @@
 ## Implementation Summary
 
 ✅ **Completed Components:**
+
 - `ImportAuditDetailDTO` type definition (src/types.ts)
 - `ImportAuditPanel.astro` component (src/components/admin/ImportAuditPanel.astro)
 - `/admin/imports/[import_id]` page (src/pages/admin/imports/[import_id].astro)
@@ -15,6 +16,7 @@
 ### 1. Success Flow with Report Link
 
 **Test Steps:**
+
 1. Log in as an admin user
 2. Navigate to `/admin/imports`
 3. Find an import with status "Success"
@@ -34,6 +36,7 @@
    - "View Report" link
 
 **Expected Results:**
+
 - All fields populated correctly
 - Timestamps formatted as "Month DD, YYYY, HH:MM:SS AM/PM Timezone"
 - Duration shows in appropriate format (ms, s, or m s)
@@ -43,6 +46,7 @@
 ### 2. Failure Flow with Error Message
 
 **Test Steps:**
+
 1. Log in as an admin user
 2. Navigate to `/admin/imports`
 3. Find an import with status "Failed"
@@ -55,6 +59,7 @@
    - No report link section
 
 **Expected Results:**
+
 - Error message clearly visible in red alert box
 - No "View Report" link or report information displayed
 - "Back to Imports List" link returns to `/admin/imports`
@@ -62,11 +67,13 @@
 ### 3. 404 Not Found Flow
 
 **Test Steps:**
+
 1. Log in as an admin user
 2. Navigate to `/admin/imports/00000000-0000-0000-0000-000000000000` (invalid UUID)
 3. Or navigate to `/admin/imports/invalid-id` (malformed ID)
 
 **Expected Results:**
+
 - Error banner displays with code "404"
 - Message: "Import audit record not found."
 - Helpful message explaining the record doesn't exist
@@ -78,18 +85,22 @@
 **Test Steps:**
 
 **Test 4a: Non-authenticated User**
+
 1. Log out (clear session)
 2. Try to navigate to `/admin/imports/[any-import-id]`
 
 **Expected Results:**
+
 - Middleware redirects to `/auth/login?returnUrl=/admin/imports/[import-id]`
 - After successful login, user is redirected back to the original URL
 
 **Test 4b: Authenticated Non-Admin User**
+
 1. Log in as a regular (non-admin) user
 2. Try to navigate to `/admin/imports/[any-import-id]`
 
 **Expected Results:**
+
 - Middleware redirects to `/admin/forbidden`
 - 403 page displays with clear messaging
 - Links to home page and login (as admin)
@@ -108,6 +119,7 @@ curl -X GET "http://localhost:4321/api/admin/imports/[import-id]" \
 **Expected Responses:**
 
 **200 Success:**
+
 ```json
 {
   "import_id": "uuid",
@@ -125,6 +137,7 @@ curl -X GET "http://localhost:4321/api/admin/imports/[import-id]" \
 ```
 
 **404 Not Found:**
+
 ```json
 {
   "code": "not_found",
@@ -133,6 +146,7 @@ curl -X GET "http://localhost:4321/api/admin/imports/[import-id]" \
 ```
 
 **401 Unauthorized:**
+
 ```json
 {
   "code": "unauthorized",
@@ -141,6 +155,7 @@ curl -X GET "http://localhost:4321/api/admin/imports/[import-id]" \
 ```
 
 **403 Forbidden:**
+
 ```json
 {
   "code": "forbidden",
@@ -151,18 +166,21 @@ curl -X GET "http://localhost:4321/api/admin/imports/[import-id]" \
 ## Accessibility Testing
 
 ### Keyboard Navigation
+
 1. Tab through all interactive elements
 2. Verify focus indicators are visible
 3. Test "Skip to main content" link
 4. Verify all links are keyboard accessible
 
 ### Screen Reader Testing
+
 1. Use NVDA/JAWS/VoiceOver
 2. Verify all content is announced properly
 3. Check role="alert" on error states
 4. Verify semantic heading structure (h1, h2, dt/dd)
 
 ### Visual Testing
+
 1. Test at different zoom levels (100%, 150%, 200%)
 2. Verify responsive layout (mobile, tablet, desktop)
 3. Check color contrast ratios (WCAG AA compliance)
@@ -209,6 +227,7 @@ curl -X GET "http://localhost:4321/api/admin/imports/[import-id]" \
 ## Browser Compatibility
 
 Test in the following browsers:
+
 - [ ] Chrome (latest)
 - [ ] Firefox (latest)
 - [ ] Safari (latest)
@@ -219,14 +238,17 @@ Test in the following browsers:
 ## Integration Points
 
 ### From Imports List
+
 - Verify "View Details" link in `ImportsTable.astro` navigates correctly
 - Verify breadcrumb/back navigation maintains filter state
 
 ### To Report View
+
 - Verify "View Report" link from successful import navigates to correct report
 - Test both slug-based and ID-based report routes
 
 ### Middleware Protection
+
 - Verify all admin routes protected
 - Test session expiration handling
 - Verify returnUrl preservation
@@ -245,12 +267,14 @@ Test in the following browsers:
 ## Implementation Notes
 
 ### Security
+
 - ✅ Admin-only access enforced by middleware
 - ✅ RLS policies on `imports_audit` table
 - ✅ Proper error handling prevents info leakage
 - ✅ No sensitive data exposed in error messages
 
 ### Accessibility
+
 - ✅ Semantic HTML with proper heading hierarchy
 - ✅ ARIA labels on all interactive elements
 - ✅ role="alert" on error messages
@@ -258,12 +282,14 @@ Test in the following browsers:
 - ✅ Focus management with skip links
 
 ### Performance
+
 - ✅ SSR for fast initial load
 - ✅ Minimal client-side JavaScript
 - ✅ Efficient database queries (single fetch with join)
 - ✅ No-store cache headers for admin data
 
 ### Code Quality
+
 - ✅ TypeScript types for all data structures
 - ✅ Error boundaries and graceful degradation
 - ✅ Consistent styling with Tailwind
@@ -289,4 +315,3 @@ Test in the following browsers:
 4. **Audit Log:** Show detailed step-by-step import process
 5. **Comparison View:** Compare two imports side-by-side
 6. **Export:** Download import audit as JSON/CSV
-

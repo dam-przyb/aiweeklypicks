@@ -3,6 +3,7 @@
 ## Implementation Status: ✅ Complete
 
 ### Components Created
+
 - ✅ `src/types.ts` - Added `ReportMetaVM`, `PickItemVM`, `ReportWithPicksVM`
 - ✅ `src/lib/view-helpers.ts` - Added `formatPercentageChange()`, `mapReportWithPicksDtoToViewModel()`
 - ✅ `src/components/report/ReportHeader.astro` - SSR component for report metadata
@@ -13,6 +14,7 @@
 - ✅ `src/layouts/Layout.astro` - Updated to support `head` slot
 
 ### Build Status
+
 - ✅ Project builds successfully (npm run build)
 - ✅ No linter errors in new code
 - ✅ All TypeScript types validated
@@ -23,6 +25,7 @@
 ### 1. API Integration Tests
 
 #### Valid Slug Test
+
 ```bash
 # Start dev server
 npm run dev
@@ -34,6 +37,7 @@ curl http://localhost:4321/api/reports/2025-w47-v1
 ```
 
 #### Invalid Slug Test
+
 ```bash
 # Test invalid report slug
 curl http://localhost:4321/api/reports/invalid-slug
@@ -44,6 +48,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 2. Page Rendering Tests
 
 #### Valid Report Page
+
 1. Navigate to: `http://localhost:4321/reports/2025-w47-v1` (or any valid slug)
 2. Verify elements:
    - ✅ Page title includes report title and week
@@ -57,6 +62,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ DwellTimer component loaded (check browser console after 10s)
 
 #### 404 Page
+
 1. Navigate to: `http://localhost:4321/reports/nonexistent-slug`
 2. Verify:
    - ✅ 404 status code (check network tab)
@@ -65,6 +71,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ "View All Reports" button links to `/`
 
 #### Empty Picks State
+
 1. If a report has 0 picks (test with API mock):
 2. Verify:
    - ✅ EmptyState component displayed under "Stock Picks" heading
@@ -72,6 +79,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 3. DwellTimer Functionality Tests
 
 #### Active Viewing
+
 1. Navigate to a valid report page
 2. Keep tab active and visible for 10+ seconds
 3. Check browser console for:
@@ -82,6 +90,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ Response: 202 Accepted with `event_id`
 
 #### Pause/Resume Behavior
+
 1. Navigate to a valid report page
 2. Wait 5 seconds (timer active)
 3. Switch to another tab (hide page) for 10 seconds
@@ -92,6 +101,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ Hidden time is not counted
 
 #### No Duplicate Events
+
 1. Navigate to a valid report page
 2. Wait 15+ seconds (past threshold)
 3. Check network tab:
@@ -111,6 +121,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 5. Responsive Design Tests
 
 #### Desktop (1920x1080)
+
 1. Navigate to report page
 2. Verify:
    - ✅ Max-width container (max-w-4xl) centers content
@@ -118,6 +129,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ All content readable and well-spaced
 
 #### Tablet (768px)
+
 1. Resize viewport to 768px width
 2. Verify:
    - ✅ Header elements stack properly
@@ -126,6 +138,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ Responsive padding (px-4 sm:px-6)
 
 #### Mobile (375px)
+
 1. Resize viewport to 375px width
 2. Verify:
    - ✅ Title font size adjusts (text-3xl md:text-4xl)
@@ -137,6 +150,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 6. Accessibility Tests
 
 #### Keyboard Navigation
+
 1. Use Tab key to navigate through page
 2. Verify:
    - ✅ All interactive elements focusable (links, buttons)
@@ -145,6 +159,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ "View All Reports" button on 404 is keyboard accessible
 
 #### Screen Reader
+
 1. Test with screen reader (NVDA, JAWS, or VoiceOver)
 2. Verify:
    - ✅ `<h1>` for report title is announced
@@ -157,6 +172,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ Error banner has `role="alert"`
 
 #### Color Contrast
+
 1. Use browser DevTools or Lighthouse to check contrast
 2. Verify:
    - ✅ Text meets WCAG AA contrast ratio (4.5:1 for normal text)
@@ -167,6 +183,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 7. Performance Tests
 
 #### Lighthouse Audit
+
 1. Run Lighthouse in Chrome DevTools
 2. Target scores:
    - ✅ Performance: 90+
@@ -175,6 +192,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ SEO: 95+
 
 #### Bundle Size
+
 1. Check build output
 2. Verify:
    - ✅ DwellTimer island is small (< 2 KB gzipped) ✅ 0.69 KB
@@ -184,6 +202,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 8. Error Handling Tests
 
 #### Network Error Simulation
+
 1. Disconnect network or use DevTools to block API
 2. Navigate to report page
 3. Verify:
@@ -193,6 +212,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ No unhandled errors in console
 
 #### Event Post Failure
+
 1. Block `/api/events` endpoint
 2. Wait 10 seconds on report page
 3. Check console:
@@ -201,6 +221,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ No error thrown to user
 
 #### Malformed Data
+
 1. Test with API returning incomplete data (mock or test endpoint)
 2. Verify:
    - ✅ Fallbacks applied (title → slug, empty summary → "")
@@ -210,6 +231,7 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 9. Date and Number Formatting Tests
 
 #### Date Format
+
 1. View report with various published dates
 2. Verify:
    - ✅ Displayed as `YYYY-MM-DD` (e.g., "2025-11-23")
@@ -217,6 +239,7 @@ curl http://localhost:4321/api/reports/invalid-slug
    - ✅ ISO week format correct (e.g., "2025-W47")
 
 #### Percentage Format
+
 1. View picks with various target percentages
 2. Verify:
    - ✅ Positive: `+12.34%` (green color)
@@ -228,18 +251,21 @@ curl http://localhost:4321/api/reports/invalid-slug
 ### 10. Integration with Existing Code
 
 #### Layout Compatibility
+
 1. Verify Layout.astro head slot works:
    - ✅ Meta tags from page render in `<head>`
    - ✅ No duplicate tags
    - ✅ Proper integration with existing layout
 
 #### Error Banner Reuse
+
 1. Verify ErrorBanner component works:
    - ✅ Accepts `errorCode` and `errorMessage` props
    - ✅ Displays correct messages
    - ✅ "Reset" link navigates to `/`
 
 #### EmptyState Reuse
+
 1. Verify EmptyState component integration:
    - ✅ Renders when picks array is empty
    - ✅ Consistent styling with rest of app
@@ -271,24 +297,24 @@ npm run dev
 
 ```typescript
 // Suggested E2E tests with Playwright or Cypress
-describe('Report Detail Page', () => {
-  it('renders valid report with all metadata', async () => {
+describe("Report Detail Page", () => {
+  it("renders valid report with all metadata", async () => {
     // Visit page, assert elements present
   });
 
-  it('shows 404 for invalid slug', async () => {
+  it("shows 404 for invalid slug", async () => {
     // Visit invalid slug, assert 404 UI
   });
 
-  it('posts report_view event after 10 seconds', async () => {
+  it("posts report_view event after 10 seconds", async () => {
     // Mock API, wait 10s, assert POST made
   });
 
-  it('pauses timer when tab hidden', async () => {
+  it("pauses timer when tab hidden", async () => {
     // Hide tab, assert event timing correct
   });
 
-  it('formats percentages correctly', async () => {
+  it("formats percentages correctly", async () => {
     // Assert all percentages have sign and 2 decimals
   });
 });
@@ -297,6 +323,7 @@ describe('Report Detail Page', () => {
 ## Compliance with PRD
 
 ### Functional Requirements Covered
+
 - ✅ FR-031: Report content display (title, summary, week, date, version, picks)
 - ✅ FR-060: Disclaimer block (not investment advice, corporate actions)
 - ✅ FR-051: Numeric formatting (2 decimal percentage with sign)
@@ -304,6 +331,7 @@ describe('Report Detail Page', () => {
 - ✅ FR-080: Performance (SSR, minimal JS, small island)
 
 ### User Stories Covered
+
 - ✅ US-002: View published reports
 - ✅ US-015: View report details
 - ✅ US-016: Read stock pick rationale
@@ -319,4 +347,3 @@ describe('Report Detail Page', () => {
 - Event posting failures are logged but don't block user experience
 - Responsive design uses Tailwind 4 utility classes
 - Accessibility follows ARIA best practices with semantic HTML
-

@@ -1,6 +1,6 @@
 /**
  * Home Page Object Model
- * 
+ *
  * Page Object Model for the home page.
  * Encapsulates page interactions for maintainable E2E tests.
  */
@@ -37,4 +37,3 @@ export class HomePage {
     await this.page.getByRole("link", { name: /picks/i }).click();
   }
 }
-

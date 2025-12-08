@@ -15,10 +15,10 @@
 - **Security**: HTTPS enforced, admin-only routes guarded by middleware and server checks; rate-limit errors surfaced; no privileged actions without JWT.
 - **Global chrome**: Header with role-aware nav, Footer with disclaimers and legal links; consistent tokens (Tailwind + Shadcn/ui) for typography, color, spacing.
 
-
 ### 2. View List
 
 #### A) Reports List (Home)
+
 - **View path**: `/`
 - **Main purpose**: Publicly browse weekly reports in reverse publish date order and navigate to report details.
 - **Key information**:
@@ -41,6 +41,7 @@
 - **PRD mapping**: FR-030, FR-050, FR-051, FR-080, FR-040; US-001, US-016, US-020, US-025, US-027
 
 #### B) Report Detail
+
 - **View path**: `/reports/[slug]`
 - **Main purpose**: Display full weekly report with all picks and record dwell-based engagement.
 - **Key information**:
@@ -63,6 +64,7 @@
 - **PRD mapping**: FR-031, FR-060, FR-051, FR-070 (>=10s), FR-080; US-002, US-015, US-016, US-018, US-021, US-026
 
 #### C) Historical Picks
+
 - **View path**: `/picks`
 - **Main purpose**: Public table of all picks with simple sorting; record table view event.
 - **Key information**:
@@ -83,6 +85,7 @@
 - **PRD mapping**: FR-032, FR-051, FR-070, FR-080; US-003, US-017, US-018
 
 #### D) Auth: Login
+
 - **View path**: `/auth/login`
 - **Main purpose**: Authenticate user; set session; emit login event.
 - **Key information**:
@@ -100,6 +103,7 @@
 - **PRD mapping**: FR-020, FR-022, FR-070, FR-082; US-006, US-019, US-018
 
 #### E) Auth: Register
+
 - **View path**: `/auth/register`
 - **Main purpose**: Create account; emit registration event; guide email verification.
 - **Key information**:
@@ -115,6 +119,7 @@
 - **PRD mapping**: FR-020, FR-070; US-005, US-018
 
 #### F) Admin: Imports List & Upload
+
 - **View path**: `/admin/imports`
 - **Main purpose**: Admin-only page to upload JSON and view recent imports with statuses.
 - **Key information**:
@@ -134,6 +139,7 @@
 - **PRD mapping**: FR-010 to FR-015, FR-090 (hosting context), FR-081; US-009, US-010, US-011, US-012, US-014, US-023, US-029, US-030
 
 #### G) Admin: Import Detail
+
 - **View path**: `/admin/imports/[import_id]`
 - **Main purpose**: Show a specific import audit with status and any error details; link to created report on success.
 - **Key information**:
@@ -150,6 +156,7 @@
 - **PRD mapping**: FR-012 to FR-015; US-011, US-012, US-023
 
 #### H) Legal Pages
+
 - **View paths**: `/legal/tos-en`, `/legal/tos-pl`, `/legal/privacy-en`, `/legal/privacy-pl`
 - **Main purpose**: Provide legal content in EN/PL.
 - **Key information**:
@@ -164,37 +171,40 @@
 - **PRD mapping**: FR-060; US-015
 
 #### I) Error and Utility Views
+
 - **401/Expired Session**: Redirect to `/auth/login?returnUrl=...` with toast
 - **403**: Friendly admin-only page on `/admin/**` when not authorized
 - **404**: For missing slugs or routes
 - **500**: Generic error boundary with retry
 - **PRD mapping**: FR-081, FR-082; US-024, US-025
 
-
 ### 3. User Journey Map
 
 #### Primary flow: Guest discovers and reads a report
-1) User lands on `/` → sees paginated, sortable list of reports (default published_at desc).
-2) User optionally sorts/changes page; URL updates via query params; SSR reloads with cache.
-3) User hovers and prefetches then clicks a report → `/reports/[slug]` loads (SSR).
-4) On mount, `DwellTimer` starts (pauses on tab hide); after ≥10s, posts `report_view` to `/api/events` once.
-5) User reads picks with disclaimer visible; can navigate back or proceed to `/picks`.
+
+1. User lands on `/` → sees paginated, sortable list of reports (default published_at desc).
+2. User optionally sorts/changes page; URL updates via query params; SSR reloads with cache.
+3. User hovers and prefetches then clicks a report → `/reports/[slug]` loads (SSR).
+4. On mount, `DwellTimer` starts (pauses on tab hide); after ≥10s, posts `report_view` to `/api/events` once.
+5. User reads picks with disclaimer visible; can navigate back or proceed to `/picks`.
 
 #### Secondary flow: Historical picks exploration
-1) User opens `/picks`; `table_view` event posted.
-2) User sorts by column headers; URL params update and SSR re-renders; table is responsive on mobile with horizontal scroll.
+
+1. User opens `/picks`; `table_view` event posted.
+2. User sorts by column headers; URL params update and SSR re-renders; table is responsive on mobile with horizontal scroll.
 
 #### Auth flow: Register and login
-1) From header, user selects Register or Login.
-2) Form validates (Zod); on success, server emits `registration_complete` or `login` event.
-3) Session persists; user is redirected to return URL or `/`.
+
+1. From header, user selects Register or Login.
+2. Form validates (Zod); on success, server emits `registration_complete` or `login` event.
+3. Session persists; user is redirected to return URL or `/`.
 
 #### Admin flow: Import report JSON
-1) Admin opens `/admin/imports` (guarded). If unauthorized, sees 403 or login redirect.
-2) Admin uploads `.json`; client validates filename regex and size ≤ 2MB.
-3) Multipart form posts to `/api/admin/imports`; progress shown; on success, link to created report and `import_id` detail.
-4) Admin views `/admin/imports/[import_id]` for full audit; list may auto-refresh at intervals.
 
+1. Admin opens `/admin/imports` (guarded). If unauthorized, sees 403 or login redirect.
+2. Admin uploads `.json`; client validates filename regex and size ≤ 2MB.
+3. Multipart form posts to `/api/admin/imports`; progress shown; on success, link to created report and `import_id` detail.
+4. Admin views `/admin/imports/[import_id]` for full audit; list may auto-refresh at intervals.
 
 ### 4. Layout and Navigation Structure
 
@@ -215,7 +225,6 @@
   - Public pages: `Cache-Control` ~60s, ETags; revalidate on navigation
   - Admin pages: minimal caching; optional TanStack Query for client polling/revalidation
 
-
 ### 5. Key Components
 
 - **Header**: Role-aware nav, active state, auth actions
@@ -235,7 +244,6 @@
 - **Toast / InlineAlert / ErrorBanner**: Centralized error mapping (400/409/413/422/429)
 - **EmptyState / Skeleton**: Empty data and loading placeholders
 - **AdminGuard**: Client-side hinting; server-side enforced via middleware
-
 
 ### Compatibility and Mapping
 
@@ -259,7 +267,6 @@
   - Auth flows → `AuthForm` with toasts and redirects
   - Error handling → `Toast`, `InlineAlert`, `ErrorBanner`, error routes
 
-
 ### Edge Cases and Error States
 
 - **Report not found**: `/reports/[slug]` shows 404 with link back to `/`
@@ -272,7 +279,6 @@
 - **Dwell nuances**: Handle `visibilitychange`, unload, bfcache restore; ensure single event per view
 - **Performance**: Skeletons on initial load; prefetch on hover; respect cache headers
 
-
 ### Unresolved / Decisions to finalize
 
 - **Slug source and 404 behavior**: Confirm server-generated slug contract and missing-slug UX.
@@ -281,8 +287,6 @@
 - **Design tokens & dark mode**: Finalize tokens and whether to include dark mode in MVP.
 - **Legal language switch UX**: Confirm approach for EN/PL selection beyond dedicated routes.
 - **Admin list refresh**: Decide on polling interval (e.g., 30s) or manual refresh.
-
-
 
 ### Implementation Plans Index
 

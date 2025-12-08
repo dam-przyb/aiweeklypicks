@@ -9,7 +9,9 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 ## Files Created
 
 ### 1. Validation Layer
+
 **File:** `src/lib/validation/admin/events.ts`
+
 - **Purpose:** Query parameter validation and parsing
 - **Key Features:**
   - Zod schema for type-safe validation
@@ -24,7 +26,9 @@ Implementation of the admin events analytics endpoint is complete and ready for 
   - `ValidationError` - Custom error class
 
 ### 2. Rate Limiting Service
+
 **File:** `src/lib/services/rateLimit.ts`
+
 - **Purpose:** In-memory fixed-window rate limiting
 - **Key Features:**
   - Per-key rate limiting (e.g., per admin user)
@@ -39,7 +43,9 @@ Implementation of the admin events analytics endpoint is complete and ready for 
   - `RateLimitError` - Custom error class
 
 ### 3. Admin Events Service
+
 **File:** `src/lib/services/admin/events.ts`
+
 - **Purpose:** Database query logic for events table
 - **Key Features:**
   - Selects admin-specific columns (includes ip_hash, is_staff_ip, is_bot)
@@ -52,7 +58,9 @@ Implementation of the admin events analytics endpoint is complete and ready for 
   - `DatabaseError` - Custom error class
 
 ### 4. API Endpoint
+
 **File:** `src/pages/api/admin/events.ts`
+
 - **Purpose:** HTTP endpoint handler
 - **Key Features:**
   - GET method with query parameter support
@@ -66,7 +74,9 @@ Implementation of the admin events analytics endpoint is complete and ready for 
   - `prerender = false` - Dynamic rendering
 
 ### 5. Testing Documentation
+
 **File:** `.ai/admin-events-testing-guide.md`
+
 - **Purpose:** Comprehensive testing guide
 - **Contents:**
   - 10 test categories with specific scenarios
@@ -145,11 +155,13 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 ## Key Features Implemented
 
 ### ✅ Authentication & Authorization
+
 - Bearer token authentication required
 - Admin role verification via `profiles.is_admin`
 - Proper error responses (401 Unauthorized, 403 Forbidden)
 
 ### ✅ Input Validation
+
 - Comprehensive Zod schema validation
 - Page/page_size with proper defaults and clamping
 - Event type enum validation with deduplication
@@ -158,6 +170,7 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 - Flexible event_type parsing (repeated or comma-separated)
 
 ### ✅ Rate Limiting
+
 - 30 requests per minute per admin user
 - Per-user isolation (admin A doesn't affect admin B)
 - Fixed-window strategy
@@ -165,6 +178,7 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 - 429 status code when exceeded
 
 ### ✅ Filtering Capabilities
+
 - **Event Type:** Single or multiple event types
 - **Time Range:** occurred_before, occurred_after (or both)
 - **Entities:** report_id, user_id
@@ -172,6 +186,7 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 - All filters use AND logic
 
 ### ✅ Response Format
+
 - Paginated envelope with metadata:
   - `items`: Array of AdminEventDTO
   - `page`: Current page number
@@ -185,6 +200,7 @@ Implementation of the admin events analytics endpoint is complete and ready for 
   - All standard event fields
 
 ### ✅ Error Handling
+
 - **400 Bad Request:** Invalid query parameters
 - **401 Unauthorized:** Missing/invalid token
 - **403 Forbidden:** Not an admin
@@ -194,6 +210,7 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 - Server-side logging for debugging (without sensitive data)
 
 ### ✅ Performance Considerations
+
 - Selective column queries (only needed fields)
 - Pagination to limit result sets
 - Page size capped at 100
@@ -204,6 +221,7 @@ Implementation of the admin events analytics endpoint is complete and ready for 
   - `user_id`
 
 ### ✅ Security
+
 - RLS policies enforced via Supabase
 - No raw IP addresses exposed (only ip_hash)
 - No caching of admin data (cache-control: no-store)
@@ -215,12 +233,14 @@ Implementation of the admin events analytics endpoint is complete and ready for 
 ## Usage Examples
 
 ### Example 1: Get Recent Events
+
 ```bash
 curl -X GET "https://example.com/api/admin/events?page=1&page_size=20" \
   -H "Authorization: Bearer <admin_token>"
 ```
 
 **Response:**
+
 ```json
 {
   "items": [
@@ -246,18 +266,21 @@ curl -X GET "https://example.com/api/admin/events?page=1&page_size=20" \
 ```
 
 ### Example 2: Filter by Event Type and Time Range
+
 ```bash
 curl -X GET "https://example.com/api/admin/events?event_type=report_view,table_view&occurred_after=2025-01-01T00:00:00Z&occurred_before=2025-12-31T23:59:59Z&page_size=50" \
   -H "Authorization: Bearer <admin_token>"
 ```
 
 ### Example 3: Filter by Report
+
 ```bash
 curl -X GET "https://example.com/api/admin/events?report_id=789e0123-e89b-12d3-a456-426614174000" \
   -H "Authorization: Bearer <admin_token>"
 ```
 
 ### Example 4: Filter by User
+
 ```bash
 curl -X GET "https://example.com/api/admin/events?user_id=456e7890-e89b-12d3-a456-426614174000" \
   -H "Authorization: Bearer <admin_token>"
@@ -297,25 +320,25 @@ Ensure these indexes exist for optimal performance:
 
 ```sql
 -- Index for event_type filtering
-CREATE INDEX IF NOT EXISTS idx_events_event_type 
+CREATE INDEX IF NOT EXISTS idx_events_event_type
 ON events(event_type);
 
 -- Index for time range queries (DESC for default ordering)
-CREATE INDEX IF NOT EXISTS idx_events_occurred_at 
+CREATE INDEX IF NOT EXISTS idx_events_occurred_at
 ON events(occurred_at DESC);
 
 -- Index for report filtering
-CREATE INDEX IF NOT EXISTS idx_events_report_id 
-ON events(report_id) 
+CREATE INDEX IF NOT EXISTS idx_events_report_id
+ON events(report_id)
 WHERE report_id IS NOT NULL;
 
 -- Index for user filtering
-CREATE INDEX IF NOT EXISTS idx_events_user_id 
-ON events(user_id) 
+CREATE INDEX IF NOT EXISTS idx_events_user_id
+ON events(user_id)
 WHERE user_id IS NOT NULL;
 
 -- Composite index for common query patterns
-CREATE INDEX IF NOT EXISTS idx_events_type_occurred 
+CREATE INDEX IF NOT EXISTS idx_events_type_occurred
 ON events(event_type, occurred_at DESC);
 ```
 
@@ -330,8 +353,8 @@ ON events FOR SELECT
 TO authenticated
 USING (
   EXISTS (
-    SELECT 1 FROM profiles 
-    WHERE profiles.user_id = auth.uid() 
+    SELECT 1 FROM profiles
+    WHERE profiles.user_id = auth.uid()
     AND profiles.is_admin = true
   )
 );
@@ -363,9 +386,9 @@ USING (
 ## Questions or Issues?
 
 If you encounter any issues during testing or deployment, refer to:
+
 1. Testing guide for expected behaviors
 2. Implementation plan for design decisions
 3. Error handling section for troubleshooting
 
 All error codes are standardized and logged server-side for debugging.
-

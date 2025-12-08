@@ -107,12 +107,7 @@ export default function ImportsFilters({
 
       {/* Apply Button */}
       <div className="mt-4 flex justify-end gap-2">
-        <Button
-          onClick={handleClearFilters}
-          variant="outline"
-          className="text-sm"
-          disabled={!hasActiveFilters}
-        >
+        <Button onClick={handleClearFilters} variant="outline" className="text-sm" disabled={!hasActiveFilters}>
           Reset
         </Button>
         <Button onClick={handleApplyFilters} className="text-sm">
@@ -200,4 +195,3 @@ export default function ImportsFilters({
     </div>
   );
 }
-

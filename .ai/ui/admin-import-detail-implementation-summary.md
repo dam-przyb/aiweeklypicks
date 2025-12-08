@@ -12,7 +12,7 @@ The Admin Import Detail view provides administrators with a comprehensive audit 
 
 **Route:** `/admin/imports/[import_id]`  
 **Access Level:** Admin-only (enforced by middleware + RLS)  
-**Rendering:** Server-Side Rendering (SSR) for optimal performance  
+**Rendering:** Server-Side Rendering (SSR) for optimal performance
 
 ---
 
@@ -126,12 +126,14 @@ export type ImportAuditDetailDTO = ImportsAuditDTO & {
 ### Endpoint: GET `/api/admin/imports/[import_id]`
 
 **Request:**
+
 ```http
 GET /api/admin/imports/550e8400-e29b-41d4-a716-446655440000 HTTP/1.1
 Authorization: Bearer <admin-token>
 ```
 
 **Response 200 (Success):**
+
 ```json
 {
   "import_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -149,6 +151,7 @@ Authorization: Bearer <admin-token>
 ```
 
 **Response 404 (Not Found):**
+
 ```json
 {
   "code": "not_found",
@@ -157,6 +160,7 @@ Authorization: Bearer <admin-token>
 ```
 
 **Other Status Codes:**
+
 - `401 Unauthorized` - Missing or invalid auth token
 - `403 Forbidden` - User is not an admin
 - `500 Server Error` - Database or unexpected error
@@ -168,7 +172,7 @@ Authorization: Bearer <admin-token>
 ### SSR Page Load Flow
 
 1. **Route Match:** Astro matches `/admin/imports/[import_id]` route
-2. **Middleware Check:** 
+2. **Middleware Check:**
    - Verifies user is authenticated
    - Verifies user has admin privileges
    - Redirects to `/auth/login` or `/admin/forbidden` if unauthorized
@@ -278,24 +282,28 @@ Authorization: Bearer <admin-token>
 ## Accessibility Features
 
 ### Semantic HTML
+
 - Proper heading hierarchy (h1, h2, h3)
 - Definition list structure (dt/dd) for key-value pairs
 - role="alert" on error/success messages
 - Descriptive aria-labels on links and buttons
 
 ### Keyboard Navigation
+
 - All interactive elements keyboard accessible
 - Focus indicators on all focusable elements
 - "Skip to main content" link for screen readers
 - Logical tab order
 
 ### Visual Accessibility
+
 - Sufficient color contrast (WCAG AA compliant)
 - Status indicated by text + icon (not color alone)
 - Responsive design for various screen sizes
 - Readable font sizes and spacing
 
 ### Screen Reader Support
+
 - All images have appropriate aria-hidden or alt text
 - Status announcements via role="alert"
 - Descriptive link text (no "click here")
@@ -329,18 +337,21 @@ Authorization: Bearer <admin-token>
 ## Security Measures
 
 ### Authentication & Authorization
+
 - ✅ Middleware enforces admin-only access on page routes
 - ✅ `requireAdmin()` enforces admin-only access on API routes
 - ✅ RLS policies on `imports_audit` table (SELECT admin only)
 - ✅ Double-layer security (middleware + database)
 
 ### Data Protection
+
 - ✅ No sensitive data exposed in error messages
 - ✅ Import IDs are UUIDs (not enumerable)
 - ✅ Checksums displayed but not exploitable
 - ✅ User IDs shown but only to admins
 
 ### Input Validation
+
 - ✅ Import ID validated before queries
 - ✅ No direct user input (read-only view)
 - ✅ SQL injection prevented by Supabase SDK
@@ -351,13 +362,15 @@ Authorization: Bearer <admin-token>
 ## Testing Coverage
 
 ### Completed Unit Testing
+
 - ✅ Type definitions compile without errors
 - ✅ No linter errors in any component
 - ✅ All helper functions tested with edge cases
 
 ### Integration Testing Required
+
 - [ ] Test successful import detail view
-- [ ] Test failed import detail view  
+- [ ] Test failed import detail view
 - [ ] Test 404 not found flow
 - [ ] Test unauthorized access (401, 403)
 - [ ] Test report link navigation
@@ -365,6 +378,7 @@ Authorization: Bearer <admin-token>
 - [ ] Test API endpoint responses
 
 ### Accessibility Testing Required
+
 - [ ] Keyboard navigation
 - [ ] Screen reader announcement
 - [ ] Focus management
@@ -372,6 +386,7 @@ Authorization: Bearer <admin-token>
 - [ ] Responsive layout testing
 
 ### Browser Compatibility Testing Required
+
 - [ ] Chrome/Edge (Chromium)
 - [ ] Firefox
 - [ ] Safari (macOS/iOS)
@@ -384,24 +399,28 @@ See `.ai/ui/admin-import-detail-testing-guide.md` for complete testing checklist
 ## Technical Decisions
 
 ### Why SSR instead of client-side fetch?
+
 - **Performance:** SSR is faster for initial page load
 - **SEO:** Not applicable (noindex), but better for consistency
 - **Simplicity:** No need for loading states or error boundaries
 - **Security:** Credentials never exposed to client
 
 ### Why direct DB query instead of API call in SSR?
+
 - **Efficiency:** Eliminates extra HTTP round-trip
 - **Performance:** Faster response time
 - **Simplicity:** Fewer moving parts
 - **Note:** API endpoint still provided for other use cases (e.g., client-side refreshes, external tools)
 
 ### Why separate ImportAuditPanel component?
+
 - **Reusability:** Can be used in other contexts (modals, exports)
 - **Testability:** Easier to test in isolation
 - **Maintainability:** Clear separation of concerns
 - **Flexibility:** Can be easily modified without touching page logic
 
 ### Why no auto-refresh/polling?
+
 - **MVP Scope:** Not required for initial release
 - **Performance:** Polling adds unnecessary load
 - **User Need:** Import status rarely changes after completion
@@ -451,12 +470,14 @@ See `.ai/ui/admin-import-detail-testing-guide.md` for complete testing checklist
 ## Dependencies
 
 ### External Packages (already in project)
+
 - Astro (framework)
 - Supabase JS Client (database)
 - Tailwind CSS (styling)
 - TypeScript (type safety)
 
 ### Internal Dependencies
+
 - `@/types` - Type definitions
 - `@/layouts/Layout.astro` - Base layout
 - `@/components/Header.astro` - Navigation header
@@ -489,21 +510,25 @@ See `.ai/ui/admin-import-detail-testing-guide.md` for complete testing checklist
 ## Deployment Notes
 
 ### Pre-deployment Checklist
+
 1. Run linter: `npm run lint` ✅
 2. Type check: `npm run type-check` (if available)
 3. Build project: `npm run build`
 4. Test in production mode: `npm run preview`
 
 ### Database Requirements
+
 - ✅ `imports_audit` table exists with proper schema
 - ✅ RLS policies configured for admin SELECT
 - ✅ Indexes on `import_id` (primary key)
 - ✅ Foreign key to `weekly_reports.report_id` (nullable)
 
 ### Environment Variables
+
 No new environment variables required for this feature.
 
 ### Migration Required?
+
 No database migrations needed - all required tables already exist.
 
 ---
@@ -511,6 +536,7 @@ No database migrations needed - all required tables already exist.
 ## Support & Maintenance
 
 ### Monitoring
+
 - Monitor server logs for 500 errors in import detail page
 - Track 404 rates (high rate may indicate broken links)
 - Monitor API endpoint performance
@@ -518,21 +544,26 @@ No database migrations needed - all required tables already exist.
 ### Common Issues & Solutions
 
 **Issue:** Import details not loading
+
 - **Check:** User has admin privileges
 - **Check:** Import ID is valid UUID
 - **Check:** Database connection is healthy
 
 **Issue:** Report link not working
+
 - **Check:** Report slug exists in weekly_reports table
 - **Check:** Report detail page is deployed
 - **Check:** User has access to view reports
 
 **Issue:** Duration shows "N/A" for completed import
+
 - **Check:** finished_at timestamp is populated
 - **Check:** Timestamps are valid ISO format
 
 ### Contact
+
 For questions or issues with this implementation, refer to:
+
 - Implementation plan: `.ai/ui/admin-import-detail-view-implementation-plan.md`
 - Testing guide: `.ai/ui/admin-import-detail-testing-guide.md`
 - API documentation: `.ai/api/api-plan.md`
@@ -546,6 +577,7 @@ The Admin Import Detail view has been fully implemented according to the specifi
 **Status:** ✅ READY FOR QA TESTING
 
 **Next Steps:**
+
 1. Perform manual QA testing (see testing guide)
 2. Run accessibility audit
 3. Verify cross-browser compatibility
@@ -555,6 +587,5 @@ The Admin Import Detail view has been fully implemented according to the specifi
 
 ---
 
-*Implementation completed: 2025-11-25*  
-*Implementation plan: `.ai/ui/admin-import-detail-view-implementation-plan.md`*
-
+_Implementation completed: 2025-11-25_  
+_Implementation plan: `.ai/ui/admin-import-detail-view-implementation-plan.md`_

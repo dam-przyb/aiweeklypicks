@@ -207,7 +207,9 @@ A public, server-rendered table at `/picks` listing all historical stock picks. 
    - `useEffect` on mount; POST `/api/events` with `{ event_type: 'table_view' }`.
    - Guard double-sends with a ref; ignore failures.
 7. Wire layout:
-  - Ensure `Header`, `DisclaimerBlock`, and `Footer` are included; `DisclaimerBlock` satisfies PRD FR-060.
+
+- Ensure `Header`, `DisclaimerBlock`, and `Footer` are included; `DisclaimerBlock` satisfies PRD FR-060.
+
 8. A11y & UX polish:
    - `aria-sort` reflects state; focus styles visible; add `aria-live` announcements.
    - Horizontal scroll wrapper on small viewports.
@@ -223,5 +225,3 @@ A public, server-rendered table at `/picks` listing all historical stock picks. 
   - Preferred: extend `picks_history`/`/api/picks` to include `slug` for direct link to `/reports/[slug]`.
   - Alternative: create a detail route `/reports/id/[report_id]` that fetches by ID and renders the same view.
   - Interim: link to `/reports?id={report_id}` with server-side redirect to slug (if supported).
-
-

@@ -95,4 +95,3 @@ export function parseLoginCommand(body: unknown): LoginCommand {
 
   return parsed.data;
 }
-

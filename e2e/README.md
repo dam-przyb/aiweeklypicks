@@ -49,7 +49,7 @@ import { HomePage } from "./pages/HomePage";
 test("should display reports", async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.goto();
-  
+
   const reports = await homePage.getReportCards();
   expect(reports.length).toBeGreaterThan(0);
 });
@@ -128,10 +128,7 @@ test("should debug", async ({ page }) => {
 ### Wait for Navigation
 
 ```typescript
-await Promise.all([
-  page.waitForNavigation(),
-  page.click('a[href="/reports"]'),
-]);
+await Promise.all([page.waitForNavigation(), page.click('a[href="/reports"]')]);
 ```
 
 ### Handle Dialogs
@@ -161,6 +158,7 @@ await page.setInputFiles('input[type="file"]', "path/to/file.json");
 ## Configuration
 
 See `playwright.config.ts` for:
+
 - Browser settings
 - Timeouts
 - Screenshots/videos
@@ -172,4 +170,3 @@ See `playwright.config.ts` for:
 - [Playwright Docs](https://playwright.dev/)
 - [E2E Guidelines](../.cursor/rules/testing-e2e-playwright.mdc)
 - [Testing Guide](../.ai/testing-guide.md)
-

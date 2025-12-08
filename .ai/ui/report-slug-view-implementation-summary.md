@@ -7,28 +7,36 @@ All 11 implementation steps from the plan have been successfully completed and v
 ## Files Created/Modified
 
 ### 1. Type Definitions
+
 **File:** `src/types.ts`
+
 - Added `ReportMetaVM` - formatted report metadata view model
 - Added `PickItemVM` - formatted stock pick view model
 - Added `ReportWithPicksVM` - container for report with picks
 - All types follow existing DTO patterns and naming conventions
 
 ### 2. View Helper Functions
+
 **File:** `src/lib/view-helpers.ts`
+
 - `formatPercentageChange(value: number): string` - formats numbers to `+12.34%` format
 - `mapReportWithPicksDtoToViewModel(dto: ReportWithPicksDTO): ReportWithPicksVM` - transforms DTOs to view models with formatted dates and percentages
 
 ### 3. SSR Components
 
 #### ReportHeader Component
+
 **File:** `src/components/report/ReportHeader.astro`
+
 - Displays report title (h1), summary, and metadata
 - Shows ISO week, published date with local time tooltip, and version
 - Uses semantic `<dl>` for metadata
 - Responsive typography (text-3xl → text-4xl)
 
 #### PicksList Component
+
 **File:** `src/components/report/PicksList.astro`
+
 - Renders 1-5 stock picks with full details
 - Each pick shows: ticker (bold), exchange, side badge, target percentage, rationale
 - Side badges: green for LONG, red for SHORT with aria-labels
@@ -37,7 +45,9 @@ All 11 implementation steps from the plan have been successfully completed and v
 - Responsive card layout with hover effects
 
 #### DisclaimerBlock Component
+
 **File:** `src/components/common/DisclaimerBlock.astro`
+
 - Legal disclaimers: "Not Investment Advice" and "Corporate Actions"
 - Amber background for visibility
 - Semantic `<aside>` with `role="note"` and `aria-label`
@@ -46,7 +56,9 @@ All 11 implementation steps from the plan have been successfully completed and v
 ### 4. React Island Component
 
 #### DwellTimer Component
+
 **File:** `src/components/islands/DwellTimer.tsx`
+
 - Tracks active viewing time using Page Visibility API
 - Posts `report_view` event after 10 seconds of active viewing
 - Pauses when tab is hidden, resumes when visible
@@ -59,7 +71,9 @@ All 11 implementation steps from the plan have been successfully completed and v
 ### 5. Main Page
 
 #### Report Detail Page
+
 **File:** `src/pages/reports/[slug].astro`
+
 - SSR page with `prerender = false`
 - Fetches data from `GET /api/reports/{slug}` server-side
 - Handles 404 with custom error page and ErrorBanner
@@ -72,18 +86,21 @@ All 11 implementation steps from the plan have been successfully completed and v
 ### 6. Layout Update
 
 **File:** `src/layouts/Layout.astro`
+
 - Added `<slot name="head" />` to support page-specific meta tags
 - Enables SEO optimization per page
 
 ## API Integration
 
 ### GET /api/reports/{slug}
+
 - **Status:** ✅ Existing endpoint, working correctly
 - **Response 200:** Returns `ReportWithPicksDTO` with report and picks
 - **Response 404:** Returns error with `code: "not_found"`
 - **Caching:** ETags and Cache-Control headers supported
 
 ### POST /api/events
+
 - **Status:** ✅ Existing endpoint, working correctly
 - **Request:** `PostEventCommand` with `event_type: "report_view"`, `dwell_seconds >= 10`, `report_id`
 - **Response 202:** Returns `PostEventAcceptedDTO` with `event_id`
@@ -92,6 +109,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 ## Features Implemented
 
 ### Core Functionality ✅
+
 - [x] Server-side rendering for performance and SEO
 - [x] Dynamic route with slug parameter
 - [x] 404 handling with user-friendly error page
@@ -101,6 +119,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - [x] Engagement tracking (report_view event after 10s)
 
 ### Date and Number Formatting ✅
+
 - [x] Published date as YYYY-MM-DD (UTC)
 - [x] Local time tooltip on hover/focus
 - [x] ISO week format (2025-W47)
@@ -108,6 +127,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - [x] Color coding: green for positive, red for negative
 
 ### Responsive Design ✅
+
 - [x] Mobile-first approach with Tailwind 4
 - [x] Breakpoints: base, sm (640px), md (768px), lg (1024px)
 - [x] Responsive typography (text-3xl → text-4xl)
@@ -116,6 +136,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - [x] No horizontal scroll on any viewport size
 
 ### Accessibility ✅
+
 - [x] Semantic HTML5 (header, section, article, aside)
 - [x] Proper heading hierarchy (h1 → h2)
 - [x] ARIA labels and roles (aria-label, role="note", role="alert")
@@ -126,6 +147,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - [x] Touch targets adequate size (44x44px minimum)
 
 ### SEO Optimization ✅
+
 - [x] Descriptive page titles with report title and week
 - [x] Meta description from report summary
 - [x] Canonical URL
@@ -134,6 +156,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - [x] Server-side rendering for crawler indexing
 
 ### Error Handling ✅
+
 - [x] 404 page for invalid slugs
 - [x] Network error handling with ErrorBanner
 - [x] Event post failures logged without blocking user
@@ -141,6 +164,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - [x] Empty state for reports with 0 picks
 
 ### Performance ✅
+
 - [x] Server-side rendering (minimal client JS)
 - [x] Small React island for DwellTimer (1.43 KB, 0.69 KB gzipped)
 - [x] No unnecessary dependencies
@@ -151,16 +175,19 @@ All 11 implementation steps from the plan have been successfully completed and v
 ## Testing and Validation
 
 ### Build Validation ✅
+
 - **Command:** `npm run build`
 - **Status:** ✅ Success
 - **Output:** All components compiled, DwellTimer bundle size optimal
 
 ### Linter Validation ✅
+
 - **Command:** `npm run lint:fix`
 - **Status:** ✅ No errors in new code
 - **Warnings:** Console statements for logging (acceptable)
 
 ### Code Quality ✅
+
 - TypeScript types validated
 - No linter errors
 - Follows project coding guidelines (early returns, error handling)
@@ -185,6 +212,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 ### PRD Requirements Met ✅
 
 #### Functional Requirements
+
 - **FR-031:** Report content display ✅
 - **FR-060:** Disclaimer block ✅
 - **FR-051:** Numeric formatting (2 decimals, signed) ✅
@@ -192,6 +220,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 - **FR-080:** Performance (SSR, minimal JS) ✅
 
 #### User Stories
+
 - **US-002:** View published reports ✅
 - **US-015:** View report details ✅
 - **US-016:** Read stock pick rationale ✅
@@ -217,6 +246,7 @@ All 11 implementation steps from the plan have been successfully completed and v
 ## Next Steps for Developer
 
 ### Immediate Testing
+
 ```bash
 # 1. Start dev server
 npm run dev
@@ -237,7 +267,9 @@ npm run dev
 ```
 
 ### Database Setup
+
 If no reports exist yet:
+
 ```bash
 # Run seeding script (if available)
 npm run seed:starting-reports
@@ -247,13 +279,17 @@ POST /api/admin/imports
 ```
 
 ### Integration with Backend
+
 Verify Supabase setup:
+
 - RLS policies allow public read access to `weekly_reports` and `stock_picks`
 - `admin_post_event` RPC function exists and is accessible
 - Environment variables configured (`EVENT_IP_HASH_SALT`)
 
 ### Production Deployment
+
 Before deploying:
+
 - [ ] Verify all environment variables set
 - [ ] Test with production Supabase instance
 - [ ] Run full build: `npm run build`
@@ -290,4 +326,3 @@ The `/reports/[slug]` view has been successfully implemented according to the pl
 **Bundle Impact:** +1.43 KB (DwellTimer island)
 
 ✅ **Ready for production deployment**
-

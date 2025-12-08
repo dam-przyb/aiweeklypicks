@@ -84,5 +84,3 @@ A public login page that authenticates a user via email/password using a React i
 3. Ensure server route `/api/auth/login` emits `login` event and sets session.
 4. A11y: labels, described-by, `aria-live` for errors; focus management on errors.
 5. QA: wrong credentials, rate-limit message, redirect behavior, keyboard-only flow.
-
-

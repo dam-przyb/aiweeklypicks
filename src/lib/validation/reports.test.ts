@@ -914,4 +914,3 @@ describe("parseReportsListQuery", () => {
     expect(result.week).toBe("2025-W42");
   });
 });
-

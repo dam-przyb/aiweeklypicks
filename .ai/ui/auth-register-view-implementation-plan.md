@@ -81,5 +81,3 @@ A public registration page that creates an account via email/password using a Re
 3. Ensure server route `/api/auth/register` emits `registration_complete` and sends email verification via Supabase.
 4. A11y: labels, described-by, `aria-live` for errors; focus management on errors/success.
 5. QA: duplicate email, rate-limit, redirect behavior, keyboard-only flow.
-
-

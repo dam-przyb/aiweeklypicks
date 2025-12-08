@@ -24,10 +24,12 @@ An admin-only page that allows uploading weekly report JSON files and viewing re
 ## 4. Component Details
 
 ### AdminGuard (SSR)
+
 - Purpose: Server-side check/conditional render for admin-only content; shows friendly 403 if not authorized.
 - Props: `{ isAdmin: boolean }`.
 
 ### FileUploadForm (React island)
+
 - Purpose: Upload a `.json` file with client-side validation and progress UI.
 - Main elements:
   - Dropzone or file input (accept `.json`); filename regex validation `^\d{4}-\d{2}-\d{2}report\.json$`.
@@ -42,12 +44,14 @@ An admin-only page that allows uploading weekly report JSON files and viewing re
   - Local VM: `{ file?: File; progress: number; error?: string }`.
 
 ### ImportsTable (SSR)
+
 - Purpose: List recent imports with status and metadata.
 - Columns: `filename`, `status (success|failed)`, `started_at`, `finished_at`, `error_message (optional)`, link to detail.
 - Props: `ImportsListDTO` (server-defined).
 - Optional: lightweight polling via client script or a React island to refresh every 15–30s.
 
 ### InlineAlert (SSR)
+
 - Purpose: Display server-side mapped errors (e.g., rate limit).
 - Props: `{ variant: 'error'|'warning'|'info'; message: string }`.
 
@@ -101,5 +105,3 @@ An admin-only page that allows uploading weekly report JSON files and viewing re
 4. Wire GET `/api/admin/imports` and POST `/api/admin/imports`; ensure JWT attached and server checks admin role.
 5. (Optional) Add polling island for list refresh; ensure minimal interval (15–30s) and pause when tab hidden.
 6. QA: invalid file type/size, duplicate errors, schema errors, unauthorized access flow.
-
-

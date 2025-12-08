@@ -135,7 +135,7 @@ The endpoint responds with an asynchronous-acceptance contract (`202 Accepted`) 
     - Structural validation failures (type mismatches, invalid UUID format, unexpected fields) that do not require domain-specific semantics.
   - **401 Unauthorized**
     - Only when auth is required and missing/invalid; for this endpoint:
-      - Typically this endpoint is public, so **401** is returned only if in the future we decide certain event types must be authenticated.  
+      - Typically this endpoint is public, so **401** is returned only if in the future we decide certain event types must be authenticated.
       - Current spec: no 401 for anonymous events; invalid tokens simply mean `user_id` is omitted, not a request failure.
   - **422 Unprocessable Entity**
     - Valid JSON, structurally correct, but domain rule failure:
@@ -143,7 +143,7 @@ The endpoint responds with an asynchronous-acceptance contract (`202 Accepted`) 
         - `dwell_seconds` missing or `< 10`.
     - Potential extension: additional domain rules (e.g. invalid combinations of `event_type` and `report_id`) also mapped here.
   - **429 Too Many Requests**
-    - Request exceeds rate-limit thresholds (e.g. per IP or token).  
+    - Request exceeds rate-limit thresholds (e.g. per IP or token).
     - Returns a JSON error envelope containing rate-limit info and retry hints.
 
 - **Server Errors**
@@ -443,5 +443,3 @@ The endpoint responds with an asynchronous-acceptance contract (`202 Accepted`) 
       - Describe request/response formats.
       - Document rate limits, status codes, and error shapes.
       - Clarify privacy behavior (IP hashing, no raw IP storage).
-
-

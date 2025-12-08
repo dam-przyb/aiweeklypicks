@@ -23,6 +23,7 @@ Admin-only endpoint to query ingested events for operational analytics. Supports
     - `user_id` (UUID)
 
 Validation rules:
+
 - Clamp `page_size` to [1, 100].
 - `event_type` values must be from the allowed set; deduplicate.
 - `occurred_before`/`occurred_after` must be valid datetimes; if both present, ensure `occurred_after <= occurred_before`.
@@ -52,6 +53,7 @@ Validation rules:
   - Unexpected server/database errors
 
 Headers:
+
 - `Cache-Control: no-store` (admin-only, not cacheable)
 
 ### 5. Data Flow
@@ -85,15 +87,19 @@ Headers:
 - **500 Internal Server Error** for unexpected DB errors.
 
 Error JSON examples:
+
 ```json
 { "code": "bad_request", "message": "invalid query parameters" }
 ```
+
 ```json
 { "code": "unauthorized", "message": "missing or invalid token" }
 ```
+
 ```json
 { "code": "forbidden", "message": "admin required" }
 ```
+
 ```json
 { "code": "server_error", "message": "unexpected error" }
 ```
@@ -146,11 +152,11 @@ Server logging: `{ route: '/api/admin/events', admin_user_id, filters: {...}, to
 // src/pages/api/admin/events.ts
 export const prerender = false;
 
-import type { APIRoute } from 'astro';
-import { parseAdminEventsQuery } from '@/lib/validation/admin/events';
-import { requireAdmin } from '@/lib/services/authz';
-import { limitPerKey } from '@/lib/services/rateLimit';
-import { listAdminEvents } from '@/lib/services/admin/events';
+import type { APIRoute } from "astro";
+import { parseAdminEventsQuery } from "@/lib/validation/admin/events";
+import { requireAdmin } from "@/lib/services/authz";
+import { limitPerKey } from "@/lib/services/rateLimit";
+import { listAdminEvents } from "@/lib/services/admin/events";
 
 export const GET: APIRoute = async (context) => {
   const { request, locals } = context;
@@ -160,31 +166,33 @@ export const GET: APIRoute = async (context) => {
     const query = parseAdminEventsQuery(url);
     const { data: userRes, error: userErr } = await supabase.auth.getUser();
     if (userErr || !userRes?.user) {
-      return new Response(JSON.stringify({ code: 'unauthorized', message: 'missing or invalid token' }), { status: 401 });
+      return new Response(JSON.stringify({ code: "unauthorized", message: "missing or invalid token" }), {
+        status: 401,
+      });
     }
     await requireAdmin(supabase);
 
     // Rate limit per admin user
     if (!limitPerKey({ key: `admin:${userRes.user.id}`, max: 30, windowMs: 60_000 })) {
-      return new Response(JSON.stringify({ code: 'rate_limited', message: 'too many requests' }), { status: 429 });
+      return new Response(JSON.stringify({ code: "rate_limited", message: "too many requests" }), { status: 429 });
     }
 
     const result = await listAdminEvents(supabase, query);
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: {
-        'content-type': 'application/json',
-        'cache-control': 'no-store',
+        "content-type": "application/json",
+        "cache-control": "no-store",
       },
     });
   } catch (err: any) {
-    if (err?.code === 'bad_request') {
-      return new Response(JSON.stringify({ code: 'bad_request', message: err.message }), { status: 400 });
+    if (err?.code === "bad_request") {
+      return new Response(JSON.stringify({ code: "bad_request", message: err.message }), { status: 400 });
     }
-    if (err?.code === 'forbidden') {
-      return new Response(JSON.stringify({ code: 'forbidden', message: 'admin required' }), { status: 403 });
+    if (err?.code === "forbidden") {
+      return new Response(JSON.stringify({ code: "forbidden", message: "admin required" }), { status: 403 });
     }
-    return new Response(JSON.stringify({ code: 'server_error', message: 'unexpected error' }), { status: 500 });
+    return new Response(JSON.stringify({ code: "server_error", message: "unexpected error" }), { status: 500 });
   }
 };
 ```
@@ -193,35 +201,50 @@ export const GET: APIRoute = async (context) => {
 
 ```ts
 // src/lib/services/admin/events.ts
-import type { AdminEventsListQuery, AdminEventsListResponseDTO, AdminEventDTO } from '@/types';
+import type { AdminEventsListQuery, AdminEventsListResponseDTO, AdminEventDTO } from "@/types";
 
 const COLUMNS = [
-  'event_id', 'user_id', 'event_type', 'occurred_at', 'user_agent', 'ip_hash', 'dwell_seconds', 'metadata', 'is_staff_ip', 'is_bot', 'report_id',
+  "event_id",
+  "user_id",
+  "event_type",
+  "occurred_at",
+  "user_agent",
+  "ip_hash",
+  "dwell_seconds",
+  "metadata",
+  "is_staff_ip",
+  "is_bot",
+  "report_id",
 ] as const;
 
-export async function listAdminEvents(supabase: App.Locals['supabase'], query: AdminEventsListQuery & { event_type?: string | string[] }): Promise<AdminEventsListResponseDTO> {
+export async function listAdminEvents(
+  supabase: App.Locals["supabase"],
+  query: AdminEventsListQuery & { event_type?: string | string[] }
+): Promise<AdminEventsListResponseDTO> {
   const { page = 1, page_size = 20, occurred_before, occurred_after, report_id, user_id } = query as any;
   const from = (page - 1) * page_size;
   const to = from + page_size - 1;
 
   let req = supabase
-    .from('events')
-    .select(COLUMNS.join(','), { count: 'exact' })
-    .order('occurred_at', { ascending: false })
+    .from("events")
+    .select(COLUMNS.join(","), { count: "exact" })
+    .order("occurred_at", { ascending: false })
     .range(from, to);
 
   // Normalize event_type to array if provided
   const types = Array.isArray((query as any).event_type)
     ? (query as any).event_type
-    : (typeof (query as any).event_type === 'string' ? [(query as any).event_type] : undefined);
+    : typeof (query as any).event_type === "string"
+      ? [(query as any).event_type]
+      : undefined;
   if (types && types.length) {
-    req = req.in('event_type', types);
+    req = req.in("event_type", types);
   }
 
-  if (occurred_after) req = req.gte('occurred_at', occurred_after);
-  if (occurred_before) req = req.lte('occurred_at', occurred_before);
-  if (report_id) req = req.eq('report_id', report_id);
-  if (user_id) req = req.eq('user_id', user_id);
+  if (occurred_after) req = req.gte("occurred_at", occurred_after);
+  if (occurred_before) req = req.lte("occurred_at", occurred_before);
+  if (report_id) req = req.eq("report_id", report_id);
+  if (user_id) req = req.eq("user_id", user_id);
 
   const { data, count, error } = await req;
   if (error) throw error;
@@ -237,46 +260,52 @@ export async function listAdminEvents(supabase: App.Locals['supabase'], query: A
 
 ```ts
 // src/lib/validation/admin/events.ts
-import { z } from 'zod';
-import type { AdminEventsListQuery } from '@/types';
+import { z } from "zod";
+import type { AdminEventsListQuery } from "@/types";
 
-const eventTypeEnum = z.enum(['registration_complete', 'login', 'report_view', 'table_view']);
+const eventTypeEnum = z.enum(["registration_complete", "login", "report_view", "table_view"]);
 const uuid = z.string().uuid();
 const isoDate = z.string().datetime({ offset: true }).or(z.string().datetime());
 
-export const adminEventsQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  page_size: z.coerce.number().int().min(1).max(100).default(20),
-  event_type: z.union([eventTypeEnum, z.array(eventTypeEnum)]).optional(),
-  occurred_before: isoDate.optional(),
-  occurred_after: isoDate.optional(),
-  report_id: uuid.optional(),
-  user_id: uuid.optional(),
-}).superRefine((val, ctx) => {
-  if (val.occurred_before && val.occurred_after) {
-    if (new Date(val.occurred_after) > new Date(val.occurred_before)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'occurred_after must be <= occurred_before', path: ['occurred_after'] });
+export const adminEventsQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    page_size: z.coerce.number().int().min(1).max(100).default(20),
+    event_type: z.union([eventTypeEnum, z.array(eventTypeEnum)]).optional(),
+    occurred_before: isoDate.optional(),
+    occurred_after: isoDate.optional(),
+    report_id: uuid.optional(),
+    user_id: uuid.optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.occurred_before && val.occurred_after) {
+      if (new Date(val.occurred_after) > new Date(val.occurred_before)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "occurred_after must be <= occurred_before",
+          path: ["occurred_after"],
+        });
+      }
     }
-  }
-});
+  });
 
 export function parseAdminEventsQuery(url: URL): AdminEventsListQuery & { event_type?: string[] } {
   const sp = url.searchParams;
   // Accept repeated or comma-separated event_type
-  const repeated = sp.getAll('event_type');
-  const splitComma = repeated.flatMap(v => v.split(',')).filter(Boolean);
+  const repeated = sp.getAll("event_type");
+  const splitComma = repeated.flatMap((v) => v.split(",")).filter(Boolean);
   const obj: Record<string, unknown> = Object.fromEntries(sp.entries());
   if (splitComma.length) obj.event_type = splitComma;
 
   const parsed = adminEventsQuerySchema.safeParse(obj);
   if (!parsed.success) {
-    const message = parsed.error.issues.map(i => i.message).join('; ');
+    const message = parsed.error.issues.map((i) => i.message).join("; ");
     const error: any = new Error(message);
-    error.code = 'bad_request';
+    error.code = "bad_request";
     throw error;
   }
   const data = parsed.data as any;
-  if (typeof data.event_type === 'string') data.event_type = [data.event_type];
+  if (typeof data.event_type === "string") data.event_type = [data.event_type];
   return data;
 }
 ```
@@ -288,4 +317,3 @@ export function parseAdminEventsQuery(url: URL): AdminEventsListQuery & { event_
 - Update/Use: `src/lib/services/authz.ts` (`requireAdmin`)
 - Update/Use: `src/lib/services/rateLimit.ts` (30/min per admin)
 - New: `src/pages/api/admin/events.ts`
-

@@ -9,14 +9,7 @@ interface Props {
   errorMessage?: string;
 }
 
-const {
-  code,
-  message,
-  actionHref = "/",
-  actionLabel = "Go to home",
-  errorCode,
-  errorMessage,
-} = Astro.props;
+const { code, message, actionHref = "/", actionLabel = "Go to home", errorCode, errorMessage } = Astro.props;
 
 // Support both old and new prop names (old props take precedence for backward compatibility)
 const displayCode = errorCode ?? code;

@@ -248,4 +248,3 @@ async function emitRegistrationEvent(request: Request, userId: string): Promise<
     // Don't throw - this is fire-and-forget
   }
 }
-

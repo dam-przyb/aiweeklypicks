@@ -7,9 +7,9 @@ It allows administrators to review recent report import attempts, including stat
 
 ### 2. Request Details
 
-- **HTTP Method**: GET  
-- **URL Structure**: `/api/admin/imports`  
-- **Authentication**: `Authorization: Bearer <access_token>` (Supabase JWT)  
+- **HTTP Method**: GET
+- **URL Structure**: `/api/admin/imports`
+- **Authentication**: `Authorization: Bearer <access_token>` (Supabase JWT)
 - **Authorization**: Caller must be an admin (`profiles.is_admin = true` for `auth.uid()`), enforced via `requireAdmin` and RLS.
 
 - **Parameters**
@@ -315,5 +315,3 @@ From `src/types.ts`:
 6. **Documentation and Observability**
    - Ensure that this plan is reflected in the overall API documentation, referencing the response shapes and query parameters exactly.
    - If a centralized logging or monitoring solution is used, replace `console.error` calls with the appropriate logging integration for better traceability of admin access and failure modes.
-
-

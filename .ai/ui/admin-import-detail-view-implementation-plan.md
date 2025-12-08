@@ -23,6 +23,7 @@ An admin-only page that shows the audit record for a specific import, including 
 ## 4. Component Details
 
 ### ImportAuditPanel (SSR)
+
 - Purpose: Present all details of an import audit in a clear panel layout.
 - Fields: `import_id`, `filename`, `status`, `started_at`, `finished_at`, `error_message (optional)`, optional `report_id`/`report_slug`.
 - Interactions:
@@ -31,6 +32,7 @@ An admin-only page that shows the audit record for a specific import, including 
 - Props: `{ audit: ImportAuditDetailDTO }`.
 
 ### InlineAlert (SSR)
+
 - Purpose: Display server-mapped errors (e.g., record not found).
 - Props: `{ variant: 'error'|'warning'|'info'; message: string }`.
 
@@ -69,5 +71,3 @@ An admin-only page that shows the audit record for a specific import, including 
 2. Implement `ImportAuditPanel` SSR partial (`src/components/admin/ImportAuditPanel.astro`).
 3. Wire SSR fetch to GET `/api/admin/imports/{import_id}`; map 404/403 accordingly.
 4. QA: success with report link, failure with clear messages, unauthorized flow.
-
-

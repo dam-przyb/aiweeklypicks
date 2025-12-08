@@ -97,11 +97,7 @@ export async function listReports(supabase: SupabaseClient, query: ReportsListQu
  * @throws Supabase errors if database query fails
  */
 export async function getReportSlugById(supabase: SupabaseClient, reportId: UUID): Promise<string | null> {
-  const { data, error } = await supabase
-    .from("weekly_reports")
-    .select("slug")
-    .eq("report_id", reportId)
-    .single();
+  const { data, error } = await supabase.from("weekly_reports").select("slug").eq("report_id", reportId).single();
 
   if (error) {
     // If not found, return null instead of throwing

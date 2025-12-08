@@ -1,17 +1,20 @@
 ## GET /api/reports/{slug} - Implementation Summary
 
 ### Overview
+
 Successfully implemented a public REST API endpoint that fetches a single weekly report by its permalink slug, including all associated stock picks. The implementation follows the plan in `fetch-report-implementation-plan.md`.
 
 ### Files Created
 
 #### 1. Validation Layer
+
 - **`src/lib/validation/report-by-slug.ts`**
   - Zod schema for slug validation (lowercase, digits, hyphens; 1-120 chars)
   - `parseReportSlug()` helper that throws `bad_request` error on invalid input
   - Pattern: `^[a-z0-9]+(?:-[a-z0-9]+)*$`
 
 #### 2. Service Layer
+
 - **`src/lib/services/reportBySlug.ts`**
   - `getReportWithPicksBySlug()` function
   - Fetches report by slug using `.single()` query
@@ -20,6 +23,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
   - Returns `ReportWithPicksDTO` shape
 
 #### 3. API Route
+
 - **`src/pages/api/reports/[slug].ts`**
   - `export const prerender = false`
   - Validates slug via `parseReportSlug()`
@@ -29,6 +33,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
   - Caching headers: `Cache-Control: public, max-age=60, s-maxage=60, stale-while-revalidate=120`
 
 #### 4. Utility
+
 - **`src/lib/hash.ts`**
   - `hashJSON()` function using Node's crypto to create SHA-256 digest
   - Used for ETag generation
@@ -36,6 +41,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ### Files Modified
 
 #### 1. Middleware
+
 - **`src/middleware/index.ts`**
   - Changed rate limiting from exact route match to prefix matching
   - Now covers `/api/reports/*` including slug routes
@@ -44,12 +50,14 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ### Testing
 
 #### 1. Unit Tests
+
 - **`src/lib/validation/report-by-slug.test.ts`** (18 tests)
   - Valid slugs: lowercase, digits, hyphens, single char, max length (120)
   - Invalid slugs: empty, too long (121+), uppercase, leading/trailing/consecutive hyphens, special chars, spaces, dots
   - `parseReportSlug()` error handling with `bad_request` code
 
 #### 2. Integration Tests
+
 - **`src/pages/api/reports/[slug].test.ts`** (7 tests)
   - 200 response with report and picks
   - 304 response when ETag matches (conditional GET)
@@ -60,24 +68,29 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
   - Proper headers (content-type, cache-control, etag)
 
 #### 3. Test Infrastructure
+
 - **`vitest.config.ts`** - Vitest configuration with path aliases
 - **`package.json`** - Added test scripts (`test`, `test:ui`, `test:run`)
 - Installed: `vitest`, `@vitest/ui`
 
 ### Test Results
+
 ✅ All 25 tests passing
+
 - 18 validation tests
 - 7 endpoint integration tests
 
 ### Security & Performance
 
 #### Security
+
 - Slug validation prevents injection attacks
 - RLS policies apply (anon read allowed)
 - Rate limiting: 60/min per IP
 - Input sanitization via Zod
 
 #### Performance
+
 - Minimal column selection (only DTO fields)
 - Leverages database indexes:
   - `weekly_reports(slug UNIQUE)`
@@ -89,6 +102,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ### Response Examples
 
 #### Success (200)
+
 ```json
 {
   "report": {
@@ -117,6 +131,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ```
 
 #### Not Found (404)
+
 ```json
 {
   "code": "not_found",
@@ -125,6 +140,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ```
 
 #### Bad Request (400)
+
 ```json
 {
   "code": "bad_request",
@@ -133,6 +149,7 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ```
 
 #### Server Error (500)
+
 ```json
 {
   "code": "server_error",
@@ -143,11 +160,13 @@ Successfully implemented a public REST API endpoint that fetches a single weekly
 ### Usage
 
 #### Fetch a report
+
 ```bash
 curl http://localhost:4321/api/reports/weekly-report-2025-w42
 ```
 
 #### Conditional GET with ETag
+
 ```bash
 # First request
 curl -i http://localhost:4321/api/reports/weekly-report-2025-w42
@@ -176,4 +195,3 @@ curl -H 'If-None-Match: W/"abc123..."' http://localhost:4321/api/reports/weekly-
 3. **E2E tests**: Test against real Supabase instance
 4. **Observability**: Add structured logging with correlation IDs
 5. **Compression**: Add gzip/brotli for larger responses (though picks are typically small)
-

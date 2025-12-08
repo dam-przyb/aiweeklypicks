@@ -11,10 +11,7 @@ import type { Database } from "./database.types";
  * @returns Supabase client configured for browser with cookie-based session management
  */
 export function getSupabaseBrowserClient() {
-  return createBrowserClient<Database>(
-    import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_KEY
-  );
+  return createBrowserClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY);
 }
 
 /**
@@ -22,4 +19,3 @@ export function getSupabaseBrowserClient() {
  * Use this type in React components
  */
 export type SupabaseBrowserClient = ReturnType<typeof getSupabaseBrowserClient>;
-

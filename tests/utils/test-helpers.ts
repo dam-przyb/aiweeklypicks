@@ -1,6 +1,6 @@
 /**
  * Test Helper Utilities
- * 
+ *
  * Reusable utilities for testing across the application.
  */
 
@@ -11,10 +11,7 @@ import { ReactElement } from "react";
  * Custom render function that wraps components with common providers
  * Extend this as your app grows to include context providers, routers, etc.
  */
-export function renderWithProviders(
-  ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">
-) {
+export function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) {
   return render(ui, { ...options });
 }
 
@@ -44,10 +41,7 @@ export function createMockSupabaseClient() {
 /**
  * Waits for a promise to reject with a specific error
  */
-export async function expectToReject(
-  promise: Promise<any>,
-  errorMessage?: string
-) {
+export async function expectToReject(promise: Promise<any>, errorMessage?: string) {
   try {
     await promise;
     throw new Error("Expected promise to reject, but it resolved");
@@ -61,4 +55,3 @@ export async function expectToReject(
 
 // Re-export vitest utilities for convenience
 export { vi, describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from "vitest";
-

@@ -3,7 +3,7 @@ export const prerender = false;
 
 /**
  * Auth Callback Handler
- * 
+ *
  * Handles email verification and password reset callbacks from Supabase Auth
  * When users click on email verification or password reset links, they are redirected here
  * This page exchanges the code for a session and redirects appropriately
@@ -51,21 +51,22 @@ if (type === "recovery") {
 return redirect("/?verified=true", 302);
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifying...</title>
-  <meta name="robots" content="noindex, nofollow">
-</head>
-<body>
-  <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif;">
-    <div style="text-align: center;">
-      <h1>Verifying...</h1>
-      <p>Please wait while we verify your account.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifying...</title>
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <div
+      style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif;"
+    >
+      <div style="text-align: center;">
+        <h1>Verifying...</h1>
+        <p>Please wait while we verify your account.</p>
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>
-

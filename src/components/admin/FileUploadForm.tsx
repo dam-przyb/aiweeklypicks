@@ -184,18 +184,10 @@ export default function FileUploadForm() {
     <div className="space-y-4">
       {/* Error Alert */}
       {state.error && (
-        <div
-          role="alert"
-          className="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 shadow-sm"
-        >
+        <div role="alert" className="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-red-600"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-              >
+              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path
                   fillRule="evenodd"
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
@@ -226,18 +218,10 @@ export default function FileUploadForm() {
 
       {/* Success Alert */}
       {state.success && (
-        <div
-          role="alert"
-          className="bg-green-50 border-l-4 border-green-600 rounded-lg p-4 shadow-sm"
-        >
+        <div role="alert" className="bg-green-50 border-l-4 border-green-600 rounded-lg p-4 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-green-600"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-              >
+              <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path
                   fillRule="evenodd"
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
@@ -272,9 +256,7 @@ export default function FileUploadForm() {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         className={`border-2 border-dashed rounded-lg p-6 transition-colors ${
-          state.file
-            ? "border-green-400 bg-green-50"
-            : "border-gray-300 bg-gray-50 hover:border-gray-400"
+          state.file ? "border-green-400 bg-green-50" : "border-gray-300 bg-gray-50 hover:border-gray-400"
         }`}
       >
         <div className="space-y-4">
@@ -295,14 +277,10 @@ export default function FileUploadForm() {
             </svg>
             <div className="text-center">
               <Label htmlFor="file-upload" className="cursor-pointer">
-                <span className="text-blue-600 hover:text-blue-700 font-medium">
-                  Choose a file
-                </span>
+                <span className="text-blue-600 hover:text-blue-700 font-medium">Choose a file</span>
                 <span className="text-gray-600"> or drag and drop</span>
               </Label>
-              <p className="text-xs text-gray-500 mt-1">
-                JSON file, max 2MB, format: YYYY-MM-DDreport.json
-              </p>
+              <p className="text-xs text-gray-500 mt-1">JSON file, max 2MB, format: YYYY-MM-DDreport.json</p>
             </div>
           </div>
 
@@ -321,11 +299,7 @@ export default function FileUploadForm() {
           {state.file && (
             <div className="flex items-center justify-between p-3 bg-white border border-green-300 rounded-md">
               <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-green-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
@@ -334,9 +308,7 @@ export default function FileUploadForm() {
                 </svg>
                 <div>
                   <p className="text-sm font-medium text-gray-900">{state.file.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {(state.file.size / 1024).toFixed(2)} KB
-                  </p>
+                  <p className="text-xs text-gray-500">{(state.file.size / 1024).toFixed(2)} KB</p>
                 </div>
               </div>
               {!state.uploading && (
@@ -386,11 +358,7 @@ export default function FileUploadForm() {
 
       {/* Upload Button */}
       <div className="flex justify-end">
-        <Button
-          onClick={handleUpload}
-          disabled={!state.file || state.uploading}
-          className="px-6"
-        >
+        <Button onClick={handleUpload} disabled={!state.file || state.uploading} className="px-6">
           {state.uploading ? (
             <>
               <svg
@@ -399,14 +367,7 @@ export default function FileUploadForm() {
                 fill="none"
                 viewBox="0 0 24 24"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path
                   className="opacity-75"
                   fill="currentColor"
@@ -428,4 +389,3 @@ export default function FileUploadForm() {
     </div>
   );
 }
-

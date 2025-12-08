@@ -1,6 +1,6 @@
 /**
  * Example Unit Test for React Components
- * 
+ *
  * This file demonstrates unit testing patterns with Vitest and React Testing Library.
  * Following guidelines from .cursor/rules/testing-unit-vitest.mdc
  */
@@ -91,4 +91,3 @@ describe("Module Mocking (Example)", () => {
     expect(mockUtils.formatDate).toHaveBeenCalled();
   });
 });
-

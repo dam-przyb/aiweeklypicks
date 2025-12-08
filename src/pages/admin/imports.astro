@@ -85,9 +85,7 @@ const pageDescription = "Upload and manage weekly report imports";
       <!-- Page Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Import Management</h1>
-        <p class="text-gray-600">
-          Upload weekly report JSON files and monitor import status
-        </p>
+        <p class="text-gray-600">Upload weekly report JSON files and monitor import status</p>
       </div>
 
       <!-- Upload Section -->
@@ -110,18 +108,10 @@ const pageDescription = "Upload and manage weekly report imports";
       <!-- Error Display (if list fetch failed) -->
       {
         fetchError && (
-          <div
-            role="alert"
-            class="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 mb-6 shadow-sm"
-          >
+          <div role="alert" class="bg-red-50 border-l-4 border-red-600 rounded-lg p-4 mb-6 shadow-sm">
             <div class="flex items-start gap-3">
               <div class="flex-shrink-0">
-                <svg
-                  class="w-6 h-6 text-red-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                >
+                <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path
                     fill-rule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
@@ -162,4 +152,3 @@ const pageDescription = "Upload and manage weekly report imports";
     <meta property="og:description" content={pageDescription} />
   </Fragment>
 </Layout>
-

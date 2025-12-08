@@ -76,41 +76,41 @@ jobs:
           build-args: |
             PUBLIC_ENV_NAME=${{ secrets.PUBLIC_ENV_NAME }}
 
-  deploy:
-    name: Deploy to DigitalOcean App Platform
-    needs: [build-and-push]
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-    env:
-      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/aiweeklypicks
-      IMAGE_TAG: ${{ github.sha }}
-      PUBLIC_ENV_NAME: ${{ secrets.PUBLIC_ENV_NAME }}
-      # Set this to your DigitalOcean App ID (or configure via repository/environment variables)
-      DO_APP_ID: ${{ vars.DIGITALOCEAN_APP_ID }}
-    steps:
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      - name: Deploy updated image to DigitalOcean App Platform
-        shell: bash
-        run: |
-          if [ -z "${DO_APP_ID}" ]; then
-            echo "DO_APP_ID is not set. Please configure DIGITALOCEAN_APP_ID as a repository or environment variable."
-            exit 1
-          fi
-
-          echo "Fetching current App spec for ${DO_APP_ID}..."
-          doctl apps spec get "${DO_APP_ID}" > app-spec.yaml
-
-          echo "Updating image reference to ${IMAGE_NAME}:${IMAGE_TAG} ..."
-          # NOTE: This is a simplified example. Adjust the selector below to match your container definition.
-          sed -i "s|image: .*$|image: ${IMAGE_NAME}:${IMAGE_TAG}|g" app-spec.yaml
-
-          echo "Ensuring PUBLIC_ENV_NAME is set in spec (if present in your envs) ..."
-          # In a real setup you would update the relevant envs section here to ensure PUBLIC_ENV_NAME matches the value from GitHub Secrets.
-
-          echo "Applying updated spec..."
-          doctl apps update "${DO_APP_ID}" --spec app-spec.yaml
+  # deploy:
+  #   name: Deploy to DigitalOcean App Platform
+  #   needs: [build-and-push]
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: production
+  #   env:
+  #     IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/aiweeklypicks
+  #     IMAGE_TAG: ${{ github.sha }}
+  #     PUBLIC_ENV_NAME: ${{ secrets.PUBLIC_ENV_NAME }}
+  #     # Set this to your DigitalOcean App ID (or configure via repository/environment variables)
+  #     DO_APP_ID: ${{ vars.DIGITALOCEAN_APP_ID }}
+  #   steps:
+  #     - name: Install doctl
+  #       uses: digitalocean/action-doctl@v2
+  #       with:
+  #         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  #
+  #     - name: Deploy updated image to DigitalOcean App Platform
+  #       shell: bash
+  #       run: |
+  #         if [ -z "${DO_APP_ID}" ]; then
+  #           echo "DO_APP_ID is not set. Please configure DIGITALOCEAN_APP_ID as a repository or environment variable."
+  #           exit 1
+  #         fi
+  #
+  #         echo "Fetching current App spec for ${DO_APP_ID}..."
+  #         doctl apps spec get "${DO_APP_ID}" > app-spec.yaml
+  #
+  #         echo "Updating image reference to ${IMAGE_NAME}:${IMAGE_TAG} ..."
+  #         # NOTE: This is a simplified example. Adjust the selector below to match your container definition.
+  #         sed -i "s|image: .*$|image: ${IMAGE_NAME}:${IMAGE_TAG}|g" app-spec.yaml
+  #
+  #         echo "Ensuring PUBLIC_ENV_NAME is set in spec (if present in your envs) ..."
+  #         # In a real setup you would update the relevant envs section here to ensure PUBLIC_ENV_NAME matches the value from GitHub Secrets.
+  #
+  #         echo "Applying updated spec..."
+  #         doctl apps update "${DO_APP_ID}" --spec app-spec.yaml

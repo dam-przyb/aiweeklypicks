@@ -1,4 +1,78 @@
-# Deployment Guide for POST /api/events
+# Deployment Guide – AI Weekly Picks (GHCR + DigitalOcean)
+
+This document describes how to deploy the full AI Weekly Picks app using **GitHub Container Registry (GHCR)** and **DigitalOcean App Platform**, and then provides an appendix for the `/api/events` endpoint.
+
+## 1. CI/CD Overview
+
+- Source: this GitHub repository.
+- CI: GitHub Actions workflow at `.github/workflows/main-docker.yml`.
+- Image registry: `ghcr.io/dprzybylski/aiweeklypicks`.
+- Runtime platform: DigitalOcean App Platform (single container service).
+
+On every push to `main`:
+
+1. `lint` job runs ESLint.
+2. `unit-test` job runs Vitest with coverage.
+3. `build-and-push` job builds the Docker image and pushes:
+   - `ghcr.io/dprzybylski/aiweeklypicks:${GITHUB_SHA}`
+   - `ghcr.io/dprzybylski/aiweeklypicks:latest`
+4. `deploy` job uses `doctl` to:
+   - fetch the current App spec,
+   - update the `image:` reference to `ghcr.io/dprzybylski/aiweeklypicks:${GITHUB_SHA}`,
+   - apply the updated spec to DigitalOcean.
+
+## 2. One‑time GitHub setup
+
+In **GitHub → Settings → Secrets and variables → Actions**:
+
+- **Repository secrets**
+  - `DIGITALOCEAN_ACCESS_TOKEN` – DO access token with App Platform permissions.
+  - `PUBLIC_ENV_NAME` – e.g. `production` (used as a build arg, for diagnostics and logging).
+- **Repository variables**
+  - `DIGITALOCEAN_APP_ID` – the ID of your DigitalOcean App Platform app (see DO UI or `doctl apps list`).
+
+The built‑in `GITHUB_TOKEN` is used to push images to GHCR; no extra config is needed for that in the workflow.
+
+## 3. One‑time DigitalOcean App Platform setup
+
+1. In DigitalOcean, create a new **App**.
+2. Choose **Container image** as the component source.
+3. Use the image:
+   - `ghcr.io/dprzybylski/aiweeklypicks:latest`
+4. Set runtime settings:
+   - **HTTP Port**: `8080` (matches the `Dockerfile` `PORT` and `EXPOSE 8080`).
+   - **Command**: leave blank to use image `CMD` (`node ./dist/server/entry.mjs`), or set explicitly if needed.
+5. Once the app is created, copy its **App ID** and set it as `DIGITALOCEAN_APP_ID` in GitHub (see section 2).
+
+## 4. Required environment variables (DigitalOcean)
+
+In your App’s **Settings → Environment Variables**, configure at least:
+
+- `SUPABASE_URL` – your Supabase project URL.
+- `SUPABASE_KEY` – Supabase anon/service key, depending on your security model.
+- `EVENT_IP_HASH_SALT` – a strong random secret (see appendix below for generation guidance).
+- `OPENROUTER_API_KEY` – API key for OpenRouter (if you use LLM features).
+- `SITE_URL` – the public base URL of the app, e.g. `https://aiweeklypicks.example.com`.
+- `PUBLIC_ENV_NAME` – `production` (matches the build arg; useful in logs).
+
+## 5. Deploy flow
+
+After the one‑time setup above:
+
+1. Push to the `main` branch.
+2. GitHub Actions will:
+   - run lint + tests,
+   - build and push the Docker image to GHCR,
+   - update the DigitalOcean App spec to point at the new image tag.
+3. DigitalOcean will roll out the new container and run the built‑in healthcheck (`wget` against `http://127.0.0.1:${PORT}/`).
+
+If the deployment fails, review:
+
+- GitHub Actions logs for `build-and-push` / `deploy` jobs.
+- DigitalOcean App → Deployments / Logs for runtime errors.
+
+# Appendix: Deployment Guide for POST /api/events
+
 
 This guide covers the deployment steps required to make the `POST /api/events` endpoint fully operational.
 
